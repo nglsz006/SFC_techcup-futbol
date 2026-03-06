@@ -54,17 +54,6 @@
 - T-1.4.2: Implementar lógica de autorización por rol
 - T-1.4.3: Implementar protección de rutas por rol (frontend)
 - T-1.4.4: Escribir pruebas de autorización
-
-### HU-1.5 — Registro de auditoría
-**Como** administrador
-**Quiero** que se registren las acciones relevantes de los usuarios
-**Para** tener trazabilidad de las operaciones del sistema.
-
-**Tareas:**
-- T-1.5.1: Crear tabla de auditoría en la base de datos
-- T-1.5.2: Implementar registro automático de acciones relevantes
-- T-1.5.3: Escribir pruebas del módulo de auditoría
-
 ---
 
 ## Épica 2: Gestión de Torneos
