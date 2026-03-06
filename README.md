@@ -88,6 +88,8 @@ No funcionales:
 
 Manual de identidad (documento independiente o archivo .md aparte).
 
+### Manual de identidad
+
 ### Link de JIRA (recuerden invitarme al espacio), donde se evidencien:
 
 https://mail-team-w4y4k0y5.atlassian.net/jira/software/projects/TF/boards/35?atlOrigin=eyJpIjoiY2ZjNWQ5ZGRjMTM3NDAwMGIxNDEwYWUwNjFkNGY1NTMiLCJwIjoiaiJ9
