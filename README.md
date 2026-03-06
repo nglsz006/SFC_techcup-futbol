@@ -3,15 +3,20 @@ repositorio dedicado al desarrollo del proyecto TECHCUP FÚTBOL
 
 ### Nombre del equipo
   SHAWARMA F.C
+  
 ### Nombre de los integrantes
+
 - Daniel Felipe Rayo Rodriguez
 - Juan Esteban hernandez moreno
 - Juan Manuel Lopez Barrera
 - Nicolas Andres Parrado Gonzalez
 - Nicolas Guillermo Ibañez Leon
 - Jeyder Nicolay Leon Lancheros
+- 
 ### Título del proyecto
+
   TECHCUP FÚTBOL
+  
 ### Enunciado del problema
 Introducción al problema: 
 Los programas de Ingeniería de Sistemas, IA, Ciberseguridad y Estadística realizan
@@ -86,9 +91,18 @@ No funcionales:
 
 ### Mockup (con enlace a Figma).
 
-Manual de identidad (documento independiente o archivo .md aparte).
+presentación inicial: 
+
+<img width="1919" height="810" alt="image" src="https://github.com/user-attachments/assets/9d610e60-fc31-4daf-9704-eeda6a042114" />
+
+enlace a figma:
+
+https://www.figma.com/make/WNTggpZgFEF4BYVkYZ1XYE/Dise%C3%B1ar-interfaz-torneo-deportivo?fullscreen=1&t=GqAIgO7dSHhi9Omi-1
+
 
 ### Manual de identidad
+
+https://github.com/nglsz006/SFC_techcup-futbol/blob/develop/SFC_TechUp_Futbol/docs/planing/manual%20identidad.md
 
 ### Link de JIRA (recuerden invitarme al espacio), donde se evidencien:
 
