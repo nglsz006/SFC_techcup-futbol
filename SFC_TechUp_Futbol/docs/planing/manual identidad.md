@@ -11,86 +11,84 @@ El diseño busca ser claro, moderno y deportivo, utilizando una estética minima
 
 ### 2. Logotipo:
 
-<img width="897" height="596" alt="image" src="https://github.com/user-attachments/assets/6fde460b-dc5b-40d6-98b3-a1d9f58be4e1" />
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/af669006-d361-4274-8c1b-1bdf8f29155d" />
+
 
 ---
 
+### Publico objetivo:
+
+La plataforma está dirigida principalmente a estudiantes y jóvenes entre 16 y 30 años que participan en torneos de fútbol amateur, especialmente jugadores, capitanes de equipo y organizadores que necesitan gestionar partidos, equipos y resultados de forma digital.
+
+También incluye árbitros, quienes pueden utilizar la plataforma para consultar partidos y registrar información del juego. Además, puede ser utilizada por visitantes y familiares de los jugadores, generalmente entre 25 y 50 años, interesados en revisar horarios, resultados o estadísticas de los encuentros.
+
 
 ### 3. Paleta de colores
-La identidad visual del sistema se basa principalmente en tonos rojos, y blancos que representan los colores de la universidad donde se ejecutan los torneos de futbol.
+
+La identidad visual utiliza tonos verdes asociados a tecnología, innovación y entornos digitales.
+
+verde principal:
+
+<img width="182" height="241" alt="image" src="https://github.com/user-attachments/assets/5da969e2-3298-4e30-be4d-2187d5990411" />
+
+verde secundario:
+
+<img width="185" height="248" alt="image" src="https://github.com/user-attachments/assets/75e70cd0-7a53-4506-8b66-d29d21f0bcce" />
+
+verde oscuro:
+
+<img width="185" height="245" alt="image" src="https://github.com/user-attachments/assets/a468b589-1c75-436b-9c1f-488563ccda7f" />
+
+fondos claros:
+
+<img width="179" height="252" alt="image" src="https://github.com/user-attachments/assets/b321502f-5b78-4acf-ac92-87839995bf19" />
+<img width="186" height="247" alt="image" src="https://github.com/user-attachments/assets/bf8a4362-f898-433c-8428-de529b585a77" />
+
+texto gris oscuro:
+
+<img width="186" height="245" alt="image" src="https://github.com/user-attachments/assets/32615cd1-1501-4903-ab7f-353bcb2ebf17" />
 
 
-Color principal	Rojo oscuro	#8B1E1E
 
-Color secundario	Rojo intenso	#A52222
+El verde principal (#16A34A) se utiliza para botones y acciones importantes. Este tono fue elegido porque ofrece buen contraste frente a fondos claros, permitiendo que los elementos interactivos sean fácilmente identificables incluso por personas con dificultades visuales.
 
-Fondo claro	Gris muy claro	#F5F5F5
+El verde secundario (#22C55E) se emplea para iconos y elementos de apoyo. Su diferencia con el color principal ayuda a crear jerarquía visual sin depender únicamente del color, facilitando la comprensión para usuarios con distintos tipos de visión.
 
-Texto principal	Negro/gris oscuro	#1F2937
+El verde oscuro (#14532D) se usa en encabezados o estados de interacción. Este tono más profundo mejora el contraste y hace que la información estructural sea más fácil de distinguir.
 
-Botones secundarios	Blanco	#FFFFFF
-
-- Uso en la interfaz:
-
-Rojo = botones principales, hero section, elementos destacados
-
-Blanco = fondo de contenido
-
-Gris claro = separación de secciones
+Los fondos claros (#F8FAFC y #E5E7EB) permiten mantener una lectura cómoda durante largos periodos, mientras que el texto en gris oscuro (#1F2937) garantiza una alta legibilidad. La combinación de estos colores busca asegurar contraste suficiente para diferentes usuarios, incluyendo personas con baja visión o daltonismo.
 
 ---
 
 ### 4. Tipografia:
+Poppins se emplea en títulos y botones debido a su estructura geométrica clara, que facilita la identificación de elementos importantes dentro de la interfaz.
 
-En el diseño del mockup se utilizan dos tipografías principales: Poppins y Montserrat.
-Configuradas dentro del proyecto en Figma. La tipografía Poppins se emplea en los títulos principales y encabezados de las secciones, como el texto destacado del inicio “TechCup Sistemas, el torneo oficial” y los títulos de secciones como “Todo lo que necesitas” y “¿Cómo funciona?”, ya que su estilo moderno permite resaltar la jerarquía visual de la interfaz. Por otro lado, Montserrat se utiliza en los textos descriptivos y contenido secundario, como las explicaciones de las funcionalidades, descripciones de las tarjetas y textos informativos de cada sección, debido a que ofrece una lectura clara y cómoda dentro de la plataforma
+Montserrat se utiliza en subtítulos y secciones porque mantiene una buena legibilidad incluso en tamaños pequeños, permitiendo que el contenido sea fácil de escanear visualmente.
 
 ---
 
 ### 5. Componentes de interfaz
 
-Barra de navegación:
-Ubicada en la parte superior de la página. Contiene el logo del sistema, enlaces de navegación como Características, Cómo funciona y Roles, además de los botones de Iniciar sesión y Registrarse. Permite al usuario moverse entre las diferentes secciones de la plataforma.
+Barra de navegación
+Ubicada en la parte superior de la interfaz. Contiene el logo, enlaces a secciones principales y accesos a Iniciar sesión y Registrarse.
 
-Botones:
-Elementos interactivos utilizados para ejecutar acciones. En el diseño se observan botones primarios como Comenzar gratis y Registrarse, con color rojo sólido, y botones secundarios como Ver demo o Iniciar sesión, con estilo de borde.
+Botones
+Elementos interactivos utilizados para ejecutar acciones dentro del sistema. Se diferencian entre botones primarios (acciones principales) y secundarios (acciones complementarias).
 
-Tarjetas:
-Componentes que agrupan información relacionada dentro de un contenedor visual. En la sección de características se utilizan tarjetas para mostrar funcionalidades como gestión de equipos, programación de partidos y estadísticas.
+Tarjetas
+Contenedores visuales que organizan información relacionada y permiten presentar funcionalidades o contenido de forma clara.
 
-Iconos:
-Elementos gráficos que acompañan las tarjetas y ayudan a representar visualmente cada funcionalidad (equipos, trofeo, calendario, estadísticas, etc.), mejorando la comprensión del usuario.
+Iconos
+Elementos gráficos que acompañan la información y facilitan la comprensión rápida de las funcionalidades.
 
-Sección de pasos o proceso:
-Componente visual que muestra el flujo de uso de la plataforma mediante pasos numerados (Registrarse, Elegir rol, Unirse o crear equipo, Jugar), permitiendo explicar de forma clara cómo funciona el sistema.
+Sección de pasos
+Componente que muestra el proceso de uso de la plataforma mediante una secuencia de pasos para guiar al usuario.
 
 ---
 
 ### 6. Capturas del mockup 
 
-pagina principal
 
-<img width="1919" height="800" alt="image" src="https://github.com/user-attachments/assets/e7cfd184-1cda-4343-8620-8db619359afa" />
-
-divisiones de lo que hay
-
-<img width="1917" height="808" alt="image" src="https://github.com/user-attachments/assets/85f00f55-4092-4b89-8d64-d03051e6b70c" />
-
-vista de jugador
-
-<img width="1445" height="644" alt="image" src="https://github.com/user-attachments/assets/b9922af6-ba68-452a-ba5d-038699b90f53" />
-
-vista de capitan
-
-<img width="1434" height="648" alt="image" src="https://github.com/user-attachments/assets/747bd3f1-1e7f-47b1-9345-8a07ea4dd17f" />
-
-vista de organizador
-
-<img width="1418" height="637" alt="image" src="https://github.com/user-attachments/assets/528b4dfb-4b5f-4a2a-a8e6-04f94c907afc" />
-
-vista de arbitro
-
-<img width="1440" height="641" alt="image" src="https://github.com/user-attachments/assets/1c7e7a8d-03a0-443a-b053-94f0c883a172" />
 
 
 
