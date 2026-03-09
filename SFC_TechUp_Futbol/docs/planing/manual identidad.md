@@ -27,36 +27,106 @@ También incluye árbitros, quienes pueden utilizar la plataforma para consultar
 
 La identidad visual utiliza tonos verdes asociados a tecnología, innovación y entornos digitales.
 
-verde principal:
+Color principal pagina:
 
-<img width="182" height="241" alt="image" src="https://github.com/user-attachments/assets/5da969e2-3298-4e30-be4d-2187d5990411" />
+<img width="184" height="247" alt="image" src="https://github.com/user-attachments/assets/d7d04da3-1497-4ff9-b097-747ea6caa7c8" />
 
-verde secundario:
+texto colaborativo:
 
-<img width="185" height="248" alt="image" src="https://github.com/user-attachments/assets/75e70cd0-7a53-4506-8b66-d29d21f0bcce" />
+<img width="181" height="251" alt="image" src="https://github.com/user-attachments/assets/93c4f64e-1a78-449a-8233-16398275507d" />
 
-verde oscuro:
+<img width="186" height="248" alt="image" src="https://github.com/user-attachments/assets/ebccca9c-24ed-437b-b25f-8a1927c12a08" />
 
-<img width="185" height="245" alt="image" src="https://github.com/user-attachments/assets/a468b589-1c75-436b-9c1f-488563ccda7f" />
+<img width="186" height="244" alt="image" src="https://github.com/user-attachments/assets/6956bd09-3dea-4f1c-b3f8-8dbb722b4f78" />
 
-fondos claros:
+<img width="188" height="247" alt="image" src="https://github.com/user-attachments/assets/4768dede-252f-4094-8522-1d6245dbf678" />
 
-<img width="179" height="252" alt="image" src="https://github.com/user-attachments/assets/b321502f-5b78-4acf-ac92-87839995bf19" />
-<img width="186" height="247" alt="image" src="https://github.com/user-attachments/assets/bf8a4362-f898-433c-8428-de529b585a77" />
+<img width="186" height="247" alt="image" src="https://github.com/user-attachments/assets/6bd243be-c814-4c88-9448-dd6879e76d9c" />
 
-texto gris oscuro:
+<img width="183" height="247" alt="image" src="https://github.com/user-attachments/assets/0d4d577d-1e80-4834-b6a3-8f1c43868665" />
 
-<img width="186" height="245" alt="image" src="https://github.com/user-attachments/assets/32615cd1-1501-4903-ab7f-353bcb2ebf17" />
-
+<img width="186" height="244" alt="image" src="https://github.com/user-attachments/assets/5b4b6ae9-4b18-4e61-bfb0-f78f95937226" />
 
 
-El verde principal (#16A34A) se utiliza para botones y acciones importantes. Este tono fue elegido porque ofrece buen contraste frente a fondos claros, permitiendo que los elementos interactivos sean fácilmente identificables incluso por personas con dificultades visuales.
 
-El verde secundario (#22C55E) se emplea para iconos y elementos de apoyo. Su diferencia con el color principal ayuda a crear jerarquía visual sin depender únicamente del color, facilitando la comprensión para usuarios con distintos tipos de visión.
 
-El verde oscuro (#14532D) se usa en encabezados o estados de interacción. Este tono más profundo mejora el contraste y hace que la información estructural sea más fácil de distinguir.
 
-Los fondos claros (#F8FAFC y #E5E7EB) permiten mantener una lectura cómoda durante largos periodos, mientras que el texto en gris oscuro (#1F2937) garantiza una alta legibilidad. La combinación de estos colores busca asegurar contraste suficiente para diferentes usuarios, incluyendo personas con baja visión o daltonismo.
+
+botones:
+
+<img width="187" height="249" alt="image" src="https://github.com/user-attachments/assets/c95d0bcb-afe8-4ecc-ab4b-92633351a9a1" />
+
+<img width="187" height="245" alt="image" src="https://github.com/user-attachments/assets/13170c91-24e3-4f44-8894-7fca0049db17" />
+
+<img width="186" height="244" alt="image" src="https://github.com/user-attachments/assets/6956bd09-3dea-4f1c-b3f8-8dbb722b4f78" />
+
+<img width="185" height="248" alt="image" src="https://github.com/user-attachments/assets/90ff4955-7b54-42f8-a7c2-7dc03c9db529" />
+
+<img width="183" height="247" alt="image" src="https://github.com/user-attachments/assets/e6489985-6857-4690-97fa-72fe6e4386bd" />
+
+
+
+
+
+
+simbolos:
+
+<img width="187" height="245" alt="image" src="https://github.com/user-attachments/assets/755f538f-2255-44fb-9556-6bdcc9f8208a" />
+
+<img width="186" height="244" alt="image" src="https://github.com/user-attachments/assets/6956bd09-3dea-4f1c-b3f8-8dbb722b4f78" />
+
+<img width="188" height="247" alt="image" src="https://github.com/user-attachments/assets/864dddfd-5012-4695-b9a5-796961c847e5" />
+
+<img width="188" height="245" alt="image" src="https://github.com/user-attachments/assets/9048c1f9-6057-4833-b783-293f5084693a" />
+
+<img width="186" height="247" alt="image" src="https://github.com/user-attachments/assets/5142a54f-c765-43f2-8670-b07580a93d9a" />
+
+<img width="185" height="248" alt="image" src="https://github.com/user-attachments/assets/a557437e-91df-4584-965a-26b7c735a77a" />
+
+<img width="186" height="245" alt="image" src="https://github.com/user-attachments/assets/f2d93915-19d8-4b7f-a8cb-28fb5383d662" />
+
+
+
+
+
+
+
+
+
+divisiones pagina:
+
+<img width="186" height="248" alt="image" src="https://github.com/user-attachments/assets/ebccca9c-24ed-437b-b25f-8a1927c12a08" />
+
+
+
+
+
+
+fondos:
+
+<img width="212" height="271" alt="image" src="https://github.com/user-attachments/assets/d11c5f16-6100-4321-a575-70c9c21b1626" />
+
+<img width="181" height="251" alt="image" src="https://github.com/user-attachments/assets/93c4f64e-1a78-449a-8233-16398275507d" />
+
+<img width="187" height="242" alt="image" src="https://github.com/user-attachments/assets/eb2a7f97-274b-4990-a7fa-11d2243f238d" />
+
+
+
+
+
+
+
+- Accesibilidad visual y público objetivo
+
+¿Por qué estos colores funcionan para el daltonismo?
+
+La clave no es evitar ciertos colores, sino que ningún elemento depende solo del color para comunicar algo. En TechCup, cada botón tiene ícono + texto, los estados llevan etiqueta escrita, y las divisiones usan contraste de brillo, no de matiz. Así, aunque alguien no distinga bien ciertos colores, igual entiende qué hace cada cosa.
+Algunos colores fueron elegidos por ser especialmente seguros: el azul es el más universal, casi ningún tipo de daltonismo lo afecta. El amarillo y el naranja se distinguen por su alto brillo, no por su matiz, así que siguen siendo visibles. El rojo puede confundirse con el verde para algunas personas, pero en la plataforma siempre va acompañado de texto ("Rechazado", "Activo"), nunca comunica solo. El verde principal fue elegido en un tono oscuro específicamente para mantener contraste fuerte sobre fondos blancos y grises.
+
+- ¿A quién va dirigida la plataforma?
+
+Principalmente a jóvenes de 16 a 30 años — jugadores, capitanes y organizadores de torneos amateur — junto con árbitros que consultan y registran partidos, y familiares o visitantes de 25 a 50 años que revisan resultados y estadísticas ocasionalmente.
+La paleta responde a eso: moderna y directa para los más jóvenes, clara e intuitiva para quienes entran de vez en cuando sin conocer bien la plataforma.
 
 ---
 
@@ -87,6 +157,16 @@ Componente que muestra el proceso de uso de la plataforma mediante una secuencia
 ---
 
 ### 6. Capturas del mockup 
+
+- nuestra pagina principal
+
+<img width="341" height="681" alt="image" src="https://github.com/user-attachments/assets/3f68bba2-b672-44bd-b543-a4b20fc708c4" />
+
+- nuestro espacio de registro
+
+<img width="330" height="598" alt="image" src="https://github.com/user-attachments/assets/141e40e8-7f0e-4d28-bd07-17c642b0fc6f" />
+
+
 
 
 
