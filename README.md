@@ -54,7 +54,7 @@ participantes.
 ### Índice:
 ### Diagrama de contexto del sistema
 
-<img width="1048" height="638" alt="image" src="https://github.com/user-attachments/assets/bbf0c475-b021-41c3-862a-42339d6691e7" />
+![Diagrama de contexto](SFC_TechUp_Futbol/docs/uml/DiagramaContexto(2).png)
 
 ### Definición de requerimientos:
 Funcionales:
