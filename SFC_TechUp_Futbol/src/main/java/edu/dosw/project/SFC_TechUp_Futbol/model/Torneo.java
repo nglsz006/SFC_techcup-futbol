@@ -10,11 +10,11 @@ public class Torneo {
     private int cantidadEquipos;
     private double costo;
     private EstadoTorneo estado;
-    private StatePattern.EstadoTorneo estadoObj;
+    private EstadoTorneoInterface estadoObj;
 
     public Torneo() {
         this.estado = EstadoTorneo.CREADO;
-        this.estadoObj = new StatePattern.TorneoCreado();
+        this.estadoObj = new TorneoCreado();
     }
 
     public Torneo(int id, String nombre, LocalDateTime fechaInicio, LocalDateTime fechaFin, 
@@ -26,7 +26,7 @@ public class Torneo {
         this.cantidadEquipos = cantidadEquipos;
         this.costo = costo;
         this.estado = EstadoTorneo.CREADO;
-        this.estadoObj = new StatePattern.TorneoCreado();
+        this.estadoObj = new TorneoCreado();
     }
 
     public void iniciar() {
@@ -58,6 +58,6 @@ public class Torneo {
     public EstadoTorneo getEstado() { return estado; }
     public void setEstado(EstadoTorneo estado) { this.estado = estado; }
 
-    public StatePattern.EstadoTorneo getEstadoObj() { return estadoObj; }
-    public void setEstadoObj(StatePattern.EstadoTorneo estadoObj) { this.estadoObj = estadoObj; }
+    public EstadoTorneoInterface getEstadoObj() { return estadoObj; }
+    public void setEstadoObj(EstadoTorneoInterface estadoObj) { this.estadoObj = estadoObj; }
 }
