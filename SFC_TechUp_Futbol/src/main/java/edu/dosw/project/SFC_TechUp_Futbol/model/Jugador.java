@@ -1,16 +1,51 @@
 package edu.dosw.project.SFC_TechUp_Futbol.model;
 
-public class Jugador {
-    private Long id;
-    private String nombre;
-    private Equipo equipo;
+public class Jugador extends Usuario {
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    private int jerseyNumber;
+    private Posicion position;
+    private boolean available;
+    private String photo;
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public Jugador() {}
 
-    public Equipo getEquipo() { return equipo; }
-    public void setEquipo(Equipo equipo) { this.equipo = equipo; }
+    public Jugador(Long id, String name, String email, String password, TipoUsuario userType, int jerseyNumber, Posicion position, boolean available, String photo) {
+        super(id, name, email, password, userType);
+        this.jerseyNumber = jerseyNumber;
+        this.position = position;
+        this.available = available;
+        this.photo = photo;
+    }
+
+    public int getJerseyNumber() {
+        return jerseyNumber;
+    }
+
+    public void setJerseyNumber(int jerseyNumber) {
+        this.jerseyNumber = jerseyNumber;
+    }
+
+    public Posicion getPosition() {
+        return position;
+    }
+
+    public void setPosition(Posicion position) {
+        this.position = position;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 }
