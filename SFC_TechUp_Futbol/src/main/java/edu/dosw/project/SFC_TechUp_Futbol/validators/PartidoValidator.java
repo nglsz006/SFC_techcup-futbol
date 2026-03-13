@@ -4,7 +4,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.model.Tarjeta;
 
 import java.time.LocalDateTime;
 
-public class PartidoValidator {
+public class    PartidoValidator {
 
     public void validarCrearPartido(Long torneoId, Long equipoLocalId, Long equipoVisitanteId,
                                     LocalDateTime fecha, String cancha) {
