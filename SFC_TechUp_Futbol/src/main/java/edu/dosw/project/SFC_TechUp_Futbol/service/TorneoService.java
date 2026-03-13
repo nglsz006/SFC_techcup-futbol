@@ -3,18 +3,19 @@ package edu.dosw.project.SFC_TechUp_Futbol.service;
 import edu.dosw.project.SFC_TechUp_Futbol.model.Torneo;
 import edu.dosw.project.SFC_TechUp_Futbol.repository.TorneoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.repository.TorneoRepositoryImpl;
-import edu.dosw.project.SFC_TechUp_Futbol.validators.ValidacionStrategy;
+import edu.dosw.project.SFC_TechUp_Futbol.validators.Validacion;
+import edu.dosw.project.SFC_TechUp_Futbol.validators.ValidacionTorneo;
 
 import java.util.List;
 import java.util.Map;
 
-public class TorneoService extends ObserverPattern.Subject {
+public class TorneoService extends Subject {
     private TorneoRepository repository;
-    private ValidacionStrategy.Validacion validador;
+    private Validacion validador;
 
     public TorneoService() {
         this.repository = new TorneoRepositoryImpl();
-        this.validador = new ValidacionStrategy.ValidacionTorneo();
+        this.validador = new ValidacionTorneo();
     }
 
     public Torneo crear(Torneo torneo, Map<String, Object> datos) {

@@ -1,7 +1,8 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
 import edu.dosw.project.SFC_TechUp_Futbol.service.EquipoService;
-import edu.dosw.project.SFC_TechUp_Futbol.service.ObserverPattern;
+import edu.dosw.project.SFC_TechUp_Futbol.service.NotificadorTorneo;
+import edu.dosw.project.SFC_TechUp_Futbol.service.LoggerObserver;
 import edu.dosw.project.SFC_TechUp_Futbol.model.Equipo;
 
 import java.util.List;
@@ -12,8 +13,8 @@ public class EquipoController {
 
     public EquipoController() {
         this.service = new EquipoService();
-        this.service.agregarObserver(new ObserverPattern.NotificadorTorneo());
-        this.service.agregarObserver(new ObserverPattern.LoggerObserver());
+        this.service.agregarObserver(new NotificadorTorneo());
+        this.service.agregarObserver(new LoggerObserver());
     }
 
     public Equipo crearEquipo(Map<String, Object> datos) {

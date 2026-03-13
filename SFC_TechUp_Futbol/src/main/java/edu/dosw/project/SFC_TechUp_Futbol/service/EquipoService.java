@@ -3,18 +3,19 @@ package edu.dosw.project.SFC_TechUp_Futbol.service;
 import edu.dosw.project.SFC_TechUp_Futbol.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.repository.EquipoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.repository.EquipoRepositoryImpl;
-import edu.dosw.project.SFC_TechUp_Futbol.validators.ValidacionStrategy;
+import edu.dosw.project.SFC_TechUp_Futbol.validators.Validacion;
+import edu.dosw.project.SFC_TechUp_Futbol.validators.ValidacionEquipo;
 
 import java.util.List;
 import java.util.Map;
 
-public class EquipoService extends ObserverPattern.Subject {
+public class EquipoService extends Subject {
     private EquipoRepository repository;
-    private ValidacionStrategy.Validacion validador;
+    private Validacion validador;
 
     public EquipoService() {
         this.repository = new EquipoRepositoryImpl();
-        this.validador = new ValidacionStrategy.ValidacionEquipo();
+        this.validador = new ValidacionEquipo();
     }
 
     public Equipo crear(Equipo equipo, Map<String, Object> datos) {

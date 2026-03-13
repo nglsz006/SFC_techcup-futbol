@@ -1,7 +1,8 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
 import edu.dosw.project.SFC_TechUp_Futbol.service.AlineacionService;
-import edu.dosw.project.SFC_TechUp_Futbol.service.ObserverPattern;
+import edu.dosw.project.SFC_TechUp_Futbol.service.NotificadorTorneo;
+import edu.dosw.project.SFC_TechUp_Futbol.service.LoggerObserver;
 import edu.dosw.project.SFC_TechUp_Futbol.model.Alineacion;
 import edu.dosw.project.SFC_TechUp_Futbol.model.Formacion;
 
@@ -13,8 +14,8 @@ public class AlineacionController {
 
     public AlineacionController() {
         this.service = new AlineacionService();
-        this.service.agregarObserver(new ObserverPattern.NotificadorTorneo());
-        this.service.agregarObserver(new ObserverPattern.LoggerObserver());
+        this.service.agregarObserver(new NotificadorTorneo());
+        this.service.agregarObserver(new LoggerObserver());
     }
 
     public Alineacion crearAlineacion(Map<String, Object> datos) {

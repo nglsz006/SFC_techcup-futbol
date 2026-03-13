@@ -3,18 +3,19 @@ package edu.dosw.project.SFC_TechUp_Futbol.service;
 import edu.dosw.project.SFC_TechUp_Futbol.model.Alineacion;
 import edu.dosw.project.SFC_TechUp_Futbol.repository.AlineacionRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.repository.AlineacionRepositoryImpl;
-import edu.dosw.project.SFC_TechUp_Futbol.validators.ValidacionStrategy;
+import edu.dosw.project.SFC_TechUp_Futbol.validators.Validacion;
+import edu.dosw.project.SFC_TechUp_Futbol.validators.ValidacionAlineacion;
 
 import java.util.List;
 import java.util.Map;
 
-public class AlineacionService extends ObserverPattern.Subject {
+public class AlineacionService extends Subject {
     private AlineacionRepository repository;
-    private ValidacionStrategy.Validacion validador;
+    private Validacion validador;
 
     public AlineacionService() {
         this.repository = new AlineacionRepositoryImpl();
-        this.validador = new ValidacionStrategy.ValidacionAlineacion();
+        this.validador = new ValidacionAlineacion();
     }
 
     public Alineacion crear(Alineacion alineacion, Map<String, Object> datos) {

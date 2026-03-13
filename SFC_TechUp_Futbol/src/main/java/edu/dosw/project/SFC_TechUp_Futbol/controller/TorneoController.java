@@ -1,7 +1,8 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
 import edu.dosw.project.SFC_TechUp_Futbol.service.TorneoService;
-import edu.dosw.project.SFC_TechUp_Futbol.service.ObserverPattern;
+import edu.dosw.project.SFC_TechUp_Futbol.service.NotificadorTorneo;
+import edu.dosw.project.SFC_TechUp_Futbol.service.LoggerObserver;
 import edu.dosw.project.SFC_TechUp_Futbol.model.Torneo;
 
 import java.time.LocalDateTime;
@@ -13,8 +14,8 @@ public class TorneoController {
 
     public TorneoController() {
         this.service = new TorneoService();
-        this.service.agregarObserver(new ObserverPattern.NotificadorTorneo());
-        this.service.agregarObserver(new ObserverPattern.LoggerObserver());
+        this.service.agregarObserver(new NotificadorTorneo());
+        this.service.agregarObserver(new LoggerObserver());
     }
 
     public Torneo crearTorneo(Map<String, Object> datos) {
