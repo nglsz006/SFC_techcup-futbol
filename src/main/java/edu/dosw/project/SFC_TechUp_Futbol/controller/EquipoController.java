@@ -1,41 +1,46 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
-import edu.dosw.project.SFC_TechUp_Futbol.service.EquipoService;
-import edu.dosw.project.SFC_TechUp_Futbol.service.NotificadorTorneo;
-import edu.dosw.project.SFC_TechUp_Futbol.service.LoggerObserver;
-import edu.dosw.project.SFC_TechUp_Futbol.model.Equipo;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.EquipoService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
+@RestController
+@RequestMapping("/api/equipos")
 public class EquipoController {
-    private EquipoService service;
+    private final EquipoService service;
 
-    public EquipoController() {
-        this.service = new EquipoService();
-        this.service.agregarObserver(new NotificadorTorneo());
-        this.service.agregarObserver(new LoggerObserver());
+    public EquipoController(EquipoService service) {
+        this.service = service;
     }
 
-    public Equipo crearEquipo(Map<String, Object> datos) {
+    record EquipoRequest(String nombre, String escudo, String colorPrincipal, String colorSecundario, int capitanId) {}
+
+    @PostMapping
+    public Equipo crearEquipo(@RequestBody EquipoRequest req) {
         Equipo equipo = new Equipo();
-        equipo.setNombre((String) datos.get("nombre"));
-        equipo.setEscudo((String) datos.getOrDefault("escudo", ""));
-        equipo.setColorPrincipal((String) datos.get("colorPrincipal"));
-        equipo.setColorSecundario((String) datos.getOrDefault("colorSecundario", ""));
-        equipo.setCapitanId((Integer) datos.get("capitanId"));
-        return service.crear(equipo, datos);
+        equipo.setNombre(req.nombre());
+        equipo.setEscudo(req.escudo() != null ? req.escudo() : "");
+        equipo.setColorPrincipal(req.colorPrincipal());
+        equipo.setColorSecundario(req.colorSecundario() != null ? req.colorSecundario() : "");
+        equipo.setCapitanId(req.capitanId());
+        return service.crear(equipo, Map.of());
     }
 
-    public Equipo obtenerEquipo(int id) {
+    @GetMapping("/{id}")
+    public Equipo obtenerEquipo(@PathVariable int id) {
         return service.obtener(id);
     }
 
+    @GetMapping
     public List<Equipo> listarEquipos() {
         return service.listar();
     }
 
-    public Equipo agregarJugador(int equipoId, int jugadorId) {
+    @PostMapping("/{equipoId}/jugadores/{jugadorId}")
+    public Equipo agregarJugador(@PathVariable int equipoId, @PathVariable int jugadorId) {
         return service.agregarJugador(equipoId, jugadorId);
     }
 }

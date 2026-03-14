@@ -1,12 +1,14 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
-import edu.dosw.project.SFC_TechUp_Futbol.model.Pago;
-import edu.dosw.project.SFC_TechUp_Futbol.service.PagoService;
-import edu.dosw.project.SFC_TechUp_Futbol.validators.PagoValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.PagoService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PagoValidator;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
+@RestController
+@RequestMapping("/api/pagos")
 public class PagoController {
 
     private final PagoService pagoService;
@@ -17,29 +19,35 @@ public class PagoController {
         this.pagoValidator = pagoValidator;
     }
 
-    public Pago subirComprobante(Map<String, Object> body) {
-        Long equipoId = Long.valueOf(body.get("equipoId").toString());
-        String comprobante = body.get("comprobante").toString();
-        pagoValidator.validarSubirComprobante(equipoId, comprobante);
-        return pagoService.subirComprobante(equipoId, comprobante);
+    record ComprobanteRequest(Long equipoId, String comprobante) {}
+
+    @PostMapping
+    public Pago subirComprobante(@RequestBody ComprobanteRequest req) {
+        pagoValidator.validarSubirComprobante(req.equipoId(), req.comprobante());
+        return pagoService.subirComprobante(req.equipoId(), req.comprobante());
     }
 
-    public Pago aprobarPago(Long id) {
+    @PutMapping("/{id}/aprobar")
+    public Pago aprobarPago(@PathVariable Long id) {
         return pagoService.aprobarPago(id);
     }
 
-    public Pago rechazarPago(Long id) {
+    @PutMapping("/{id}/rechazar")
+    public Pago rechazarPago(@PathVariable Long id) {
         return pagoService.rechazarPago(id);
     }
 
-    public Pago consultarPago(Long id) {
+    @GetMapping("/{id}")
+    public Pago consultarPago(@PathVariable Long id) {
         return pagoService.consultarPago(id);
     }
 
-    public List<Pago> consultarPagosPorEquipo(Long equipoId) {
+    @GetMapping("/equipo/{equipoId}")
+    public List<Pago> consultarPagosPorEquipo(@PathVariable Long equipoId) {
         return pagoService.consultarPagosPorEquipo(equipoId);
     }
 
+    @GetMapping("/pendientes")
     public List<Pago> consultarPagosPendientes() {
         return pagoService.consultarPagosPendientes();
     }

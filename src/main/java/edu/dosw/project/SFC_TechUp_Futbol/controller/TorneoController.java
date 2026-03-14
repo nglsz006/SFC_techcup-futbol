@@ -1,42 +1,52 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
-import edu.dosw.project.SFC_TechUp_Futbol.service.TorneoService;
-import edu.dosw.project.SFC_TechUp_Futbol.service.NotificadorTorneo;
-import edu.dosw.project.SFC_TechUp_Futbol.service.LoggerObserver;
-import edu.dosw.project.SFC_TechUp_Futbol.model.Torneo;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.TorneoService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+@RestController
+@RequestMapping("/api/torneos")
 public class TorneoController {
-    private TorneoService service;
+    private final TorneoService service;
 
-    public TorneoController() {
-        this.service = new TorneoService();
-        this.service.agregarObserver(new NotificadorTorneo());
-        this.service.agregarObserver(new LoggerObserver());
+    public TorneoController(TorneoService service) {
+        this.service = service;
     }
 
-    public Torneo crearTorneo(Map<String, Object> datos) {
+    record TorneoRequest(String nombre, String fechaInicio, String fechaFin, int cantidadEquipos, double costo) {}
+
+    @PostMapping
+    public Torneo crearTorneo(@RequestBody TorneoRequest req) {
         Torneo torneo = new Torneo();
-        torneo.setNombre((String) datos.get("nombre"));
-        torneo.setFechaInicio((LocalDateTime) datos.get("fechaInicio"));
-        torneo.setFechaFin((LocalDateTime) datos.get("fechaFin"));
-        torneo.setCantidadEquipos((Integer) datos.get("cantidadEquipos"));
-        torneo.setCosto((Double) datos.get("costo"));
-        return service.crear(torneo, datos);
+        torneo.setNombre(req.nombre());
+        torneo.setFechaInicio(LocalDateTime.parse(req.fechaInicio()));
+        torneo.setFechaFin(LocalDateTime.parse(req.fechaFin()));
+        torneo.setCantidadEquipos(req.cantidadEquipos());
+        torneo.setCosto(req.costo());
+        return service.crear(torneo, Map.of());
     }
 
-    public Torneo obtenerTorneo(int id) {
+    @GetMapping("/{id}")
+    public Torneo obtenerTorneo(@PathVariable int id) {
         return service.obtener(id);
     }
 
+    @GetMapping
     public List<Torneo> listarTorneos() {
         return service.listar();
     }
 
-    public Torneo iniciarTorneo(int id) {
+    @PutMapping("/{id}/iniciar")
+    public Torneo iniciarTorneo(@PathVariable int id) {
         return service.iniciar(id);
+    }
+
+    @PutMapping("/{id}/finalizar")
+    public Torneo finalizarTorneo(@PathVariable int id) {
+        return service.finalizar(id);
     }
 }

@@ -1,14 +1,16 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
-import edu.dosw.project.SFC_TechUp_Futbol.model.Partido;
-import edu.dosw.project.SFC_TechUp_Futbol.model.Tarjeta;
-import edu.dosw.project.SFC_TechUp_Futbol.service.PartidoService;
-import edu.dosw.project.SFC_TechUp_Futbol.validators.PartidoValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Tarjeta;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.PartidoService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
+@RestController
+@RequestMapping("/api/partidos")
 public class PartidoController {
 
     private final PartidoService partidoService;
@@ -19,55 +21,59 @@ public class PartidoController {
         this.partidoValidator = partidoValidator;
     }
 
-    public Partido crearPartido(Map<String, Object> body) {
-        Long torneoId = Long.valueOf(body.get("torneoId").toString());
-        Long equipoLocalId = Long.valueOf(body.get("equipoLocalId").toString());
-        Long equipoVisitanteId = Long.valueOf(body.get("equipoVisitanteId").toString());
-        LocalDateTime fecha = LocalDateTime.parse(body.get("fecha").toString());
-        String cancha = body.get("cancha").toString();
-        partidoValidator.validarCrearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
-        return partidoService.crearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
+    record PartidoRequest(Long torneoId, Long equipoLocalId, Long equipoVisitanteId, String fecha, String cancha) {}
+    record ResultadoRequest(int golesLocal, int golesVisitante) {}
+    record GolRequest(Long jugadorId, int minuto) {}
+    record TarjetaRequest(Long jugadorId, String tipo, int minuto) {}
+
+    @PostMapping
+    public Partido crearPartido(@RequestBody PartidoRequest req) {
+        LocalDateTime fecha = LocalDateTime.parse(req.fecha());
+        partidoValidator.validarCrearPartido(req.torneoId(), req.equipoLocalId(), req.equipoVisitanteId(), fecha, req.cancha());
+        return partidoService.crearPartido(req.torneoId(), req.equipoLocalId(), req.equipoVisitanteId(), fecha, req.cancha());
     }
 
-    public Partido iniciarPartido(Long id) {
+    @PutMapping("/{id}/iniciar")
+    public Partido iniciarPartido(@PathVariable Long id) {
         return partidoService.iniciarPartido(id);
     }
 
-    public Partido registrarResultado(Long id, Map<String, Integer> body) {
-        int golesLocal = body.get("golesLocal");
-        int golesVisitante = body.get("golesVisitante");
-        partidoValidator.validarResultado(golesLocal, golesVisitante);
-        return partidoService.registrarResultado(id, golesLocal, golesVisitante);
+    @PutMapping("/{id}/resultado")
+    public Partido registrarResultado(@PathVariable Long id, @RequestBody ResultadoRequest req) {
+        partidoValidator.validarResultado(req.golesLocal(), req.golesVisitante());
+        return partidoService.registrarResultado(id, req.golesLocal(), req.golesVisitante());
     }
 
-    public Partido finalizarPartido(Long id) {
+    @PutMapping("/{id}/finalizar")
+    public Partido finalizarPartido(@PathVariable Long id) {
         return partidoService.finalizarPartido(id);
     }
 
-    public Partido registrarGoleador(Long id, Map<String, Object> body) {
-        Long jugadorId = Long.valueOf(body.get("jugadorId").toString());
-        int minuto = Integer.parseInt(body.get("minuto").toString());
-        partidoValidator.validarGoleador(jugadorId, minuto);
-        return partidoService.registrarGoleador(id, jugadorId, minuto);
+    @PostMapping("/{id}/goles")
+    public Partido registrarGoleador(@PathVariable Long id, @RequestBody GolRequest req) {
+        partidoValidator.validarGoleador(req.jugadorId(), req.minuto());
+        return partidoService.registrarGoleador(id, req.jugadorId(), req.minuto());
     }
 
-    public Partido registrarTarjeta(Long id, Map<String, Object> body) {
-        Long jugadorId = Long.valueOf(body.get("jugadorId").toString());
-        Tarjeta.TipoTarjeta tipo = Tarjeta.TipoTarjeta.valueOf(body.get("tipo").toString());
-        int minuto = Integer.parseInt(body.get("minuto").toString());
-        partidoValidator.validarTarjeta(jugadorId, tipo, minuto);
-        return partidoService.registrarTarjeta(id, jugadorId, tipo, minuto);
+    @PostMapping("/{id}/tarjetas")
+    public Partido registrarTarjeta(@PathVariable Long id, @RequestBody TarjetaRequest req) {
+        Tarjeta.TipoTarjeta tipo = Tarjeta.TipoTarjeta.valueOf(req.tipo());
+        partidoValidator.validarTarjeta(req.jugadorId(), tipo, req.minuto());
+        return partidoService.registrarTarjeta(id, req.jugadorId(), tipo, req.minuto());
     }
 
-    public Partido consultarPartido(Long id) {
+    @GetMapping("/{id}")
+    public Partido consultarPartido(@PathVariable Long id) {
         return partidoService.consultarPartido(id);
     }
 
-    public List<Partido> consultarPorTorneo(Long torneoId) {
+    @GetMapping("/torneo/{torneoId}")
+    public List<Partido> consultarPorTorneo(@PathVariable Long torneoId) {
         return partidoService.consultarPartidosPorTorneo(torneoId);
     }
 
-    public List<Partido> consultarPorEquipo(Long equipoId) {
+    @GetMapping("/equipo/{equipoId}")
+    public List<Partido> consultarPorEquipo(@PathVariable Long equipoId) {
         return partidoService.consultarPartidosPorEquipo(equipoId);
     }
 }

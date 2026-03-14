@@ -1,0 +1,8 @@
+package edu.dosw.project.SFC_TechUp_Futbol.core.model;
+
+public enum EstadoTorneo {
+    CREADO,
+    EN_CURSO,
+    FINALIZADO
+}
+

@@ -1,7 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
-import edu.dosw.project.SFC_TechUp_Futbol.model.Partido;
-import edu.dosw.project.SFC_TechUp_Futbol.service.ArbitroService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.ArbitroService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,25 +10,14 @@ import java.util.List;
 @RequestMapping("/arbitros")
 public class ArbitroController {
 
-    private final ArbitroService arbitroService = new ArbitroService();
+    private final ArbitroService arbitroService;
+
+    public ArbitroController(ArbitroService arbitroService) {
+        this.arbitroService = arbitroService;
+    }
 
     @GetMapping("/{id}/partidos")
     public List<Partido> consultarPartidosAsignados(@PathVariable Long id) {
         return arbitroService.consultarPartidosAsignados(id);
-    }
-
-    @GetMapping("/{id}/equipos")
-    public void consultarEquipos(@PathVariable Long id) {
-        arbitroService.consultarEquipos(id);
-    }
-
-    @GetMapping("/{id}/fechaHora")
-    public void consultarFechaHora(@PathVariable Long id) {
-        arbitroService.consultarFechaHora(id);
-    }
-
-    @GetMapping("/{id}/cancha")
-    public void consultarCancha(@PathVariable Long id) {
-        arbitroService.consultarCancha(id);
     }
 }

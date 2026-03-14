@@ -12,7 +12,6 @@ repositorio dedicado al desarrollo del proyecto TECHCUP FÚTBOL
 - Nicolas Andres Parrado Gonzalez
 - Nicolas Guillermo Ibañez Leon
 - Jeyder Nicolay Leon Lancheros
-- 
 ### Título del proyecto
 
   TECHCUP FÚTBOL
@@ -93,10 +92,6 @@ No funcionales:
 [Ver requerimientos del sistema] https://github.com/nglsz006/SFC_techcup-futbol/blob/feature/requirments/SFC_TechUp_Futbol/docs/requierments/requirements.md
 
 ### Mockup (con enlace a Figma).
-
-presentación inicial: 
-
-<img width="1919" height="810" alt="image" src="https://github.com/user-attachments/assets/9d610e60-fc31-4daf-9704-eeda6a042114" />
 
 enlace a figma:
 

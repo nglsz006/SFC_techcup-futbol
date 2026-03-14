@@ -1,37 +1,40 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
-import edu.dosw.project.SFC_TechUp_Futbol.service.AlineacionService;
-import edu.dosw.project.SFC_TechUp_Futbol.service.NotificadorTorneo;
-import edu.dosw.project.SFC_TechUp_Futbol.service.LoggerObserver;
-import edu.dosw.project.SFC_TechUp_Futbol.model.Alineacion;
-import edu.dosw.project.SFC_TechUp_Futbol.model.Formacion;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.AlineacionService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.NotificadorTorneo;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.LoggerObserver;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Alineacion;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Formacion;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
+@RestController
+@RequestMapping("/api/alineaciones")
 public class AlineacionController {
-    private AlineacionService service;
 
-    public AlineacionController() {
-        this.service = new AlineacionService();
-        this.service.agregarObserver(new NotificadorTorneo());
-        this.service.agregarObserver(new LoggerObserver());
+    private final AlineacionService service;
+
+    public AlineacionController(AlineacionService service) {
+        this.service = service;
     }
 
-    public Alineacion crearAlineacion(Map<String, Object> datos) {
+    record AlineacionRequest(int equipoId, int partidoId, String formacion, List<Integer> titulares, List<Integer> reservas) {}
+
+    @PostMapping
+    public Alineacion crearAlineacion(@RequestBody AlineacionRequest req) {
         Alineacion alineacion = new Alineacion();
-        alineacion.setEquipoId((Integer) datos.get("equipoId"));
-        alineacion.setPartidoId((Integer) datos.get("partidoId"));
-        
-        String formacionStr = (String) datos.get("formacion");
-        alineacion.setFormacion(Formacion.fromString(formacionStr));
-        
-        alineacion.setTitulares((List<Integer>) datos.get("titulares"));
-        alineacion.setReservas((List<Integer>) datos.getOrDefault("reservas", List.of()));
-        return service.crear(alineacion, datos);
+        alineacion.setEquipoId(req.equipoId());
+        alineacion.setPartidoId(req.partidoId());
+        alineacion.setFormacion(Formacion.fromString(req.formacion()));
+        alineacion.setTitulares(req.titulares() != null ? req.titulares() : List.of());
+        alineacion.setReservas(req.reservas() != null ? req.reservas() : List.of());
+        return service.crear(alineacion, Map.of());
     }
 
-    public Alineacion obtenerAlineacion(int id) {
+    @GetMapping("/{id}")
+    public Alineacion obtenerAlineacion(@PathVariable int id) {
         return service.obtener(id);
     }
 }
