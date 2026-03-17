@@ -1,5 +1,8 @@
-package edu.dosw.project.SFC_TechUp_Futbol.validators;
+package edu.dosw.project.SFC_techcup_Futbol.core.validators;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class PagoValidator {
 
     public void validarSubirComprobante(Long equipoId, String comprobante) {
