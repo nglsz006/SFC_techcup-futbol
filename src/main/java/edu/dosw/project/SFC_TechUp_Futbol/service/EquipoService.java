@@ -8,19 +8,19 @@ import edu.dosw.project.SFC_TechUp_Futbol.validators.ValidacionEquipo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class EquipoService extends Subject {
-    private EquipoRepository repository;
-    private Validacion validador;
+    private static final Logger log = Logger.getLogger(EquipoService.class.getName());
+    private final EquipoRepository repository;
 
-    public EquipoService() {
-        this.repository = new EquipoRepositoryImpl();
-        this.validador = new ValidacionEquipo();
+    public EquipoService(EquipoRepository repository) {
+        this.repository = repository;
     }
 
     public Equipo crear(Equipo equipo, Map<String, Object> datos) {
-        validador.validar(datos);
         Equipo saved = repository.save(equipo);
+        log.info("Equipo creado: " + saved.getNombre());
         notificar("EQUIPO_CREADO", Map.of("id", saved.getId(), "nombre", saved.getNombre()));
         return saved;
     }
@@ -37,6 +37,7 @@ public class EquipoService extends Subject {
     public Equipo agregarJugador(int equipoId, int jugadorId) {
         Equipo equipo = obtener(equipoId);
         equipo.agregarJugador(jugadorId);
+        log.info("Jugador " + jugadorId + " agregado al equipo " + equipoId);
         notificar("JUGADOR_AGREGADO", Map.of("equipoId", equipoId, "jugadorId", jugadorId));
         return equipo;
     }
