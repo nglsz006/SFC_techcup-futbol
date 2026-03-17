@@ -2,6 +2,10 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
 public abstract class Usuario {
 
+    public enum TipoUsuario {
+        ESTUDIANTE, GRADUADO, PROFESOR, PERSONAL_ADMIN, FAMILIAR
+    }
+
     private Long id;
     private String name;
     private String email;
