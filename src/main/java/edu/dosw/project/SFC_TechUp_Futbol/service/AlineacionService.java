@@ -8,8 +8,10 @@ import edu.dosw.project.SFC_TechUp_Futbol.validators.ValidacionAlineacion;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class AlineacionService extends Subject {
+    private static final Logger log = Logger.getLogger(AlineacionService.class.getName());
     private AlineacionRepository repository;
     private Validacion validador;
 
@@ -21,6 +23,7 @@ public class AlineacionService extends Subject {
     public Alineacion crear(Alineacion alineacion, Map<String, Object> datos) {
         validador.validar(datos);
         Alineacion saved = repository.save(alineacion);
+        log.info("Alineacion creada para equipo: " + saved.getEquipoId());
         notificar("ALINEACION_CREADA", Map.of("id", saved.getId(), "equipoId", saved.getEquipoId()));
         return saved;
     }

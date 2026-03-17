@@ -1,5 +1,8 @@
 package edu.dosw.project.SFC_TechUp_Futbol.model;
 
+import edu.dosw.project.SFC_TechUp_Futbol.model.state.EstadoTorneoInterface;
+import edu.dosw.project.SFC_TechUp_Futbol.model.state.TorneoCreado;
+
 import java.time.LocalDateTime;
 
 public class Torneo {

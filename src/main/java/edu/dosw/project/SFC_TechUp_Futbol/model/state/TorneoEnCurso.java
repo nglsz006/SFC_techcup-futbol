@@ -1,4 +1,7 @@
-package edu.dosw.project.SFC_TechUp_Futbol.model;
+package edu.dosw.project.SFC_TechUp_Futbol.model.state;
+
+import edu.dosw.project.SFC_TechUp_Futbol.model.EstadoTorneo;
+import edu.dosw.project.SFC_TechUp_Futbol.model.Torneo;
 
 public class TorneoEnCurso implements EstadoTorneoInterface {
     
