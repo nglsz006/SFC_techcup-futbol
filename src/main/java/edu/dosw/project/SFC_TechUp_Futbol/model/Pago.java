@@ -1,10 +1,13 @@
-package edu.dosw.project.SFC_TechUp_Futbol.model;
+package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
-import edu.dosw.project.SFC_TechUp_Futbol.model.state.*;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.*;
 import java.time.LocalDate;
 
+@JsonIgnoreProperties({"state"})
 public class Pago {
+
+    public enum PagoEstado { PENDIENTE, EN_REVISION, APROBADO, RECHAZADO }
 
     private Long id;
     private String comprobante;
@@ -40,3 +43,4 @@ public class Pago {
     public PagoState getState() { return state; }
     public void setState(PagoState state) { this.state = state; }
 }
+
