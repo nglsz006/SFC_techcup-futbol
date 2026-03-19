@@ -1,6 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.repository;
 
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,3 +12,4 @@ public interface PartidoRepository {
     List<Partido> findByEstado(Partido.PartidoEstado estado);
     List<Partido> findByEquipoLocalIdOrEquipoVisitanteId(Long equipoLocalId, Long equipoVisitanteId);
 }
+
