@@ -1,6 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.validator;
 
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.*;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
