@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol.core.validator;
+package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,10 +12,6 @@ import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("Validators - pruebas unitarias")
 class ValidatorsTest {
-
-    // ══════════════════════════════════════════════════════════════════════════
-    // PagoValidator
-    // ══════════════════════════════════════════════════════════════════════════
 
     @Nested
     @DisplayName("PagoValidator")
@@ -77,10 +73,6 @@ class ValidatorsTest {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // PartidoValidator
-    // ══════════════════════════════════════════════════════════════════════════
-
     @Nested
     @DisplayName("PartidoValidator")
     class PartidoValidatorTest {
@@ -91,8 +83,6 @@ class ValidatorsTest {
         void setUp() {
             validator = new PartidoValidator();
         }
-
-        // ── validarCrearPartido ──────────────────────────────────────────────
 
         @Test
         @DisplayName("validarCrearPartido - no lanza excepcion con datos validos")
@@ -146,8 +136,6 @@ class ValidatorsTest {
                     .hasMessageContaining("cancha");
         }
 
-        // ── validarResultado ─────────────────────────────────────────────────
-
         @Test
         @DisplayName("validarResultado - no lanza excepcion con marcador 0-0")
         void resultado_ceroACero_noLanzaExcepcion() {
@@ -177,8 +165,6 @@ class ValidatorsTest {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("negativo");
         }
-
-        // ── validarGoleador ──────────────────────────────────────────────────
 
         @Test
         @DisplayName("validarGoleador - no lanza excepcion con jugadorId valido y minuto 1")
@@ -217,8 +203,6 @@ class ValidatorsTest {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("minuto");
         }
-
-        // ── validarTarjeta ───────────────────────────────────────────────────
 
         @Test
         @DisplayName("validarTarjeta - no lanza excepcion con datos validos AMARILLA")

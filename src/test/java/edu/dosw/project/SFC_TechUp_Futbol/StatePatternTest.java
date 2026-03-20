@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol.core.model.state;
+package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
@@ -10,11 +10,6 @@ import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("Patrón State - pruebas unitarias")
 class StatePatternTest {
-
-    // ══════════════════════════════════════════════════════════════════════════
-    // PagoState
-    // ══════════════════════════════════════════════════════════════════════════
-
     @Nested
     @DisplayName("PagoState — flujo completo de estados")
     class PagoStateTest {
@@ -40,8 +35,8 @@ class StatePatternTest {
         @DisplayName("EN_REVISION -> avanzar() -> APROBADO")
         void enRevision_avanzar_cambiaAAprobado() {
             Pago pago = new Pago();
-            pago.avanzar(); // -> EN_REVISION
-            pago.avanzar(); // -> APROBADO
+            pago.avanzar();
+            pago.avanzar();
             assertThat(pago.getEstado()).isEqualTo(Pago.PagoEstado.APROBADO);
             assertThat(pago.getState()).isInstanceOf(AprobadoState.class);
         }
@@ -50,8 +45,8 @@ class StatePatternTest {
         @DisplayName("EN_REVISION -> rechazar() -> RECHAZADO")
         void enRevision_rechazar_cambiaARechadado() {
             Pago pago = new Pago();
-            pago.avanzar(); // -> EN_REVISION
-            pago.rechazar(); // -> RECHAZADO
+            pago.avanzar();
+            pago.rechazar();
             assertThat(pago.getEstado()).isEqualTo(Pago.PagoEstado.RECHAZADO);
             assertThat(pago.getState()).isInstanceOf(RechazadoState.class);
         }
@@ -68,8 +63,8 @@ class StatePatternTest {
         @DisplayName("APROBADO -> avanzar() lanza IllegalStateException (estado terminal)")
         void aprobado_avanzar_lanzaExcepcion() {
             Pago pago = new Pago();
-            pago.avanzar(); // -> EN_REVISION
-            pago.avanzar(); // -> APROBADO
+            pago.avanzar();
+            pago.avanzar();
             assertThatThrownBy(pago::avanzar)
                     .isInstanceOf(IllegalStateException.class);
         }
@@ -79,7 +74,7 @@ class StatePatternTest {
         void aprobado_rechazar_lanzaExcepcion() {
             Pago pago = new Pago();
             pago.avanzar();
-            pago.avanzar(); // -> APROBADO
+            pago.avanzar();
             assertThatThrownBy(pago::rechazar)
                     .isInstanceOf(IllegalStateException.class);
         }
@@ -88,8 +83,8 @@ class StatePatternTest {
         @DisplayName("RECHAZADO -> avanzar() lanza IllegalStateException (estado terminal)")
         void rechazado_avanzar_lanzaExcepcion() {
             Pago pago = new Pago();
-            pago.avanzar();  // -> EN_REVISION
-            pago.rechazar(); // -> RECHAZADO
+            pago.avanzar();
+            pago.rechazar();
             assertThatThrownBy(pago::avanzar)
                     .isInstanceOf(IllegalStateException.class);
         }
@@ -105,9 +100,6 @@ class StatePatternTest {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // PartidoState
-    // ══════════════════════════════════════════════════════════════════════════
 
     @Nested
     @DisplayName("PartidoState — flujo completo de estados")

@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol.core.service;
+package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
@@ -40,8 +40,6 @@ class PagoServiceImplTest {
         equipoMock.setId(1);
         equipoMock.setNombre("Equipo A");
     }
-
-    // ─── subirComprobante ────────────────────────────────────────────────────
 
     @Test
     @DisplayName("subirComprobante - crea pago correctamente cuando el equipo existe y no tiene pago aprobado")
@@ -88,12 +86,10 @@ class PagoServiceImplTest {
         verify(pagoRepository, never()).save(any());
     }
 
-    // ─── aprobarPago ─────────────────────────────────────────────────────────
-
     @Test
     @DisplayName("aprobarPago - aprueba un pago en estado PENDIENTE correctamente")
     void aprobarPago_estadoPendiente_avanzaAEnRevisionYGuarda() {
-        Pago pago = new Pago(); // estado inicial: PENDIENTE
+        Pago pago = new Pago();
         pago.setId(5L);
         pago.setEquipo(equipoMock);
         when(pagoRepository.findById(5L)).thenReturn(Optional.of(pago));
@@ -101,7 +97,6 @@ class PagoServiceImplTest {
 
         Pago resultado = pagoService.aprobarPago(5L);
 
-        // PENDIENTE -> avanzar() -> EN_REVISION
         assertThat(resultado.getEstado()).isEqualTo(Pago.PagoEstado.EN_REVISION);
         verify(pagoRepository).save(pago);
     }
@@ -131,14 +126,12 @@ class PagoServiceImplTest {
         assertThat(resultado.getEstado()).isEqualTo(Pago.PagoEstado.EN_REVISION);
     }
 
-    // ─── rechazarPago ────────────────────────────────────────────────────────
-
     @Test
     @DisplayName("rechazarPago - rechaza un pago en estado EN_REVISION correctamente")
     void rechazarPago_estadoEnRevision_cambiaARechadoYGuarda() {
         Pago pago = new Pago();
         pago.setId(6L);
-        pago.avanzar(); // PENDIENTE -> EN_REVISION
+        pago.avanzar();
         when(pagoRepository.findById(6L)).thenReturn(Optional.of(pago));
         when(pagoRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -163,16 +156,14 @@ class PagoServiceImplTest {
     @DisplayName("rechazarPago - lanza excepcion al rechazar un pago ya APROBADO")
     void rechazarPago_estadoAprobado_lanzaIllegalStateException() {
         Pago pago = new Pago();
-        pago.avanzar(); // -> EN_REVISION
-        pago.avanzar(); // -> APROBADO
+        pago.avanzar();
+        pago.avanzar();
         pago.setId(8L);
         when(pagoRepository.findById(8L)).thenReturn(Optional.of(pago));
 
         assertThatThrownBy(() -> pagoService.rechazarPago(8L))
                 .isInstanceOf(IllegalStateException.class);
     }
-
-    // ─── consultarPago ───────────────────────────────────────────────────────
 
     @Test
     @DisplayName("consultarPago - retorna el pago cuando existe")
@@ -195,8 +186,6 @@ class PagoServiceImplTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Pago no encontrado");
     }
-
-    // ─── consultarPagosPorEquipo / consultarPagosPendientes ──────────────────
 
     @Test
     @DisplayName("consultarPagosPorEquipo - retorna lista de pagos del equipo")

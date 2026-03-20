@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol.core.service;
+package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
@@ -58,8 +58,6 @@ class PartidoServiceImplTest {
         fecha = LocalDateTime.of(2025, 9, 15, 16, 0);
     }
 
-    // ─── crearPartido ────────────────────────────────────────────────────────
-
     @Test
     @DisplayName("crearPartido - crea y guarda partido correctamente")
     void crearPartido_datosValidos_creaPartidoEnEstadoProgramado() {
@@ -114,8 +112,6 @@ class PartidoServiceImplTest {
                 .hasMessageContaining("Equipo local no encontrado");
     }
 
-    // ─── iniciarPartido ──────────────────────────────────────────────────────
-
     @Test
     @DisplayName("iniciarPartido - cambia estado de PROGRAMADO a EN_CURSO")
     void iniciarPartido_estadoProgramado_cambiaAEnCurso() {
@@ -150,9 +146,6 @@ class PartidoServiceImplTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Partido no encontrado");
     }
-
-    // ─── registrarResultado ──────────────────────────────────────────────────
-
     @Test
     @DisplayName("registrarResultado - actualiza marcador correctamente cuando esta EN_CURSO")
     void registrarResultado_enCurso_actualizaMarcador() {
@@ -178,8 +171,6 @@ class PartidoServiceImplTest {
         assertThatThrownBy(() -> partidoService.registrarResultado(1L, 1, 0))
                 .isInstanceOf(IllegalStateException.class);
     }
-
-    // ─── finalizarPartido ────────────────────────────────────────────────────
 
     @Test
     @DisplayName("finalizarPartido - cambia estado de EN_CURSO a FINALIZADO")
@@ -207,8 +198,6 @@ class PartidoServiceImplTest {
         assertThatThrownBy(() -> partidoService.finalizarPartido(1L))
                 .isInstanceOf(IllegalStateException.class);
     }
-
-    // ─── registrarGoleador ───────────────────────────────────────────────────
 
     @Test
     @DisplayName("registrarGoleador - agrega gol y suma al marcador local correctamente")
@@ -255,8 +244,6 @@ class PartidoServiceImplTest {
                 .hasMessageContaining("Jugador no encontrado");
     }
 
-    // ─── registrarTarjeta ────────────────────────────────────────────────────
-
     @Test
     @DisplayName("registrarTarjeta - agrega tarjeta AMARILLA correctamente")
     void registrarTarjeta_tarjetaAmarilla_agregaATarjetas() {
@@ -279,7 +266,7 @@ class PartidoServiceImplTest {
     @Test
     @DisplayName("registrarTarjeta - lanza excepcion si el partido no esta EN_CURSO")
     void registrarTarjeta_noEnCurso_lanzaIllegalStateException() {
-        Partido partido = new Partido(); // PROGRAMADO
+        Partido partido = new Partido();
         partido.setId(1L);
         when(partidoRepository.findById(1L)).thenReturn(Optional.of(partido));
 
@@ -287,8 +274,6 @@ class PartidoServiceImplTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("EN_CURSO");
     }
-
-    // ─── consultas ───────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("consultarPartido - retorna el partido cuando existe")
