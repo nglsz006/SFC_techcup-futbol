@@ -292,6 +292,18 @@
 
 ---
 
+### HU-1.25 — Registrar organizadores y árbitros [Backend]
+**Como** administrador
+**Quiero** registrar usuarios con rol de Organizador o Árbitro en la plataforma
+**Para** que puedan acceder y ejercer sus funciones en el torneo.
+
+**Tareas:**
+- T-1.25.1: Implementar lógica de creación de usuario con rol Organizador o Árbitro
+- T-1.25.2: Implementar validación de correo no duplicado para estos roles
+- T-1.25.3: Escribir pruebas del registro administrativo
+
+---
+
 ## Épica 2: Frontend
 
 > Cubre todas las vistas, formularios y componentes de la aplicación web (React + TypeScript).
@@ -541,3 +553,16 @@
 
 **Tareas:**
 - T-2.24.1: Crear vista de estadísticas con filtro por equipo (frontend)
+
+---
+
+### HU-2.25 — Registrar organizadores y árbitros [Frontend]
+**Como** administrador
+**Quiero** un formulario para registrar organizadores y árbitros
+**Para** gestionar fácilmente quiénes cumplen esos roles en el torneo.
+
+**Tareas:**
+- T-2.25.1: Crear formulario de registro administrativo con selector de rol (frontend)
+- T-2.25.2: Implementar validaciones de campos en el formulario (frontend)
+
+---

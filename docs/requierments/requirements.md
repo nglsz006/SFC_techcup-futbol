@@ -1348,6 +1348,70 @@
 
 ---
 
+## RF_22 — Registrar organizadores y árbitros
+
+| | |
+|---|---|
+| **FUNCIONALIDAD:** | |
+| **Código:** | RF_22 |
+| **Nombre:** | Registrar organizadores y árbitros |
+
+| | |
+|---|---|
+| **Descripción:** | El administrador registra manualmente a los usuarios con rol de Organizador o Árbitro en la plataforma. |
+| **Cómo se ejecutará:** | Mediante un formulario de registro administrativo en la plataforma. |
+| **Actor principal:** | Administrador |
+| **Precondiciones:** | El administrador debe estar autenticado. El usuario a registrar no debe tener una cuenta existente. |
+
+**DATOS DE ENTRADA**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|--------|------------|---------------|---------------------|-------------|
+| Nombre completo | Nombre del usuario a registrar | Campo de texto | | Sí |
+| Correo electrónico | Correo del organizador o árbitro | Campo de texto | No debe estar registrado previamente | Sí |
+| Rol | Tipo de rol a asignar | Selector | Organizador o Árbitro | Sí |
+| Contraseña temporal | Contraseña inicial de acceso | Campo de texto cifrado | Debe cumplir requisitos de seguridad | Sí |
+
+**DATOS DE SALIDA**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|--------|------------|---------------|---------------------|-------------|
+| Cuenta creada | El sistema confirma el registro del nuevo usuario con su rol asignado | Mensaje | | Sí |
+
+**FLUJO BÁSICO:**
+
+| Paso | Actor | Descripción | Excepciones |
+|------|-------|-------------|-------------|
+| 1 | Administrador | Accede al panel de gestión de usuarios | |
+| 2 | Administrador | Diligencia nombre, correo, rol y contraseña temporal | |
+| 3 | Sistema | Valida que el correo no esté registrado y que los datos sean correctos | Correo duplicado o datos inválidos |
+| 4 | Sistema | Crea la cuenta con el rol asignado y muestra confirmación | |
+
+**FLUJO ALTERNO:**
+
+| Paso | Actor | Descripción | Excepciones |
+|------|-------|-------------|-------------|
+| 3 | Sistema | Si el correo ya existe o los datos son inválidos, muestra mensaje de error y permite corregir | |
+
+| | |
+|---|---|
+| **Notas y comentarios:** | Los organizadores y árbitros no pueden registrarse por cuenta propia; solo el administrador puede crearles una cuenta. |
+
+**REGLAS DE NEGOCIO**
+
+| No. | Descripción |
+|-----|------------|
+| 1 | Solo el administrador puede registrar usuarios con rol de Organizador o Árbitro. |
+| 2 | No se permiten cuentas duplicadas con el mismo correo. |
+| 3 | El rol asignado determina las funcionalidades disponibles para ese usuario. |
+
+**HISTORIAL DE REVISIÓN**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | | | Versión inicial |
+
+
 # Requerimientos No Funcionales
 
 | Código | Nombre | Descripción |
