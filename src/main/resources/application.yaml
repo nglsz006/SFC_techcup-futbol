@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: SFC_TechUp_Futbol
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: WARN
+    edu.dosw.project.SFC_TechUp_Futbol: INFO
+    org.springframework.web: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n"
