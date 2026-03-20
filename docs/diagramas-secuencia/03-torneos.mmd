@@ -1,0 +1,61 @@
+sequenceDiagram
+    actor Cliente
+    participant TorneoController
+    participant TorneoService
+    participant TorneoRepository
+    participant Subject
+    participant NotificadorTorneo
+
+    %% Crear torneo
+    Cliente->>TorneoController: POST /api/torneos {nombre, fechaInicio, fechaFin, cantidadEquipos, costo}
+    TorneoController->>TorneoController: new Torneo() + setters
+    TorneoController->>TorneoService: crear(torneo, Map.of())
+    TorneoService->>TorneoRepository: save(torneo)
+    TorneoRepository-->>TorneoService: Torneo guardado
+    TorneoService->>Subject: notificar("TORNEO_CREADO", {id, nombre})
+    Subject->>NotificadorTorneo: actualizar("TORNEO_CREADO", datos)
+    TorneoService-->>TorneoController: Torneo
+    TorneoController-->>Cliente: 200 OK Torneo
+
+    %% Obtener torneo
+    Cliente->>TorneoController: GET /api/torneos/{id}
+    TorneoController->>TorneoService: obtener(id)
+    TorneoService->>TorneoRepository: findById(id)
+    alt no encontrado
+        TorneoRepository-->>TorneoService: Optional.empty()
+        TorneoService-->>TorneoController: IllegalArgumentException
+        TorneoController-->>Cliente: 400 Bad Request
+    end
+    TorneoRepository-->>TorneoService: Optional.of(torneo)
+    TorneoService-->>TorneoController: Torneo
+    TorneoController-->>Cliente: 200 OK Torneo
+
+    %% Listar torneos
+    Cliente->>TorneoController: GET /api/torneos
+    TorneoController->>TorneoService: listar()
+    TorneoService->>TorneoRepository: findAll()
+    TorneoRepository-->>TorneoService: List<Torneo>
+    TorneoService-->>TorneoController: List<Torneo>
+    TorneoController-->>Cliente: 200 OK List<Torneo>
+
+    %% Iniciar torneo
+    Cliente->>TorneoController: PUT /api/torneos/{id}/iniciar
+    TorneoController->>TorneoService: iniciar(id)
+    TorneoService->>TorneoRepository: findById(id)
+    TorneoRepository-->>TorneoService: Torneo
+    TorneoService->>TorneoService: torneo.iniciar() → cambia estado a EN_CURSO
+    TorneoService->>Subject: notificar("TORNEO_INICIADO", {id})
+    Subject->>NotificadorTorneo: actualizar("TORNEO_INICIADO", datos)
+    TorneoService-->>TorneoController: Torneo
+    TorneoController-->>Cliente: 200 OK Torneo
+
+    %% Finalizar torneo
+    Cliente->>TorneoController: PUT /api/torneos/{id}/finalizar
+    TorneoController->>TorneoService: finalizar(id)
+    TorneoService->>TorneoRepository: findById(id)
+    TorneoRepository-->>TorneoService: Torneo
+    TorneoService->>TorneoService: torneo.finalizar() → cambia estado a FINALIZADO
+    TorneoService->>Subject: notificar("TORNEO_FINALIZADO", {id})
+    Subject->>NotificadorTorneo: actualizar("TORNEO_FINALIZADO", datos)
+    TorneoService-->>TorneoController: Torneo
+    TorneoController-->>Cliente: 200 OK Torneo
