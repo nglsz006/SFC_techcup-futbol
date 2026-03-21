@@ -1,0 +1,94 @@
+# Diagrama de Secuencia — Capitanes
+
+```mermaid
+sequenceDiagram
+    actor Cliente
+    participant CapitanController
+    participant CapitanService
+    participant CapitanRepository
+    participant JugadorService
+    participant JugadorRepository
+    participant JugadorValidator
+    participant UsuarioValidator
+
+    %% Crear capitan
+    Cliente->>CapitanController: POST /capitanes {nombre, email, password, tipoUsuario, numeroCamiseta, posicion, foto}
+    CapitanController->>CapitanController: new Capitan(campos...)
+    CapitanController->>CapitanService: save(capitan)
+    CapitanService->>CapitanRepository: save(capitan)
+    CapitanRepository-->>CapitanService: Capitan guardado
+    CapitanService-->>CapitanController: Capitan
+    CapitanController-->>Cliente: 200 OK Capitan
+
+    %% Crear equipo
+    Cliente->>CapitanController: POST /capitanes/{id}/equipo?nombreEquipo=X
+    CapitanController->>CapitanService: crearEquipo(id, nombreEquipo)
+    CapitanService->>CapitanRepository: findById(id)
+    alt capitan no encontrado
+        CapitanRepository-->>CapitanService: Optional.empty()
+        CapitanService-->>CapitanController: IllegalArgumentException
+        CapitanController-->>Cliente: 400 Bad Request
+    end
+    CapitanRepository-->>CapitanService: Capitan
+    CapitanService->>UsuarioValidator: nombreValido(nombreEquipo)
+    alt nombre no valido
+        UsuarioValidator-->>CapitanService: false
+        CapitanService-->>CapitanController: IllegalArgumentException
+        CapitanController-->>Cliente: 400 Bad Request
+    end
+    CapitanService-->>CapitanController: "equipo X creado por capitan"
+    CapitanController-->>Cliente: 200 OK mensaje
+
+    %% Invitar jugador
+    Cliente->>CapitanController: POST /capitanes/{id}/invitar/{jugadorId}
+    CapitanController->>CapitanService: invitarJugador(id, jugadorId)
+    CapitanService->>CapitanRepository: findById(id)
+    CapitanRepository-->>CapitanService: Capitan
+    CapitanService->>JugadorService: buscarJugadorPorId(jugadorId)
+    JugadorService->>JugadorRepository: findById(jugadorId)
+    alt jugador no encontrado
+        JugadorRepository-->>JugadorService: Optional.empty()
+        JugadorService-->>CapitanService: null
+        CapitanService-->>CapitanController: IllegalArgumentException
+        CapitanController-->>Cliente: 400 Bad Request
+    end
+    JugadorRepository-->>JugadorService: Jugador
+    JugadorService-->>CapitanService: Jugador
+    CapitanService->>JugadorValidator: jugadorDisponibleParaEquipo(jugador)
+    alt jugador no disponible
+        JugadorValidator-->>CapitanService: false
+        CapitanService-->>CapitanController: IllegalArgumentException
+        CapitanController-->>Cliente: 400 Bad Request
+    end
+    CapitanService-->>CapitanController: "capitan invito a jugador"
+    CapitanController-->>Cliente: 200 OK mensaje
+
+    %% Definir alineacion
+    Cliente->>CapitanController: POST /capitanes/{id}/alineacion [List<Jugador>]
+    CapitanController->>CapitanService: definirAlineacion(id, titulares)
+    CapitanService->>CapitanRepository: findById(id)
+    CapitanRepository-->>CapitanService: Capitan
+    CapitanService->>CapitanService: validar titulares >= 7
+    CapitanService-->>CapitanController: "alineacion lista con N titulares"
+    CapitanController-->>Cliente: 200 OK mensaje
+
+    %% Subir comprobante
+    Cliente->>CapitanController: POST /capitanes/{id}/comprobante?comprobante=URL
+    CapitanController->>CapitanService: subirComprobantePago(id, comprobante)
+    CapitanService->>CapitanRepository: findById(id)
+    CapitanRepository-->>CapitanService: Capitan
+    CapitanService->>CapitanService: validar comprobante no vacío
+    CapitanService-->>CapitanController: "comprobante subido por capitan"
+    CapitanController-->>Cliente: 200 OK mensaje
+
+    %% Buscar jugadores por posicion
+    Cliente->>CapitanController: GET /capitanes/{id}/buscarJugadores?posicion=X
+    CapitanController->>CapitanService: buscarJugadores(posicion)
+    CapitanService->>JugadorService: getJugadores()
+    JugadorService->>JugadorRepository: findAll()
+    JugadorRepository-->>JugadorService: List<Jugador>
+    JugadorService-->>CapitanService: List<Jugador>
+    CapitanService->>CapitanService: filtrar por posicion
+    CapitanService-->>CapitanController: List<Jugador> filtrados
+    CapitanController-->>Cliente: 200 OK List<Jugador>
+```

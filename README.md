@@ -173,3 +173,17 @@ https://github.com/nglsz006/SFC_techcup-futbol/blob/develop/SFC_TechUp_Futbol/do
 
 
 https://mail-team-w4y4k0y5.atlassian.net/jira/software/projects/TF/boards/35?atlOrigin=eyJpIjoiY2ZjNWQ5ZGRjMTM3NDAwMGIxNDEwYWUwNjFkNGY1NTMiLCJwIjoiaiJ9
+
+### Diagramas de secuencia
+
+- [01 - Registro de usuario](docs/uml/diagramas-secuencia/01-registro-usuario.md)
+- [02 - Login](docs/uml/diagramas-secuencia/02-login.md)
+- [03 - Torneos](docs/uml/diagramas-secuencia/03-torneos.md)
+- [04 - Equipos](docs/uml/diagramas-secuencia/04-equipos.md)
+- [05 - Jugadores](docs/uml/diagramas-secuencia/05-jugadores.md)
+- [06 - Partidos](docs/uml/diagramas-secuencia/06-partidos.md)
+- [07 - Pagos](docs/uml/diagramas-secuencia/07-pagos.md)
+- [08 - Capitanes](docs/uml/diagramas-secuencia/08-capitanes.md)
+- [09 - Organizadores](docs/uml/diagramas-secuencia/09-organizadores.md)
+- [10 - Árbitros](docs/uml/diagramas-secuencia/10-arbitros.md)
+- [11 - Alineaciones](docs/uml/diagramas-secuencia/11-alineaciones.md)
