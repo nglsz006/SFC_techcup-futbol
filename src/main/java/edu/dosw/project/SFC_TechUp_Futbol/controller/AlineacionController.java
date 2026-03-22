@@ -1,15 +1,14 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AlineacionService;
-import edu.dosw.project.SFC_TechUp_Futbol.core.service.NotificadorTorneo;
-import edu.dosw.project.SFC_TechUp_Futbol.core.service.LoggerObserver;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Alineacion;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.Formacion;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
+@Tag(name = "Alineaciones", description = "Consulta de alineaciones. Para crear o consultar la alineación rival usa los endpoints de Usuarios (capitán).")
 @RestController
 @RequestMapping("/api/alineaciones")
 public class AlineacionController {
@@ -20,21 +19,15 @@ public class AlineacionController {
         this.service = service;
     }
 
-    record AlineacionRequest(int equipoId, int partidoId, String formacion, List<Integer> titulares, List<Integer> reservas) {}
-
-    @PostMapping
-    public Alineacion crearAlineacion(@RequestBody AlineacionRequest req) {
-        Alineacion alineacion = new Alineacion();
-        alineacion.setEquipoId(req.equipoId());
-        alineacion.setPartidoId(req.partidoId());
-        alineacion.setFormacion(Formacion.fromString(req.formacion()));
-        alineacion.setTitulares(req.titulares() != null ? req.titulares() : List.of());
-        alineacion.setReservas(req.reservas() != null ? req.reservas() : List.of());
-        return service.crear(alineacion, Map.of());
-    }
-
+    @Operation(summary = "Obtener alineación por ID", description = "Retorna la alineación registrada para un partido específico.")
     @GetMapping("/{id}")
     public Alineacion obtenerAlineacion(@PathVariable int id) {
         return service.obtener(id);
+    }
+
+    @Operation(summary = "Listar todas las alineaciones", description = "Retorna todas las alineaciones registradas en el sistema.")
+    @GetMapping
+    public List<Alineacion> listarAlineaciones() {
+        return service.listar();
     }
 }

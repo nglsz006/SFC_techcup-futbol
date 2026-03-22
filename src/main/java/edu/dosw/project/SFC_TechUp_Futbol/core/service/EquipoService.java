@@ -5,9 +5,13 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.EquipoRepository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @org.springframework.stereotype.Service
 public class EquipoService extends Subject {
+
+    private static final Logger log = Logger.getLogger(EquipoService.class.getName());
+
     private final EquipoRepository repository;
 
     public EquipoService(EquipoRepository repository) {
@@ -16,6 +20,7 @@ public class EquipoService extends Subject {
 
     public Equipo crear(Equipo equipo, Map<String, Object> datos) {
         Equipo saved = repository.save(equipo);
+        log.info("Equipo creado con id: " + saved.getId());
         notificar("EQUIPO_CREADO", Map.of("id", saved.getId(), "nombre", saved.getNombre()));
         return saved;
     }
@@ -32,7 +37,22 @@ public class EquipoService extends Subject {
     public Equipo agregarJugador(int equipoId, int jugadorId) {
         Equipo equipo = obtener(equipoId);
         equipo.agregarJugador(jugadorId);
+        log.info("Jugador agregado al equipo");
         notificar("JUGADOR_AGREGADO", Map.of("equipoId", equipoId, "jugadorId", jugadorId));
         return equipo;
+    }
+
+    public Map<String, Object> validarComposicion(int equipoId) {
+        Equipo equipo = obtener(equipoId);
+        int total = equipo.getJugadores().size();
+        boolean valido = total >= 7 && total <= 12;
+        Map<String, Object> resultado = new java.util.LinkedHashMap<>();
+        resultado.put("equipoId", equipoId);
+        resultado.put("nombre", equipo.getNombre());
+        resultado.put("totalJugadores", total);
+        resultado.put("valido", valido);
+        if (total < 7) resultado.put("error", "El equipo necesita al menos " + (7 - total) + " jugador(es) más.");
+        if (total > 12) resultado.put("error", "El equipo excede el máximo de 12 jugadores.");
+        return resultado;
     }
 }

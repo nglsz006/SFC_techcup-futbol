@@ -1,13 +1,12 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model.state;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.PartidoEstado;
 
 public class ProgramadoState implements PartidoState {
 
     @Override
     public void iniciar(Partido partido) {
-        partido.setEstado(PartidoEstado.EN_CURSO);
+        partido.setEstado(Partido.PartidoEstado.EN_CURSO);
         partido.setState(new EnCursoState());
     }
 
@@ -24,4 +23,3 @@ public class ProgramadoState implements PartidoState {
     @Override
     public String getNombre() { return "PROGRAMADO"; }
 }
-

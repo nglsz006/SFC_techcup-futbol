@@ -2,6 +2,8 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
 public class Jugador extends Usuario {
 
+    public enum Posicion { PORTERO, DEFENSA, VOLANTE, DELANTERO }
+
     private int jerseyNumber;
     private Posicion position;
     private boolean available;

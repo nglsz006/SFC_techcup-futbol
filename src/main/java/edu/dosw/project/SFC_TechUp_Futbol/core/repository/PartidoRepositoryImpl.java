@@ -1,7 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.repository;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.PartidoEstado;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -33,7 +32,7 @@ public class PartidoRepositoryImpl implements PartidoRepository {
     }
 
     @Override
-    public List<Partido> findByEstado(PartidoEstado estado) {
+    public List<Partido> findByEstado(Partido.PartidoEstado estado) {
         return store.values().stream()
                 .filter(p -> p.getEstado() == estado)
                 .collect(Collectors.toList());

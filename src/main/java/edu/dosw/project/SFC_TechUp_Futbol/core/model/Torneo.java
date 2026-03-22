@@ -1,10 +1,15 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.EstadoTorneoInterface;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.TorneoCreado;
 import java.time.LocalDateTime;
 
 @JsonIgnoreProperties({"estadoObj"})
 public class Torneo {
+
+    public enum EstadoTorneo { CREADO, EN_CURSO, FINALIZADO }
+
     private int id;
     private String nombre;
     private LocalDateTime fechaInicio;
@@ -13,13 +18,18 @@ public class Torneo {
     private double costo;
     private EstadoTorneo estado;
     private EstadoTorneoInterface estadoObj;
+    private String reglamento;
+    private LocalDateTime cierreInscripciones;
+    private String canchas;
+    private String horarios;
+    private String sanciones;
 
     public Torneo() {
         this.estado = EstadoTorneo.CREADO;
         this.estadoObj = new TorneoCreado();
     }
 
-    public Torneo(int id, String nombre, LocalDateTime fechaInicio, LocalDateTime fechaFin, 
+    public Torneo(int id, String nombre, LocalDateTime fechaInicio, LocalDateTime fechaFin,
                   int cantidadEquipos, double costo) {
         this.id = id;
         this.nombre = nombre;
@@ -62,5 +72,20 @@ public class Torneo {
 
     public EstadoTorneoInterface getEstadoObj() { return estadoObj; }
     public void setEstadoObj(EstadoTorneoInterface estadoObj) { this.estadoObj = estadoObj; }
+
+    public String getReglamento() { return reglamento; }
+    public void setReglamento(String reglamento) { this.reglamento = reglamento; }
+
+    public LocalDateTime getCierreInscripciones() { return cierreInscripciones; }
+    public void setCierreInscripciones(LocalDateTime cierreInscripciones) { this.cierreInscripciones = cierreInscripciones; }
+
+    public String getCanchas() { return canchas; }
+    public void setCanchas(String canchas) { this.canchas = canchas; }
+
+    public String getHorarios() { return horarios; }
+    public void setHorarios(String horarios) { this.horarios = horarios; }
+
+    public String getSanciones() { return sanciones; }
+    public void setSanciones(String sanciones) { this.sanciones = sanciones; }
 }
 

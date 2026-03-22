@@ -1,13 +1,12 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model.state;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.PagoEstado;
 
 public class PendienteState implements PagoState {
 
     @Override
     public void avanzar(Pago pago) {
-        pago.setEstado(PagoEstado.EN_REVISION);
+        pago.setEstado(Pago.PagoEstado.EN_REVISION);
         pago.setState(new EnRevisionState());
     }
 
@@ -19,4 +18,3 @@ public class PendienteState implements PagoState {
     @Override
     public String getNombre() { return "PENDIENTE"; }
 }
-

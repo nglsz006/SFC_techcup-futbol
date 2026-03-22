@@ -1,7 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.repository;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.PagoEstado;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -33,21 +32,21 @@ public class PagoRepositoryImpl implements PagoRepository {
     }
 
     @Override
-    public List<Pago> findByEstado(PagoEstado estado) {
+    public List<Pago> findByEstado(Pago.PagoEstado estado) {
         return store.values().stream()
                 .filter(p -> p.getEstado() == estado)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Pago> findByEquipoIdAndEstado(Long equipoId, PagoEstado estado) {
+    public Optional<Pago> findByEquipoIdAndEstado(Long equipoId, Pago.PagoEstado estado) {
         return store.values().stream()
                 .filter(p -> p.getEquipo() != null && equipoId.equals((long) p.getEquipo().getId()) && p.getEstado() == estado)
                 .findFirst();
     }
 
     @Override
-    public boolean existsByEquipoIdAndEstado(Long equipoId, PagoEstado estado) {
+    public boolean existsByEquipoIdAndEstado(Long equipoId, Pago.PagoEstado estado) {
         return findByEquipoIdAndEstado(equipoId, estado).isPresent();
     }
 }

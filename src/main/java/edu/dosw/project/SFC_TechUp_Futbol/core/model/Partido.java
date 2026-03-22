@@ -1,14 +1,18 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.PartidoState;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.ProgramadoState;
+
 @JsonIgnoreProperties({"state"})
 public class Partido {
+
+    public enum PartidoEstado { PROGRAMADO, EN_CURSO, FINALIZADO }
 
     private Long id;
     private LocalDateTime fecha;
@@ -67,5 +71,41 @@ public class Partido {
 
     public PartidoState getState() { return state; }
     public void setState(PartidoState state) { this.state = state; }
-}
 
+
+    public static class Gol {
+        private Long id;
+        private int minuto;
+        private Jugador jugador;
+
+        public Long getId() { return id; }
+        public void setId(Long id) { this.id = id; }
+
+        public int getMinuto() { return minuto; }
+        public void setMinuto(int minuto) { this.minuto = minuto; }
+
+        public Jugador getJugador() { return jugador; }
+        public void setJugador(Jugador jugador) { this.jugador = jugador; }
+    }
+
+    public static class Tarjeta {
+        public enum TipoTarjeta { AMARILLA, ROJA }
+
+        private Long id;
+        private TipoTarjeta tipo;
+        private int minuto;
+        private Jugador jugador;
+
+        public Long getId() { return id; }
+        public void setId(Long id) { this.id = id; }
+
+        public TipoTarjeta getTipo() { return tipo; }
+        public void setTipo(TipoTarjeta tipo) { this.tipo = tipo; }
+
+        public int getMinuto() { return minuto; }
+        public void setMinuto(int minuto) { this.minuto = minuto; }
+
+        public Jugador getJugador() { return jugador; }
+        public void setJugador(Jugador jugador) { this.jugador = jugador; }
+    }
+}

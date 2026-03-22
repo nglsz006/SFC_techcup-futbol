@@ -1,6 +1,5 @@
 package edu.dosw.project.SFC_TechUp_Futbol;
 
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.EstadoTorneo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
@@ -14,14 +13,14 @@ class TorneoTest {
 
     @Test
     void torneoNuevo_estadoCreado() {
-        assertEquals(EstadoTorneo.CREADO, crearTorneo().getEstado());
+        assertEquals(Torneo.EstadoTorneo.CREADO, crearTorneo().getEstado());
     }
 
     @Test
     void iniciar_cambiaaEnCurso() {
         Torneo torneo = crearTorneo();
         torneo.iniciar();
-        assertEquals(EstadoTorneo.EN_CURSO, torneo.getEstado());
+        assertEquals(Torneo.EstadoTorneo.EN_CURSO, torneo.getEstado());
     }
 
     @Test
@@ -29,14 +28,14 @@ class TorneoTest {
         Torneo torneo = crearTorneo();
         torneo.iniciar();
         torneo.finalizar();
-        assertEquals(EstadoTorneo.FINALIZADO, torneo.getEstado());
+        assertEquals(Torneo.EstadoTorneo.FINALIZADO, torneo.getEstado());
     }
 
     @Test
     void finalizar_sinIniciar_noHaceNada() {
         Torneo torneo = crearTorneo();
         torneo.finalizar();
-        assertEquals(EstadoTorneo.CREADO, torneo.getEstado());
+        assertEquals(Torneo.EstadoTorneo.CREADO, torneo.getEstado());
     }
 
     @Test
@@ -44,6 +43,6 @@ class TorneoTest {
         Torneo torneo = crearTorneo();
         torneo.iniciar();
         torneo.iniciar();
-        assertEquals(EstadoTorneo.EN_CURSO, torneo.getEstado());
+        assertEquals(Torneo.EstadoTorneo.EN_CURSO, torneo.getEstado());
     }
 }

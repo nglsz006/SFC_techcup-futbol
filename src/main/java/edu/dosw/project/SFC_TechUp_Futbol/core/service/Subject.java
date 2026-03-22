@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Subject {
+public abstract class Subject {
     private List<Observer> observers;
 
     public Subject() {

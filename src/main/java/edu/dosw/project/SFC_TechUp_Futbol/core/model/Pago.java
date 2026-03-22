@@ -7,6 +7,8 @@ import java.time.LocalDate;
 @JsonIgnoreProperties({"state"})
 public class Pago {
 
+    public enum PagoEstado { PENDIENTE, EN_REVISION, APROBADO, RECHAZADO }
+
     private Long id;
     private String comprobante;
     private LocalDate fechaSubida;

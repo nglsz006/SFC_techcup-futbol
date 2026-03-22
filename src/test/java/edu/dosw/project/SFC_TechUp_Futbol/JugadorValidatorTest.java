@@ -1,7 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.Posicion;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.JugadorValidator;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +26,7 @@ class JugadorValidatorTest {
 
     @Test
     void posicionValida_noNula() {
-        assertTrue(validator.posicionValida(Posicion.PORTERO));
+        assertTrue(validator.posicionValida(Jugador.Posicion.PORTERO));
     }
 
     @Test

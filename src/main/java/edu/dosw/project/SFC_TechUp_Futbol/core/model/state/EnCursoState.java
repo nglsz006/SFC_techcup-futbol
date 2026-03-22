@@ -1,7 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model.state;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.PartidoEstado;
 
 public class EnCursoState implements PartidoState {
 
@@ -18,11 +17,10 @@ public class EnCursoState implements PartidoState {
 
     @Override
     public void finalizar(Partido partido) {
-        partido.setEstado(PartidoEstado.FINALIZADO);
+        partido.setEstado(Partido.PartidoEstado.FINALIZADO);
         partido.setState(new FinalizadoPartidoState());
     }
 
     @Override
     public String getNombre() { return "EN_CURSO"; }
 }
-

@@ -1,6 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.validator;
 
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoUsuario;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 
 public class RegistroValidator {
 
@@ -15,15 +15,14 @@ public class RegistroValidator {
         return correo != null && correo.endsWith(DOMINIO_GMAIL);
     }
 
-    public boolean correoValidoSegunTipo(String correo, TipoUsuario tipoUsuario) {
-        if (tipoUsuario == TipoUsuario.FAMILIAR) {
+    public boolean correoValidoSegunTipo(String correo, Usuario.TipoUsuario tipoUsuario) {
+        if (tipoUsuario == Usuario.TipoUsuario.FAMILIAR) {
             return correoGmailValido(correo);
         }
         return correoInstitucionalValido(correo);
     }
 
-    public boolean tipoUsuarioValido(TipoUsuario tipoUsuario) {
+    public boolean tipoUsuarioValido(Usuario.TipoUsuario tipoUsuario) {
         return tipoUsuario != null;
     }
 }
-
