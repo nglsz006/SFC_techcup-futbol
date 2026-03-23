@@ -1,5 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.validator;
 
+import java.util.List;
 import java.util.Map;
 
 public class ValidacionEquipo implements Validacion {
@@ -18,6 +19,13 @@ public class ValidacionEquipo implements Validacion {
         if (colorPrincipal == null || colorPrincipal.isBlank()) {
             throw new IllegalArgumentException("El color principal es obligatorio");
         }
+    }
+
+    public void validarComposicionEquipo(List<Integer> jugadores) {
+        if (jugadores == null || jugadores.size() < 7)
+            throw new IllegalArgumentException("El equipo debe tener mínimo 7 jugadores.");
+        if (jugadores.size() > 12)
+            throw new IllegalArgumentException("El equipo no puede tener más de 12 jugadores.");
     }
 }
 

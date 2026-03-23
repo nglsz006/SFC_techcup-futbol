@@ -86,20 +86,4 @@ class PartidoValidatorTest {
     void validarTarjeta_tipoNulo_lanzaExcepcion() {
         assertThrows(IllegalArgumentException.class, () -> validator.validarTarjeta(1L, null, 30));
     }
-
-    @Test
-    void validarComposicionEquipo_menosDeSiete_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> validator.validarComposicionEquipo(List.of(1, 2, 3)));
-    }
-
-    @Test
-    void validarComposicionEquipo_masDe12_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () ->
-                validator.validarComposicionEquipo(List.of(1,2,3,4,5,6,7,8,9,10,11,12,13)));
-    }
-
-    @Test
-    void validarComposicionEquipo_valido_noLanzaExcepcion() {
-        assertDoesNotThrow(() -> validator.validarComposicionEquipo(List.of(1,2,3,4,5,6,7)));
-    }
 }

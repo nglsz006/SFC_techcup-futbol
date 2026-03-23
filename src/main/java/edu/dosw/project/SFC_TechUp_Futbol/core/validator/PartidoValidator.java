@@ -36,11 +36,5 @@ public class PartidoValidator {
         if (minuto < 1 || minuto > 120) throw new IllegalArgumentException("El minuto debe estar entre 1 y 120.");
     }
 
-    public void validarComposicionEquipo(List<Integer> jugadores) {
-        if (jugadores == null || jugadores.size() < 7)
-            throw new IllegalArgumentException("El equipo debe tener mínimo 7 jugadores.");
-        if (jugadores.size() > 12)
-            throw new IllegalArgumentException("El equipo no puede tener más de 12 jugadores.");
-    }
 }
 
