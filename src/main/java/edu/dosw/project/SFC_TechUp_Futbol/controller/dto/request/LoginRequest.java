@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol.dto.request;
+package edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request;
 
 public class LoginRequest {
     private String email;
