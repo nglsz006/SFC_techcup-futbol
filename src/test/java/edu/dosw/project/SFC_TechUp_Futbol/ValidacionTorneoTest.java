@@ -2,13 +2,10 @@ package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.ValidacionTorneo;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ValidacionTorneoTest {
 

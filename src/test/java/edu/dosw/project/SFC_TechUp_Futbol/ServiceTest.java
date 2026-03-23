@@ -8,15 +8,9 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.service.EquipoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.TorneoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ServiceTest {
 
@@ -84,5 +78,47 @@ class ServiceTest {
         equipoService.crear(equipo, new HashMap<>());
         equipoService.agregarJugador(1, 5);
         assertEquals(1, equipoService.obtener(1).getJugadores().size());
+    }
+
+    @Test
+    void validarComposicion_menosDeSiete_retornaInvalido() {
+        Equipo equipo = new Equipo(2, "Pocos", "", "rojo", "blanco", 1);
+        equipoService.crear(equipo, new HashMap<>());
+        equipoService.agregarJugador(2, 1);
+        equipoService.agregarJugador(2, 2);
+        var resultado = equipoService.validarComposicion(2);
+        assertEquals(false, resultado.get("valido"));
+    }
+
+    @Test
+    void validarComposicion_sieteJugadores_retornaValido() {
+        Equipo equipo = new Equipo(3, "Suficientes", "", "rojo", "blanco", 1);
+        equipoService.crear(equipo, new HashMap<>());
+        for (int i = 1; i <= 7; i++) equipoService.agregarJugador(3, i);
+        var resultado = equipoService.validarComposicion(3);
+        assertEquals(true, resultado.get("valido"));
+    }
+
+    @Test
+    void configurarTorneo_guardaCampos() {
+        Torneo torneo = new Torneo(10, "Copa Config",
+                LocalDateTime.of(2025, 10, 1, 10, 0),
+                LocalDateTime.of(2025, 10, 30, 18, 0), 8, 50.0);
+        torneoService.crear(torneo, new HashMap<>());
+        Torneo configurado = torneoService.configurar(10, "Reglamento X", "Cancha A", "Sabados 10am", "Tarjeta roja = 1 fecha",
+                LocalDateTime.of(2025, 9, 25, 0, 0));
+        assertEquals("Reglamento X", configurado.getReglamento());
+        assertEquals("Cancha A", configurado.getCanchas());
+    }
+
+    @Test
+    void configurarTorneo_cierreInscripcionesInvalido_lanzaExcepcion() {
+        Torneo torneo = new Torneo(11, "Copa CierreInvalido",
+                LocalDateTime.of(2025, 10, 1, 10, 0),
+                LocalDateTime.of(2025, 10, 30, 18, 0), 8, 50.0);
+        torneoService.crear(torneo, new HashMap<>());
+        assertThrows(IllegalArgumentException.class, () ->
+                torneoService.configurar(11, null, null, null, null,
+                        LocalDateTime.of(2025, 10, 5, 0, 0)));
     }
 }

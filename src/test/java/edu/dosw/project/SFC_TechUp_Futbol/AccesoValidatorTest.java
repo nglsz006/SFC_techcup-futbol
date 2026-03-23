@@ -2,8 +2,8 @@ package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AccesoValidator;
-import edu.dosw.project.SFC_TechUp_Futbol.dto.request.LoginRequest;
-import edu.dosw.project.SFC_TechUp_Futbol.dto.request.RegistroRequest;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

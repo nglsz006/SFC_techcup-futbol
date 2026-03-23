@@ -3,11 +3,8 @@ package edu.dosw.project.SFC_TechUp_Futbol;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.LoggerObserver;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.NotificadorTorneo;
 import org.junit.jupiter.api.Test;
-
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ObserverTest {
 

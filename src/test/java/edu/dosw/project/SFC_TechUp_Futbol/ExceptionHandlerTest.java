@@ -1,8 +1,8 @@
 package edu.dosw.project.SFC_TechUp_Futbol;
 
-import edu.dosw.project.SFC_TechUp_Futbol.exception.ErrorHandler;
-import edu.dosw.project.SFC_TechUp_Futbol.exception.RecursoNoEncontradoException;
-import edu.dosw.project.SFC_TechUp_Futbol.exception.ReglaNegocioException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ErrorHandler;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RecursoNoEncontradoException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ReglaNegocioException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
