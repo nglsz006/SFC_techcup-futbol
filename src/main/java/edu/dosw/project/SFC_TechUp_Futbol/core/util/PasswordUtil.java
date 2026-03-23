@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol.util;
+package edu.dosw.project.SFC_TechUp_Futbol.core.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

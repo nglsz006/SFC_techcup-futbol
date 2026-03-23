@@ -1,9 +1,9 @@
-package edu.dosw.project.SFC_TechUp_Futbol.util;
+package edu.dosw.project.SFC_TechUp_Futbol.core.util;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
-import edu.dosw.project.SFC_TechUp_Futbol.dto.request.RegistroRequest;
-import edu.dosw.project.SFC_TechUp_Futbol.dto.response.LoginResponse;
-import edu.dosw.project.SFC_TechUp_Futbol.dto.response.UsuarioResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioResponse;
 
 public class AccesoMapper {
 
