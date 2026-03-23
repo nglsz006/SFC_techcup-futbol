@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Pagos", description = "Consulta de pagos del torneo. Para subir o verificar comprobantes usa los endpoints de Usuarios (capitán u organizador).")
+@Tag(name = "Payments", description = "Tournament payment query. To upload or verify receipts use the Users endpoints (captain or organizer).")
 @RestController
 @RequestMapping("/api/pagos")
 public class PagoController {
@@ -22,13 +22,13 @@ public class PagoController {
         this.pagoValidator = pagoValidator;
     }
 
-    @Operation(summary = "Consultar pago por ID", description = "Retorna el estado y detalle de un pago específico.")
+    @Operation(summary = "Get payment by ID", description = "Returns the status and detail of a specific payment.")
     @GetMapping("/{id}")
     public Pago consultarPago(@PathVariable Long id) {
         return pagoService.consultarPago(id);
     }
 
-    @Operation(summary = "Consultar pagos por equipo", description = "Lista todos los pagos registrados para un equipo.")
+    @Operation(summary = "Get payments by team", description = "Lists all payments registered for a team.")
     @GetMapping("/equipo/{equipoId}")
     public List<Pago> consultarPagosPorEquipo(@PathVariable Long equipoId) {
         return pagoService.consultarPagosPorEquipo(equipoId);

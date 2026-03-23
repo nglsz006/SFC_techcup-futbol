@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Tag(name = "Torneos", description = "Creación, consulta, tabla de posiciones, llave eliminatoria y estadísticas del torneo. Accesible por Organizadores.")
+@Tag(name = "Tournaments", description = "Creation, query, standings table, elimination bracket and tournament statistics. Accessible by Organizers.")
 @RestController
 @RequestMapping("/api/torneos")
 public class TorneoController {
@@ -29,19 +29,19 @@ public class TorneoController {
 
     record TorneoRequest(String nombre, String fechaInicio, String fechaFin, int cantidadEquipos, double costo) {}
 
-    @Operation(summary = "Obtener torneo por ID", description = "Retorna la información de un torneo específico. Accesible por todos los actores.")
+    @Operation(summary = "Get tournament by ID", description = "Returns the information of a specific tournament. Accessible by all actors.")
     @GetMapping("/{id}")
     public Torneo obtenerTorneo(@PathVariable int id) {
         return service.obtener(id);
     }
 
-    @Operation(summary = "Listar torneos", description = "Retorna todos los torneos registrados en el sistema.")
+    @Operation(summary = "List tournaments", description = "Returns all tournaments registered in the system.")
     @GetMapping
     public List<Torneo> listarTorneos() {
         return service.listar();
     }
 
-    @Operation(summary = "Tabla de posiciones", description = "Calcula y retorna la tabla de posiciones del torneo basada en los partidos finalizados.")
+    @Operation(summary = "Standings table", description = "Calculates and returns the tournament standings based on finished matches.")
     @GetMapping("/{id}/posiciones")
     public List<Map<String, Object>> tablaPosiciones(@PathVariable int id) {
         List<Partido> partidos = partidoService.consultarPartidosPorTorneo((long) id);
@@ -70,7 +70,7 @@ public class TorneoController {
                 .collect(Collectors.toList());
     }
 
-    @Operation(summary = "Llave eliminatoria", description = "Retorna todos los partidos del torneo con su estado, marcador y fecha para visualizar la llave.")
+    @Operation(summary = "Elimination bracket", description = "Returns all tournament matches with their status, score and date to display the bracket.")
     @GetMapping("/{id}/llave")
     public List<Map<String, Object>> llaveEliminatoria(@PathVariable int id) {
         List<Partido> partidos = partidoService.consultarPartidosPorTorneo((long) id);
@@ -86,7 +86,7 @@ public class TorneoController {
         }).collect(Collectors.toList());
     }
 
-    @Operation(summary = "Estadísticas del torneo", description = "Retorna métricas generales: total de partidos, goles, promedios y estados de los partidos.")
+    @Operation(summary = "Tournament statistics", description = "Returns general metrics: total matches, goals, averages and match statuses.")
     @GetMapping("/{id}/estadisticas")
     public Map<String, Object> estadisticas(@PathVariable int id) {
         List<Partido> partidos = partidoService.consultarPartidosPorTorneo((long) id);

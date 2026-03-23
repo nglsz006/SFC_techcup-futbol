@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Partidos", description = "Gestión y consulta de partidos. Para crear un partido usa los endpoints de Usuarios (organizador). Para registrar resultados, goles y tarjetas usa los endpoints de Usuarios (árbitro).")
+@Tag(name = "Matches", description = "Match management and query. To create a match use the Users endpoints (organizer). To register results, goals and cards use the Users endpoints (referee).")
 @RestController
 @RequestMapping("/api/partidos")
 public class PartidoController {
@@ -22,19 +22,19 @@ public class PartidoController {
         this.partidoValidator = partidoValidator;
     }
 
-    @Operation(summary = "Consultar partido por ID", description = "Retorna el detalle completo de un partido: equipos, marcador, goles y tarjetas.")
+    @Operation(summary = "Get match by ID", description = "Returns the full detail of a match: teams, score, goals and cards.")
     @GetMapping("/{id}")
     public Partido consultarPartido(@PathVariable Long id) {
         return partidoService.consultarPartido(id);
     }
 
-    @Operation(summary = "Consultar partidos por torneo", description = "Lista todos los partidos de un torneo. Útil para la llave eliminatoria y tabla de posiciones.")
+    @Operation(summary = "Get matches by tournament", description = "Lists all matches in a tournament. Useful for the elimination bracket and standings table.")
     @GetMapping("/torneo/{torneoId}")
     public List<Partido> consultarPorTorneo(@PathVariable Long torneoId) {
         return partidoService.consultarPartidosPorTorneo(torneoId);
     }
 
-    @Operation(summary = "Consultar partidos por equipo", description = "Lista todos los partidos en los que ha participado un equipo.")
+    @Operation(summary = "Get matches by team", description = "Lists all matches a team has participated in.")
     @GetMapping("/equipo/{equipoId}")
     public List<Partido> consultarPorEquipo(@PathVariable Long equipoId) {
         return partidoService.consultarPartidosPorEquipo(equipoId);

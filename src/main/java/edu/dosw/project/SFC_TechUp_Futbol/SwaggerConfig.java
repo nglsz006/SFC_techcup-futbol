@@ -16,31 +16,31 @@ public class SwaggerConfig {
     public OpenAPI apiInfo() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("TechCup Fútbol API")
+                        .title("TechCup Football API")
                         .description("""
-                                Plataforma web para la gestión integral del torneo interno de fútbol de los programas
-                                de Ingeniería de Sistemas, IA, Ciberseguridad y Estadística.
+                                Web platform for the comprehensive management of the internal football tournament
+                                for the Systems Engineering, AI, Cybersecurity and Statistics programs.
 
-                                **Actores del sistema:**
-                                - **Jugador**: estudiante que se registra, marca disponibilidad y participa en equipos.
-                                - **Capitán**: jugador que crea y gestiona su equipo, invita jugadores, define alineaciones y sube comprobantes de pago.
-                                - **Árbitro**: usuario asignado a partidos para registrar resultados, goles y tarjetas.
-                                - **Organizador**: administrador del torneo; crea torneos, verifica pagos y gestiona el estado general.
+                                **System actors:**
+                                - **Player**: student who registers, marks availability and participates in teams.
+                                - **Captain**: player who creates and manages their team, invites players, defines lineups and uploads payment receipts.
+                                - **Referee**: user assigned to matches to register results, goals and cards.
+                                - **Organizer**: tournament administrator; creates tournaments, verifies payments and manages the overall status.
 
-                                **Equipo de desarrollo:** Shawarma F.C — DOSW, Universidad.
+                                **Development team:** Shawarma F.C — DOSW, University.
                                 """)
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("Shawarma F.C")
                                 .email("techcup@dosw.edu.co")))
                 .tags(List.of(
-                        new Tag().name("Acceso").description("Registro e inicio de sesión para todos los actores del sistema."),
-                        new Tag().name("Usuarios").description("Gestión de los actores: Jugadores, Capitanes, Árbitros y Organizadores."),
-                        new Tag().name("Torneos").description("Creación, consulta, tabla de posiciones, llave eliminatoria y estadísticas del torneo. Accesible por Organizadores."),
-                        new Tag().name("Equipos").description("Gestión de equipos: creación, consulta y asignación de jugadores. Gestionado por el Capitán."),
-                        new Tag().name("Partidos").description("Programación y gestión de partidos: resultados, goles y tarjetas. Registrado por el Árbitro."),
-                        new Tag().name("Alineaciones").description("Definición y consulta de alineaciones por partido. Gestionado por el Capitán."),
-                        new Tag().name("Pagos").description("Subida de comprobantes de pago por el Capitán y verificación/aprobación por el Organizador.")
+                        new Tag().name("Access").description("Registration and login for all system actors."),
+                        new Tag().name("Users").description("Management of system actors: Players, Captains, Referees and Organizers."),
+                        new Tag().name("Tournaments").description("Creation, query, standings table, elimination bracket and tournament statistics. Accessible by Organizers."),
+                        new Tag().name("Teams").description("Team management: creation, query and player assignment. Managed by the Captain."),
+                        new Tag().name("Matches").description("Match scheduling and management: results, goals and cards. Registered by the Referee."),
+                        new Tag().name("Lineups").description("Definition and query of lineups per match. Managed by the Captain."),
+                        new Tag().name("Payments").description("Payment receipt upload by the Captain and verification/approval by the Organizer.")
                 ));
     }
 }

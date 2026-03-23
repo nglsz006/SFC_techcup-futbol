@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-@Tag(name = "Usuarios", description = "Gestión de los actores del sistema: Jugadores, Capitanes, Árbitros y Organizadores.")
+@Tag(name = "Users", description = "Management of system actors: Players, Captains, Referees and Organizers.")
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
@@ -52,7 +52,7 @@ public class UsuarioController {
 
     // ── Jugadores ──────────────────────────────────────────────────────────────
 
-    @Operation(summary = "Consultar acciones por actor", description = "Retorna las acciones disponibles para un actor del sistema. Actores válidos: jugador, capitan, arbitro, organizador.")
+    @Operation(summary = "Get actions by actor", description = "Returns the available actions for a system actor. Valid actors: jugador, capitan, arbitro, organizador.")
     @GetMapping("/{actor}")
     public Map<String, Object> accionesPorActor(@PathVariable String actor) {
         Map<String, List<String>> acciones = new LinkedHashMap<>();
@@ -112,7 +112,7 @@ public class UsuarioController {
         return respuesta;
     }
 
-    @Operation(summary = "Crear jugador", description = "Registra un nuevo Jugador en el sistema con su perfil deportivo (posición, número de camiseta).")
+    @Operation(summary = "Create player", description = "Registers a new Player in the system with their sports profile (position, jersey number).")
     @PostMapping("/jugadores")
     public Jugador crearJugador(@RequestBody Map<String, Object> body) {
         Long id = (long) (jugadorService.getJugadores().size() + 1);
@@ -130,13 +130,13 @@ public class UsuarioController {
         return jugadorRepository.save(jugador);
     }
 
-    @Operation(summary = "Listar jugadores", description = "Retorna todos los jugadores registrados. Útil para el Capitán al buscar integrantes para su equipo.")
+    @Operation(summary = "List players", description = "Returns all registered players. Useful for the Captain when looking for team members.")
     @GetMapping("/jugadores")
     public List<Jugador> listarJugadores() {
         return jugadorService.getJugadores();
     }
 
-    @Operation(summary = "Editar perfil deportivo", description = "El Jugador actualiza su posición, número de camiseta, nombre o foto.")
+    @Operation(summary = "Edit sports profile", description = "The Player updates their position, jersey number, name or photo.")
     @PatchMapping("/jugadores/{id}/perfil")
     public Jugador editarPerfil(@PathVariable Long id, @RequestBody Map<String, Object> body) {
         String nombre = body.getOrDefault("nombre", "").toString();
@@ -146,21 +146,21 @@ public class UsuarioController {
         return jugadorService.editarPerfil(id, nombre, numeroCamiseta, posicion, foto);
     }
 
-    @Operation(summary = "Aceptar invitación", description = "El Jugador acepta la invitación enviada por un Capitán para unirse a su equipo.")
+    @Operation(summary = "Accept invitation", description = "The Player accepts the invitation sent by a Captain to join their team.")
     @PatchMapping("/jugadores/{id}/aceptarInvitacion")
     public String aceptarInvitacion(@PathVariable Long id) {
         jugadorService.aceptarInvitacion(id);
         return "Invitacion aceptada correctamente";
     }
 
-    @Operation(summary = "Rechazar invitación", description = "El Jugador rechaza la invitación de un Capitán.")
+    @Operation(summary = "Reject invitation", description = "The Player rejects the invitation from a Captain.")
     @PatchMapping("/jugadores/{id}/rechazarInvitacion")
     public String rechazarInvitacion(@PathVariable Long id) {
         jugadorService.rechazarInvitacion(id);
         return "Invitacion rechazada correctamente";
     }
 
-    @Operation(summary = "Marcar disponibilidad", description = "El Jugador indica que está disponible para ser convocado a un equipo.")
+    @Operation(summary = "Mark availability", description = "The Player indicates they are available to be recruited by a team.")
     @PatchMapping("/jugadores/{id}/disponibilidad")
     public String marcarDisponible(@PathVariable Long id) {
         jugadorService.marcarDisponible(id);
@@ -169,7 +169,7 @@ public class UsuarioController {
 
     // ── Capitanes ──────────────────────────────────────────────────────────────
 
-    @Operation(summary = "Crear capitán", description = "Registra un nuevo Capitán. El Capitán es un Jugador con permisos para gestionar un equipo.")
+    @Operation(summary = "Create captain", description = "Registers a new Captain. The Captain is a Player with permissions to manage a team.")
     @PostMapping("/capitanes")
     public Capitan crearCapitan(@RequestBody Map<String, Object> body) {
         Usuario.TipoUsuario tipoUsuario;
@@ -195,7 +195,7 @@ public class UsuarioController {
         return capitanService.save(capitan);
     }
 
-    @Operation(summary = "Validar composición del equipo", description = "El Capitán verifica si su equipo cumple las reglas: mínimo 7 y máximo 12 jugadores.")
+    @Operation(summary = "Validate team composition", description = "The Captain verifies if their team meets the rules: minimum 7 and maximum 12 players.")
     @GetMapping("/capitanes/{id}/equipo/validar")
     public Map<String, Object> validarEquipo(@PathVariable Long id) {
         Capitan capitan = capitanService.getCapitanes().stream()
@@ -209,39 +209,39 @@ public class UsuarioController {
         return equipoService.validarComposicion(equipo.getId());
     }
 
-    @Operation(summary = "Listar capitanes", description = "Retorna todos los capitanes registrados en el sistema.")
+    @Operation(summary = "List captains", description = "Returns all captains registered in the system.")
     @GetMapping("/capitanes")
     public List<Capitan> listarCapitanes() {
         return capitanService.getCapitanes();
     }
 
-    @Operation(summary = "Crear equipo", description = "El Capitán crea su equipo para inscribirse en el torneo.")
+    @Operation(summary = "Create team", description = "The Captain creates their team to register in the tournament.")
     @PostMapping("/capitanes/{id}/equipo")
     public String crearEquipo(@PathVariable Long id, @RequestParam String nombreEquipo) {
         capitanService.crearEquipo(id, nombreEquipo);
         return "Equipo creado correctamente";
     }
 
-    @Operation(summary = "Invitar jugador", description = "El Capitán envía una invitación a un Jugador disponible para unirse a su equipo.")
+    @Operation(summary = "Invite player", description = "The Captain sends an invitation to an available Player to join their team.")
     @PostMapping("/capitanes/{id}/invitar/{jugadorId}")
     public String invitarJugador(@PathVariable Long id, @PathVariable Long jugadorId) {
         capitanService.invitarJugador(id, jugadorId);
         return "Invitacion enviada correctamente";
     }
 
-    @Operation(summary = "Definir alineación", description = "El Capitán define los jugadores titulares para el próximo partido.")
+    @Operation(summary = "Define lineup", description = "The Captain defines the starting players for the next match.")
     @PostMapping("/capitanes/{id}/alineacion")
     public String definirAlineacion(@PathVariable Long id, @RequestBody List<Jugador> titulares) {
         return capitanService.definirAlineacion(id, titulares);
     }
 
-    @Operation(summary = "Subir comprobante de pago", description = "El Capitán sube el comprobante de pago de inscripción de su equipo.")
+    @Operation(summary = "Upload payment receipt", description = "The Captain uploads the registration payment receipt for their team.")
     @PostMapping("/capitanes/{id}/comprobante")
     public String subirComprobante(@PathVariable Long id, @RequestParam String comprobante) {
         return capitanService.subirComprobantePago(id, comprobante);
     }
 
-    @Operation(summary = "Buscar jugadores por posición", description = "El Capitán busca jugadores disponibles filtrando por posición (PORTERO, DEFENSA, MEDIOCAMPISTA, DELANTERO).")
+    @Operation(summary = "Search players by position", description = "The Captain searches for available players filtering by position (PORTERO, DEFENSA, MEDIOCAMPISTA, DELANTERO).")
     @GetMapping("/capitanes/{id}/buscarJugadores")
     public List<Jugador> buscarJugadores(@PathVariable Long id, @RequestParam String posicion) {
         return capitanService.buscarJugadores(posicion);
@@ -249,7 +249,7 @@ public class UsuarioController {
 
     // ── Arbitros ───────────────────────────────────────────────────────────────
 
-    @Operation(summary = "Crear árbitro", description = "El Organizador registra un nuevo Árbitro en el sistema.")
+    @Operation(summary = "Create referee", description = "The Organizer registers a new Referee in the system.")
     @PostMapping("/arbitros")
     public Arbitro crearArbitro(@RequestBody Map<String, Object> body) {
         Arbitro arbitro = new Arbitro(
@@ -262,13 +262,13 @@ public class UsuarioController {
         return arbitroService.save(arbitro);
     }
 
-    @Operation(summary = "Listar árbitros", description = "Retorna todos los árbitros disponibles en el sistema.")
+    @Operation(summary = "List referees", description = "Returns all available referees in the system.")
     @GetMapping("/arbitros")
     public List<Arbitro> listarArbitros() {
         return arbitroService.getArbitros();
     }
 
-    @Operation(summary = "Asignar árbitro a partido", description = "El Organizador asigna un Árbitro a un partido programado.")
+    @Operation(summary = "Assign referee to match", description = "The Organizer assigns a Referee to a scheduled match.")
     @PostMapping("/arbitros/{id}/partidos/{partidoId}")
     public String asignarPartido(@PathVariable Long id, @PathVariable Long partidoId) {
         Arbitro arbitro = arbitroService.getArbitros().stream()
@@ -282,19 +282,19 @@ public class UsuarioController {
         return "Arbitro asignado al partido correctamente";
     }
 
-    @Operation(summary = "Consultar partidos del árbitro", description = "El Árbitro consulta los partidos que tiene asignados para arbitrar.")
+    @Operation(summary = "Get referee matches", description = "The Referee queries the matches they have been assigned to referee.")
     @GetMapping("/arbitros/{id}/partidos")
     public List<Partido> consultarPartidosAsignados(@PathVariable Long id) {
         return arbitroService.consultarPartidosAsignados(id);
     }
 
-    @Operation(summary = "Iniciar partido", description = "El Árbitro cambia el estado del partido a EN_CURSO.")
+    @Operation(summary = "Start match", description = "The Referee changes the match status to EN_CURSO.")
     @PutMapping("/arbitros/{id}/partidos/{partidoId}/iniciar")
     public Partido iniciarPartido(@PathVariable Long id, @PathVariable Long partidoId) {
         return partidoService.iniciarPartido(partidoId);
     }
 
-    @Operation(summary = "Registrar resultado", description = "El Árbitro registra el marcador del partido.")
+    @Operation(summary = "Register result", description = "The Referee registers the match score.")
     @PutMapping("/arbitros/{id}/partidos/{partidoId}/resultado")
     public Partido registrarResultado(@PathVariable Long id, @PathVariable Long partidoId,
                                       @RequestBody Map<String, Integer> body) {
@@ -302,13 +302,13 @@ public class UsuarioController {
         return partidoService.registrarResultado(partidoId, body.get("golesLocal"), body.get("golesVisitante"));
     }
 
-    @Operation(summary = "Finalizar partido", description = "El Árbitro cierra el partido y lo marca como FINALIZADO.")
+    @Operation(summary = "End match", description = "The Referee closes the match and marks it as FINALIZADO.")
     @PutMapping("/arbitros/{id}/partidos/{partidoId}/finalizar")
     public Partido finalizarPartido(@PathVariable Long id, @PathVariable Long partidoId) {
         return partidoService.finalizarPartido(partidoId);
     }
 
-    @Operation(summary = "Registrar goleador", description = "El Árbitro registra un gol indicando el jugador y el minuto.")
+    @Operation(summary = "Register goal scorer", description = "The Referee registers a goal indicating the player and the minute.")
     @PostMapping("/arbitros/{id}/partidos/{partidoId}/goles")
     public Partido registrarGoleador(@PathVariable Long id, @PathVariable Long partidoId,
                                      @RequestBody Map<String, Object> body) {
@@ -318,7 +318,7 @@ public class UsuarioController {
         return partidoService.registrarGoleador(partidoId, jugadorId, minuto);
     }
 
-    @Operation(summary = "Registrar tarjeta", description = "El Árbitro registra una tarjeta (AMARILLA o ROJA) a un jugador.")
+    @Operation(summary = "Register card", description = "The Referee registers a card (AMARILLA or ROJA) for a player.")
     @PostMapping("/arbitros/{id}/partidos/{partidoId}/tarjetas")
     public Partido registrarTarjeta(@PathVariable Long id, @PathVariable Long partidoId,
                                     @RequestBody Map<String, Object> body) {
@@ -331,7 +331,7 @@ public class UsuarioController {
 
     // ── Organizadores ──────────────────────────────────────────────────────────
 
-    @Operation(summary = "Crear organizador", description = "Registra un nuevo Organizador, responsable de administrar el torneo.")
+    @Operation(summary = "Create organizer", description = "Registers a new Organizer, responsible for managing the tournament.")
     @PostMapping("/organizadores")
     public Organizador crearOrganizador(@RequestBody Map<String, Object> body) {
         Organizador organizador = new Organizador(
@@ -345,43 +345,43 @@ public class UsuarioController {
         return organizadorService.save(organizador);
     }
 
-    @Operation(summary = "Listar organizadores", description = "Retorna todos los organizadores registrados en el sistema.")
+    @Operation(summary = "List organizers", description = "Returns all organizers registered in the system.")
     @GetMapping("/organizadores")
     public List<Organizador> listarOrganizadores() {
         return organizadorService.getOrganizadores();
     }
 
-    @Operation(summary = "Crear torneo", description = "El Organizador crea un nuevo torneo con nombre, fechas, cantidad de equipos y costo de inscripción.")
+    @Operation(summary = "Create tournament", description = "The Organizer creates a new tournament with name, dates, number of teams and registration cost.")
     @PostMapping("/organizadores/{id}/torneo")
     public Torneo crearTorneo(@PathVariable Long id, @RequestBody Torneo torneo) {
         return organizadorService.crearTorneo(id, torneo);
     }
 
-    @Operation(summary = "Iniciar torneo", description = "El Organizador cambia el estado del torneo a EN_CURSO, habilitando el registro de partidos.")
+    @Operation(summary = "Start tournament", description = "The Organizer changes the tournament status to EN_CURSO, enabling match registration.")
     @PatchMapping("/organizadores/{id}/torneo/iniciar")
     public Torneo iniciarTorneo(@PathVariable Long id) {
         return organizadorService.iniciarTorneo(id);
     }
 
-    @Operation(summary = "Finalizar torneo", description = "El Organizador cierra el torneo y lo marca como FINALIZADO.")
+    @Operation(summary = "End tournament", description = "The Organizer closes the tournament and marks it as FINALIZADO.")
     @PatchMapping("/organizadores/{id}/torneo/finalizar")
     public Torneo finalizarTorneo(@PathVariable Long id) {
         return organizadorService.finalizarTorneo(id);
     }
 
-    @Operation(summary = "Ver pagos pendientes", description = "El Organizador consulta todos los comprobantes de pago que aún no han sido verificados.")
+    @Operation(summary = "View pending payments", description = "The Organizer queries all payment receipts that have not yet been verified.")
     @GetMapping("/organizadores/{id}/pagos/pendientes")
     public List<Pago> pagosPendientes(@PathVariable Long id) {
         return pagoService.consultarPagosPendientes();
     }
 
-    @Operation(summary = "Aprobar pago", description = "El Organizador aprueba el comprobante de pago de un equipo, confirmando su inscripción.")
+    @Operation(summary = "Approve payment", description = "The Organizer approves a team's payment receipt, confirming their registration.")
     @PutMapping("/organizadores/{id}/pagos/{pagoId}/aprobar")
     public Pago aprobarPago(@PathVariable Long id, @PathVariable Long pagoId) {
         return pagoService.aprobarPago(pagoId);
     }
 
-    @Operation(summary = "Configurar torneo", description = "El Organizador define el reglamento, canchas, horarios, sanciones y fecha de cierre de inscripciones del torneo.")
+    @Operation(summary = "Configure tournament", description = "The Organizer defines the regulations, courts, schedules, sanctions and registration closing date.")
     @PatchMapping("/organizadores/{id}/torneo/configurar")
     public Torneo configurarTorneo(@PathVariable Long id, @RequestBody Map<String, Object> body) {
         Torneo torneoActual = organizadorService.getOrganizadores().stream()
@@ -402,13 +402,13 @@ public class UsuarioController {
         );
     }
 
-    @Operation(summary = "Rechazar pago", description = "El Organizador rechaza el comprobante de pago de un equipo por ser inválido o incompleto.")
+    @Operation(summary = "Reject payment", description = "The Organizer rejects a team's payment receipt for being invalid or incomplete.")
     @PutMapping("/organizadores/{id}/pagos/{pagoId}/rechazar")
     public Pago rechazarPago(@PathVariable Long id, @PathVariable Long pagoId) {
         return pagoService.rechazarPago(pagoId);
     }
 
-    @Operation(summary = "Crear partido", description = "El Organizador programa un partido entre dos equipos dentro de un torneo.")
+    @Operation(summary = "Create match", description = "The Organizer schedules a match between two teams within a tournament.")
     @PostMapping("/organizadores/{id}/partidos")
     public Partido crearPartido(@PathVariable Long id, @RequestBody Map<String, Object> body) {
         Long torneoId = Long.valueOf(body.get("torneoId").toString());

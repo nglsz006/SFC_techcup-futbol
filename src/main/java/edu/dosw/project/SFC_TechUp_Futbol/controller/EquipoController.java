@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Equipos", description = "Consulta de equipos. Para crear un equipo o agregar jugadores usa los endpoints de Usuarios (capitán).")
+@Tag(name = "Teams", description = "Team query. To create a team or add players use the Users endpoints (captain).")
 @RestController
 @RequestMapping("/api/equipos")
 public class EquipoController {
@@ -19,13 +19,13 @@ public class EquipoController {
         this.service = service;
     }
 
-    @Operation(summary = "Obtener equipo por ID", description = "Retorna la información de un equipo, incluyendo sus jugadores.")
+    @Operation(summary = "Get team by ID", description = "Returns the information of a team, including its players.")
     @GetMapping("/{id}")
     public Equipo obtenerEquipo(@PathVariable int id) {
         return service.obtener(id);
     }
 
-    @Operation(summary = "Listar equipos", description = "Retorna todos los equipos registrados en el torneo.")
+    @Operation(summary = "List teams", description = "Returns all teams registered in the tournament.")
     @GetMapping
     public List<Equipo> listarEquipos() {
         return service.listar();

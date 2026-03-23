@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Alineaciones", description = "Consulta de alineaciones. Para crear o consultar la alineación rival usa los endpoints de Usuarios (capitán).")
+@Tag(name = "Lineups", description = "Lineup query. To create or view the rival lineup use the Users endpoints (captain).")
 @RestController
 @RequestMapping("/api/alineaciones")
 public class AlineacionController {
@@ -19,13 +19,13 @@ public class AlineacionController {
         this.service = service;
     }
 
-    @Operation(summary = "Obtener alineación por ID", description = "Retorna la alineación registrada para un partido específico.")
+    @Operation(summary = "Get lineup by ID", description = "Returns the lineup registered for a specific match.")
     @GetMapping("/{id}")
     public Alineacion obtenerAlineacion(@PathVariable int id) {
         return service.obtener(id);
     }
 
-    @Operation(summary = "Listar todas las alineaciones", description = "Retorna todas las alineaciones registradas en el sistema.")
+    @Operation(summary = "List all lineups", description = "Returns all lineups registered in the system.")
     @GetMapping
     public List<Alineacion> listarAlineaciones() {
         return service.listar();
