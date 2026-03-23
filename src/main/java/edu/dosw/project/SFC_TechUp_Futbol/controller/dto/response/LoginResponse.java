@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol.dto.response;
+package edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 
