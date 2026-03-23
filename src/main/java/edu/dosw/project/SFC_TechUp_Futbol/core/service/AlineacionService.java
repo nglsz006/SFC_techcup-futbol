@@ -33,7 +33,7 @@ public class AlineacionService extends Subject {
 
     public Alineacion obtener(int id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Alineacion no encontrada con id: " + id));
+            .orElseThrow(() -> new IllegalArgumentException("Alineacion no encontrada con id: " + id));
     }
 
     public List<Alineacion> listar() {

@@ -8,3 +8,4 @@ public class NotificadorTorneo implements Observer {
         System.out.println("[notificacion] " + evento + ": " + datos);
     }
 }
+

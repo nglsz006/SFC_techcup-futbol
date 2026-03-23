@@ -5,3 +5,4 @@ import java.util.Map;
 public interface Observer {
     void actualizar(String evento, Map<String, Object> datos);
 }
+

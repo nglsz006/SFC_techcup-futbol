@@ -1,7 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.validator;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Alineacion;
-
 import java.util.List;
 import java.util.Map;
 
