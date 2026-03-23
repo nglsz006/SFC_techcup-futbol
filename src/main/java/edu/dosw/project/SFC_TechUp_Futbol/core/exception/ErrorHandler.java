@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol.exception;
+package edu.dosw.project.SFC_TechUp_Futbol.core.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

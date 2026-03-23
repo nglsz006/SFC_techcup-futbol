@@ -59,3 +59,4 @@ public class Alineacion {
     public List<Integer> getReservas() { return reservas; }
     public void setReservas(List<Integer> reservas) { this.reservas = reservas; }
 }
+

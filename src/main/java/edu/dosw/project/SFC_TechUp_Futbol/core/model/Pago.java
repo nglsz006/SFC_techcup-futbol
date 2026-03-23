@@ -1,7 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.*;
 import java.time.LocalDate;
 
 @JsonIgnoreProperties({"state"})

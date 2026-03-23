@@ -16,7 +16,7 @@ public class Equipo {
         this.jugadores = new ArrayList<>();
     }
 
-    public Equipo(int id, String nombre, String escudo, String colorPrincipal,
+    public Equipo(int id, String nombre, String escudo, String colorPrincipal, 
                   String colorSecundario, int capitanId) {
         this.id = id;
         this.nombre = nombre;
@@ -52,3 +52,4 @@ public class Equipo {
     public List<Integer> getJugadores() { return jugadores; }
     public void setJugadores(List<Integer> jugadores) { this.jugadores = jugadores; }
 }
+
