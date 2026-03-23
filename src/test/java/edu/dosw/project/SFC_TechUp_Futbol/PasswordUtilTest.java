@@ -1,6 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol;
 
-import edu.dosw.project.SFC_TechUp_Futbol.util.PasswordUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

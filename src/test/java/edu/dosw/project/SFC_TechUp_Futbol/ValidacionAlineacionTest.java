@@ -3,13 +3,9 @@ package edu.dosw.project.SFC_TechUp_Futbol;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Alineacion;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.ValidacionAlineacion;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 class ValidacionAlineacionTest {
 
