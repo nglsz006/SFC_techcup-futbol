@@ -2,12 +2,12 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.dto.request.LoginRequest;
-import edu.dosw.project.SFC_TechUp_Futbol.dto.request.RegistroRequest;
-import edu.dosw.project.SFC_TechUp_Futbol.dto.response.LoginResponse;
-import edu.dosw.project.SFC_TechUp_Futbol.dto.response.UsuarioResponse;
-import edu.dosw.project.SFC_TechUp_Futbol.util.AccesoMapper;
-import edu.dosw.project.SFC_TechUp_Futbol.util.PasswordUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.AccesoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class AccesoServiceImpl implements AccesoService {
 
         UsuarioRegistrado usuario = AccesoMapper.toModelo(request);
         usuarioRepository.save(usuario);
-        log.info("Usuario registrado: " + usuario.getEmail() + " tipo: " + usuario.getUserType());
+        log.info("Usuario registrado exitosamente");
         return AccesoMapper.toUsuarioResponse(usuario);
     }
 
@@ -44,7 +44,7 @@ public class AccesoServiceImpl implements AccesoService {
             throw new IllegalArgumentException("Credenciales incorrectas.");
 
         String token = UUID.randomUUID().toString();
-        log.info("Login exitoso: " + usuario.getEmail());
+        log.info("Login exitoso");
         return AccesoMapper.toLoginResponse(usuario, token);
     }
 }

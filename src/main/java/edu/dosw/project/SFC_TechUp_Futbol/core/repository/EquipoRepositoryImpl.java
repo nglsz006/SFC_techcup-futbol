@@ -1,9 +1,8 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.repository;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
-import org.springframework.stereotype.Repository;
-
 import java.util.*;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class EquipoRepositoryImpl implements EquipoRepository {
@@ -30,3 +29,4 @@ public class EquipoRepositoryImpl implements EquipoRepository {
         return new ArrayList<>(storage.values());
     }
 }
+

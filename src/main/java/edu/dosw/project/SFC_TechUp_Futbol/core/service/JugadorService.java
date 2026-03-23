@@ -17,6 +17,15 @@ public class JugadorService {
         this.jugadorRepository = jugadorRepository;
     }
 
+    public Jugador editarPerfil(Long jugadorId, String nombre, int numeroCamiseta, Jugador.Posicion posicion, String foto) {
+        Jugador jugador = getOrThrow(jugadorId);
+        if (nombre != null && !nombre.isBlank()) jugador.setName(nombre);
+        if (numeroCamiseta > 0) jugador.setJerseyNumber(numeroCamiseta);
+        if (posicion != null) jugador.setPosition(posicion);
+        if (foto != null && !foto.isBlank()) jugador.setPhoto(foto);
+        return jugadorRepository.save(jugador);
+    }
+
     public void aceptarInvitacion(Long jugadorId) {
         Jugador jugador = getOrThrow(jugadorId);
         jugador.setAvailable(false);

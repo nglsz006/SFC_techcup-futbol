@@ -47,7 +47,7 @@ public class PartidoServiceImpl implements PartidoService {
         partido.setFecha(fecha);
         partido.setCancha(cancha);
         Partido saved = partidoRepository.save(partido);
-        log.info("Partido creado: " + local.getNombre() + " vs " + visitante.getNombre());
+        log.info("Partido creado exitosamente");
         return saved;
     }
 
@@ -55,7 +55,7 @@ public class PartidoServiceImpl implements PartidoService {
     public Partido iniciarPartido(Long partidoId) {
         Partido partido = getPartidoOrThrow(partidoId);
         partido.iniciar();
-        log.info("Partido iniciado: " + partidoId);
+        log.info("Partido iniciado");
         return partidoRepository.save(partido);
     }
 
@@ -63,7 +63,7 @@ public class PartidoServiceImpl implements PartidoService {
     public Partido registrarResultado(Long partidoId, int golesLocal, int golesVisitante) {
         Partido partido = getPartidoOrThrow(partidoId);
         partido.registrarResultado(golesLocal, golesVisitante);
-        log.info("Resultado registrado partido " + partidoId + ": " + golesLocal + "-" + golesVisitante);
+        log.info("Resultado registrado");
         return partidoRepository.save(partido);
     }
 
@@ -71,7 +71,7 @@ public class PartidoServiceImpl implements PartidoService {
     public Partido finalizarPartido(Long partidoId) {
         Partido partido = getPartidoOrThrow(partidoId);
         partido.finalizar();
-        log.info("Partido finalizado: " + partidoId);
+        log.info("Partido finalizado");
         return partidoRepository.save(partido);
     }
 
@@ -94,7 +94,7 @@ public class PartidoServiceImpl implements PartidoService {
         } else {
             partido.setMarcadorVisitante(partido.getMarcadorVisitante() + 1);
         }
-        log.info("Gol registrado: jugador " + jugadorId + " minuto " + minuto);
+        log.info("Gol registrado");
         return partidoRepository.save(partido);
     }
 
@@ -112,7 +112,7 @@ public class PartidoServiceImpl implements PartidoService {
         tarjeta.setMinuto(minuto);
         partido.getTarjetas().add(tarjeta);
 
-        log.info("Tarjeta " + tipo + " registrada: jugador " + jugadorId + " minuto " + minuto);
+        log.info("Tarjeta registrada");
         return partidoRepository.save(partido);
     }
 

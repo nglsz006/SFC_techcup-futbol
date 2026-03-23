@@ -24,3 +24,4 @@ public class LoggerObserver implements Observer {
         return logs;
     }
 }
+

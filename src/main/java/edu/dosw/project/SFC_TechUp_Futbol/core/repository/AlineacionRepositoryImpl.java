@@ -1,9 +1,8 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.repository;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Alineacion;
-import org.springframework.stereotype.Repository;
-
 import java.util.*;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class AlineacionRepositoryImpl implements AlineacionRepository {
@@ -30,3 +29,4 @@ public class AlineacionRepositoryImpl implements AlineacionRepository {
         return new ArrayList<>(storage.values());
     }
 }
+

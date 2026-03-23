@@ -5,3 +5,4 @@ import java.util.Map;
 public interface Validacion {
     void validar(Map<String, Object> datos);
 }
+
