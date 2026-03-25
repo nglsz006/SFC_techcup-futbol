@@ -8,6 +8,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -418,5 +419,10 @@ public class UsuarioController {
         String cancha = body.get("cancha").toString();
         partidoValidator.validarCrearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
         return partidoService.crearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
+    }
+
+    @PostMapping("/jugadores/{id}/foto")
+    public String subirFotoJugador(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        return jugadorService.subirFoto(id, file);
     }
 }
