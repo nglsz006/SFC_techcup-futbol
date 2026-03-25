@@ -26,6 +26,26 @@ public class ErrorHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(armarError(403, ex.getMessage()));
     }
 
+    @ExceptionHandler(AutenticacionAdminException.class)
+    public ResponseEntity<Map<String, Object>> handleAutenticacionAdmin(AutenticacionAdminException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(armarError(401, ex.getMessage()));
+    }
+
+    @ExceptionHandler(CorreoYaRegistradoException.class)
+    public ResponseEntity<Map<String, Object>> handleCorreoYaRegistrado(CorreoYaRegistradoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(armarError(409, ex.getMessage()));
+    }
+
+    @ExceptionHandler(RolNoPermitidoException.class)
+    public ResponseEntity<Map<String, Object>> handleRolNoPermitido(RolNoPermitidoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(armarError(400, ex.getMessage()));
+    }
+
+    @ExceptionHandler(FiltroAuditoriaInvalidoException.class)
+    public ResponseEntity<Map<String, Object>> handleFiltroAuditoriaInvalido(FiltroAuditoriaInvalidoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(armarError(400, ex.getMessage()));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(armarError(400, ex.getMessage()));
@@ -48,4 +68,3 @@ public class ErrorHandler {
         return error;
     }
 }
-

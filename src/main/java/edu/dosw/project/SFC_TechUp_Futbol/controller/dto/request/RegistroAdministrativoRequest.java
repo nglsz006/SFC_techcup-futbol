@@ -7,6 +7,7 @@ public class RegistroAdministrativoRequest {
     private String email;
     private String password;
     private Usuario.TipoUsuario tipoUsuario;
+    private String rol;
 
     public String getNombre() {
         return nombre;
@@ -38,5 +39,13 @@ public class RegistroAdministrativoRequest {
 
     public void setTipoUsuario(Usuario.TipoUsuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 }

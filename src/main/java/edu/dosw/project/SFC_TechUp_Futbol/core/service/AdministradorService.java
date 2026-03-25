@@ -2,17 +2,19 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdministrativoRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AccesoDenegadoException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RolNoPermitidoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Administrador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Arbitro;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Organizador;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.AdministradorRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.ArbitroRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.OrganizadorRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class AdministradorService {
@@ -21,15 +23,18 @@ public class AdministradorService {
     private final OrganizadorRepository organizadorRepository;
     private final ArbitroRepository arbitroRepository;
     private final UsuarioRegistradoRepository usuarioRegistradoRepository;
+    private final AuditoriaService auditoriaService;
 
     public AdministradorService(AdministradorRepository administradorRepository,
                                 OrganizadorRepository organizadorRepository,
                                 ArbitroRepository arbitroRepository,
-                                UsuarioRegistradoRepository usuarioRegistradoRepository) {
+                                UsuarioRegistradoRepository usuarioRegistradoRepository,
+                                AuditoriaService auditoriaService) {
         this.administradorRepository = administradorRepository;
         this.organizadorRepository = organizadorRepository;
         this.arbitroRepository = arbitroRepository;
         this.usuarioRegistradoRepository = usuarioRegistradoRepository;
+        this.auditoriaService = auditoriaService;
     }
 
     public Administrador registrarAdministrador(RegistroAdministrativoRequest request) {
@@ -45,6 +50,15 @@ public class AdministradorService {
         return administradorRepository.save(administrador);
     }
 
+    public Usuario registrarUsuarioAdministrativo(Long administradorId, RegistroAdministrativoRequest request) {
+        String rol = request.getRol() == null ? "" : request.getRol().trim().toUpperCase();
+        return switch (rol) {
+            case "ORGANIZADOR" -> registrarOrganizador(administradorId, request);
+            case "ARBITRO" -> registrarArbitro(administradorId, request);
+            default -> throw new RolNoPermitidoException("Solo se permite registrar usuarios con rol ORGANIZADOR o ARBITRO.");
+        };
+    }
+
     public Organizador registrarOrganizador(Long administradorId, RegistroAdministrativoRequest request) {
         obtenerAdministradorAutorizado(administradorId);
         validarCorreoUnico(request.getEmail());
@@ -56,7 +70,14 @@ public class AdministradorService {
                 request.getTipoUsuario(),
                 null
         );
-        return organizadorRepository.save(organizador);
+        Organizador guardado = organizadorRepository.save(organizador);
+        auditoriaService.registrarEvento(
+                administradorId,
+                guardado.getEmail(),
+                TipoAccionAuditoria.REGISTRO_ORGANIZADOR,
+                "Registro administrativo de organizador."
+        );
+        return guardado;
     }
 
     public Arbitro registrarArbitro(Long administradorId, RegistroAdministrativoRequest request) {
@@ -69,11 +90,19 @@ public class AdministradorService {
                 PasswordUtil.cifrar(request.getPassword()),
                 request.getTipoUsuario()
         );
-        return arbitroRepository.save(arbitro);
+        Arbitro guardado = arbitroRepository.save(arbitro);
+        auditoriaService.registrarEvento(
+                administradorId,
+                guardado.getEmail(),
+                TipoAccionAuditoria.REGISTRO_ARBITRO,
+                "Registro administrativo de arbitro."
+        );
+        return guardado;
     }
 
-    public List<Administrador> listarAdministradores() {
-        return administradorRepository.findAll();
+    public Administrador obtenerAdministradorPorEmail(String email) {
+        return administradorRepository.findByEmail(email)
+                .orElseThrow(() -> new AccesoDenegadoException("El administrador no esta autorizado para realizar esta operacion."));
     }
 
     private Administrador obtenerAdministradorAutorizado(Long administradorId) {
@@ -90,7 +119,7 @@ public class AdministradorService {
                 || organizadorRepository.findByEmail(email).isPresent()
                 || arbitroRepository.findByEmail(email).isPresent()
                 || usuarioRegistradoRepository.findByEmail(email).isPresent()) {
-            throw new IllegalStateException("Ya existe un usuario con ese correo.");
+            throw new CorreoYaRegistradoException("Ya existe un usuario con ese correo.");
         }
     }
 }
