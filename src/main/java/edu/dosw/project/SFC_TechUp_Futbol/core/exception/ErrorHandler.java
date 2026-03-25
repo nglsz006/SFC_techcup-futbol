@@ -21,6 +21,11 @@ public class ErrorHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(armarError(409, ex.getMessage()));
     }
 
+    @ExceptionHandler(AccesoDenegadoException.class)
+    public ResponseEntity<Map<String, Object>> handleAccesoDenegado(AccesoDenegadoException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(armarError(403, ex.getMessage()));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(armarError(400, ex.getMessage()));
@@ -43,3 +48,4 @@ public class ErrorHandler {
         return error;
     }
 }
+
