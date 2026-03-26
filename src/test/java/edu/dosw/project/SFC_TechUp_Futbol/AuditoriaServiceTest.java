@@ -19,6 +19,7 @@ class AuditoriaServiceTest {
 
     @BeforeEach
     void setUp() {
+        RegistroAuditoriaRepositoryImpl.resetStore();
         auditoriaService = new AuditoriaService(new RegistroAuditoriaRepositoryImpl());
     }
 
