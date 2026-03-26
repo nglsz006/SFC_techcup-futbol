@@ -4,6 +4,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.ConsultaAuditor
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.ConsultaAuditoriaResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.RegistroAuditoriaResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.RegistroAuditoria;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AutenticacionAdministradorService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AdministradorValidator;
@@ -57,6 +58,13 @@ public class AuditoriaController {
         request.setFechaDesde(fechaDesde);
         request.setFechaHasta(fechaHasta);
         auditoriaValidator.validarConsulta(request);
+
+        auditoriaService.registrarEvento(
+                administradorId,
+                "admin:" + administradorId,
+                TipoAccionAuditoria.CONSULTA_AUDITORIA,
+                "Consulta del historial de auditoria."
+        );
 
         List<RegistroAuditoriaResponse> registros = auditoriaService.consultarHistorial(request).stream()
                 .map(this::toResponse)

@@ -6,6 +6,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Component
 public class AuditoriaValidator {
@@ -18,7 +19,9 @@ public class AuditoriaValidator {
             throw new FiltroAuditoriaInvalidoException("El filtro de usuario no puede estar vacio.");
         }
         if (request.getTipoAccion() != null && !request.getTipoAccion().isBlank() && !tipoAccionValido(request.getTipoAccion())) {
-            throw new FiltroAuditoriaInvalidoException("El tipo de accion no es valido.");
+            throw new FiltroAuditoriaInvalidoException(
+                    "El tipo de accion no es valido. Valores permitidos: " + accionesPermitidas() + "."
+            );
         }
         if (request.getFechaDesde() != null && request.getFechaHasta() != null
                 && request.getFechaDesde().isAfter(request.getFechaHasta())) {
@@ -29,5 +32,11 @@ public class AuditoriaValidator {
     private boolean tipoAccionValido(String tipoAccion) {
         return Arrays.stream(TipoAccionAuditoria.values())
                 .anyMatch(valor -> valor.name().equalsIgnoreCase(tipoAccion.trim()));
+    }
+
+    private String accionesPermitidas() {
+        return Arrays.stream(TipoAccionAuditoria.values())
+                .map(Enum::name)
+                .collect(Collectors.joining(", "));
     }
 }

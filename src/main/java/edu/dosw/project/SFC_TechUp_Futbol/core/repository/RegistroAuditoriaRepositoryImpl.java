@@ -4,25 +4,36 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.RegistroAuditoria;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class RegistroAuditoriaRepositoryImpl implements RegistroAuditoriaRepository {
 
-    private final List<RegistroAuditoria> store = new ArrayList<>();
-    private long counter = 1;
+    private static final List<RegistroAuditoria> STORE = Collections.synchronizedList(new ArrayList<>());
+    private static final AtomicLong COUNTER = new AtomicLong(1);
 
     @Override
     public RegistroAuditoria save(RegistroAuditoria registroAuditoria) {
         if (registroAuditoria.getId() == null) {
-            registroAuditoria.setId(counter++);
+            registroAuditoria.setId(COUNTER.getAndIncrement());
         }
-        store.add(registroAuditoria);
+        STORE.add(registroAuditoria);
         return registroAuditoria;
     }
 
     @Override
     public List<RegistroAuditoria> findAll() {
-        return new ArrayList<>(store);
+        synchronized (STORE) {
+            return new ArrayList<>(STORE);
+        }
+    }
+
+    public static void resetStore() {
+        synchronized (STORE) {
+            STORE.clear();
+            COUNTER.set(1);
+        }
     }
 }
