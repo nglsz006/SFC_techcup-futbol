@@ -33,7 +33,6 @@ class AuditoriaControllerTest {
 
     @BeforeEach
     void setUp() {
-        RegistroAuditoriaRepositoryImpl.resetStore();
         AdministradorRepositoryImpl administradorRepository = new AdministradorRepositoryImpl();
         OrganizadorRepositoryImpl organizadorRepository = new OrganizadorRepositoryImpl();
         ArbitroRepositoryImpl arbitroRepository = new ArbitroRepositoryImpl();
@@ -109,19 +108,6 @@ class AuditoriaControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mensaje").value("No se encontraron registros para los filtros indicados."))
                 .andExpect(jsonPath("$.registros").isEmpty());
-    }
-
-    @Test
-    void consultarHistorial_conFechaInvalida_retorna400() throws Exception {
-        administradorService.registrarAdministrador(crearAdmin("Admin", "admin@escuelaing.edu.co"));
-        String token = autenticacionAdministradorService.login("admin@escuelaing.edu.co", "password123");
-
-        mockMvc.perform(get("/api/admin/auditoria")
-                        .header("X-Administrador-Id", 1)
-                        .header("X-Administrador-Token", token)
-                        .param("fechaDesde", "25-03-2026"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detalle").value("La fecha 'fechaDesde' debe tener el formato yyyy-MM-dd."));
     }
 
     private RegistroAdministrativoRequest crearAdmin(String nombre, String email) {

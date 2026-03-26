@@ -29,7 +29,6 @@ class AdministradorServiceTest {
 
     @BeforeEach
     void setUp() {
-        RegistroAuditoriaRepositoryImpl.resetStore();
         auditoriaRepository = new RegistroAuditoriaRepositoryImpl();
         administradorService = new AdministradorService(
                 new AdministradorRepositoryImpl(),

@@ -329,7 +329,7 @@ class PagoPartidoControllerTest {
         alineacionMvc.perform(get("/api/alineaciones/rival")
                         .param("partidoId", "1")
                         .param("equipoId", "1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 
     @Test

@@ -24,9 +24,9 @@ public class AuditoriaService {
         RegistroAuditoria registro = new RegistroAuditoria(
                 null,
                 administradorId,
-                normalizarTexto(usuario),
+                usuario,
                 tipoAccion,
-                normalizarTexto(descripcion),
+                descripcion,
                 LocalDateTime.now()
         );
         return registroAuditoriaRepository.save(registro);
@@ -69,9 +69,5 @@ public class AuditoriaService {
             return true;
         }
         return !registro.getFecha().toLocalDate().isAfter(fechaHasta);
-    }
-
-    private String normalizarTexto(String valor) {
-        return valor == null ? "" : valor.trim();
     }
 }
