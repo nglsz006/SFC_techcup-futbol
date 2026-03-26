@@ -24,6 +24,13 @@ public class ArbitroRepositoryImpl implements ArbitroRepository {
     }
 
     @Override
+    public Optional<Arbitro> findByEmail(String email) {
+        return store.values().stream()
+                .filter(arbitro -> arbitro.getEmail().equalsIgnoreCase(email))
+                .findFirst();
+    }
+
+    @Override
     public List<Arbitro> findAll() {
         return new ArrayList<>(store.values());
     }

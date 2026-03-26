@@ -24,6 +24,13 @@ public class OrganizadorRepositoryImpl implements OrganizadorRepository {
     }
 
     @Override
+    public Optional<Organizador> findByEmail(String email) {
+        return store.values().stream()
+                .filter(organizador -> organizador.getEmail().equalsIgnoreCase(email))
+                .findFirst();
+    }
+
+    @Override
     public List<Organizador> findAll() {
         return new ArrayList<>(store.values());
     }

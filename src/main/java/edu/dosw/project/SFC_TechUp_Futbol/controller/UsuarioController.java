@@ -76,7 +76,7 @@ public class UsuarioController {
             "GET    /api/usuarios/capitanes/{id}/buscarJugadores         - Buscar jugadores por posicion"
         ));
         acciones.put("arbitro", List.of(
-            "POST   /api/usuarios/arbitros                                    - Crear arbitro",
+            "POST   /api/admin/usuarios                                        - Registrar arbitro (solo administrador)",
             "GET    /api/usuarios/arbitros                                    - Listar arbitros",
             "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}          - Asignar arbitro a partido",
             "GET    /api/usuarios/arbitros/{id}/partidos                      - Consultar partidos asignados",
@@ -87,7 +87,7 @@ public class UsuarioController {
             "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}/tarjetas  - Registrar tarjeta"
         ));
         acciones.put("organizador", List.of(
-            "POST   /api/usuarios/organizadores                                        - Crear organizador",
+            "POST   /api/admin/usuarios                                                - Registrar organizador (solo administrador)",
             "GET    /api/usuarios/organizadores                                        - Listar organizadores",
             "POST   /api/usuarios/organizadores/{id}/torneo                            - Crear torneo",
             "PATCH  /api/usuarios/organizadores/{id}/torneo/iniciar                    - Iniciar torneo",
@@ -250,19 +250,6 @@ public class UsuarioController {
 
     // ── Arbitros ───────────────────────────────────────────────────────────────
 
-    @Operation(summary = "Create referee", description = "The Organizer registers a new Referee in the system.")
-    @PostMapping("/arbitros")
-    public Arbitro crearArbitro(@RequestBody Map<String, Object> body) {
-        Arbitro arbitro = new Arbitro(
-            null,
-            body.get("nombre").toString(),
-            body.get("email").toString(),
-            body.get("password").toString(),
-            Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString())
-        );
-        return arbitroService.save(arbitro);
-    }
-
     @Operation(summary = "List referees", description = "Returns all available referees in the system.")
     @GetMapping("/arbitros")
     public List<Arbitro> listarArbitros() {
@@ -331,20 +318,6 @@ public class UsuarioController {
     }
 
     // ── Organizadores ──────────────────────────────────────────────────────────
-
-    @Operation(summary = "Create organizer", description = "Registers a new Organizer, responsible for managing the tournament.")
-    @PostMapping("/organizadores")
-    public Organizador crearOrganizador(@RequestBody Map<String, Object> body) {
-        Organizador organizador = new Organizador(
-            null,
-            body.get("nombre").toString(),
-            body.get("email").toString(),
-            body.get("password").toString(),
-            Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString()),
-            null
-        );
-        return organizadorService.save(organizador);
-    }
 
     @Operation(summary = "List organizers", description = "Returns all organizers registered in the system.")
     @GetMapping("/organizadores")
@@ -426,3 +399,6 @@ public class UsuarioController {
         return jugadorService.subirFoto(id, file);
     }
 }
+
+
+

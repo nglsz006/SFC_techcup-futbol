@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface OrganizadorRepository {
     Organizador save(Organizador organizador);
     Optional<Organizador> findById(Long id);
+    Optional<Organizador> findByEmail(String email);
     List<Organizador> findAll();
 }
