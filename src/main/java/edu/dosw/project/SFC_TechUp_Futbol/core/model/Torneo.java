@@ -3,26 +3,56 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.EstadoTorneoInterface;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.TorneoCreado;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "torneos")
 @JsonIgnoreProperties({"estadoObj"})
 public class Torneo {
 
     public enum EstadoTorneo { CREADO, EN_CURSO, FINALIZADO }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(nullable = false)
     private String nombre;
+
+    @Column(name = "fecha_inicio")
     private LocalDateTime fechaInicio;
+
+    @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
+
+    @Column(name = "cantidad_equipos")
     private int cantidadEquipos;
+
+    @Column
     private double costo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EstadoTorneo estado;
-    private EstadoTorneoInterface estadoObj;
+
+    @Column(columnDefinition = "TEXT")
     private String reglamento;
+
+    @Column(name = "cierre_inscripciones")
     private LocalDateTime cierreInscripciones;
+
+    @Column
     private String canchas;
+
+    @Column
     private String horarios;
+
+    @Column(columnDefinition = "TEXT")
     private String sanciones;
+
+    @Transient
+    private EstadoTorneoInterface estadoObj;
 
     public Torneo() {
         this.estado = EstadoTorneo.CREADO;
@@ -41,13 +71,17 @@ public class Torneo {
         this.estadoObj = new TorneoCreado();
     }
 
-    public void iniciar() {
-        estadoObj = estadoObj.iniciar(this);
+    @PostLoad
+    public void reconstruirEstado() {
+        this.estadoObj = switch (this.estado) {
+            case CREADO -> new TorneoCreado();
+            case EN_CURSO -> new edu.dosw.project.SFC_TechUp_Futbol.core.model.state.TorneoEnCurso();
+            case FINALIZADO -> new edu.dosw.project.SFC_TechUp_Futbol.core.model.state.TorneoFinalizado();
+        };
     }
 
-    public void finalizar() {
-        estadoObj = estadoObj.finalizar(this);
-    }
+    public void iniciar() { estadoObj = estadoObj.iniciar(this); }
+    public void finalizar() { estadoObj = estadoObj.finalizar(this); }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -70,9 +104,6 @@ public class Torneo {
     public EstadoTorneo getEstado() { return estado; }
     public void setEstado(EstadoTorneo estado) { this.estado = estado; }
 
-    public EstadoTorneoInterface getEstadoObj() { return estadoObj; }
-    public void setEstadoObj(EstadoTorneoInterface estadoObj) { this.estadoObj = estadoObj; }
-
     public String getReglamento() { return reglamento; }
     public void setReglamento(String reglamento) { this.reglamento = reglamento; }
 
@@ -87,5 +118,7 @@ public class Torneo {
 
     public String getSanciones() { return sanciones; }
     public void setSanciones(String sanciones) { this.sanciones = sanciones; }
-}
 
+    public EstadoTorneoInterface getEstadoObj() { return estadoObj; }
+    public void setEstadoObj(EstadoTorneoInterface estadoObj) { this.estadoObj = estadoObj; }
+}

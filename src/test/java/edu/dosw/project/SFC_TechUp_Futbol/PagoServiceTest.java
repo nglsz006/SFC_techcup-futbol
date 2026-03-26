@@ -2,8 +2,6 @@ package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.EquipoRepositoryImpl;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.PagoRepositoryImpl;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.PagoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

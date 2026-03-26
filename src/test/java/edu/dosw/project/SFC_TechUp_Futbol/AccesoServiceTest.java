@@ -1,7 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepositoryImpl;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoServiceImpl;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
