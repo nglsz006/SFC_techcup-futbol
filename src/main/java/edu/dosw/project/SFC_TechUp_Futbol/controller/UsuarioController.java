@@ -31,13 +31,14 @@ public class UsuarioController {
     private final PartidoValidator partidoValidator;
     private final EquipoService equipoService;
     private final TorneoService torneoService;
+    private final PerfilDeportivoService perfilDeportivoService;
 
     public UsuarioController(JugadorService jugadorService, JugadorRepository jugadorRepository,
                              CapitanService capitanService, ArbitroService arbitroService,
                              PartidoRepository partidoRepository, OrganizadorService organizadorService,
                              PagoService pagoService, PartidoService partidoService,
                              PartidoValidator partidoValidator, EquipoService equipoService,
-                             TorneoService torneoService) {
+                             TorneoService torneoService, PerfilDeportivoService perfilDeportivoService) {
         this.jugadorService = jugadorService;
         this.jugadorRepository = jugadorRepository;
         this.capitanService = capitanService;
@@ -49,6 +50,7 @@ public class UsuarioController {
         this.partidoValidator = partidoValidator;
         this.equipoService = equipoService;
         this.torneoService = torneoService;
+        this.perfilDeportivoService = perfilDeportivoService;
     }
 
     // ── Jugadores ──────────────────────────────────────────────────────────────
@@ -145,6 +147,28 @@ public class UsuarioController {
         Jugador.Posicion posicion = body.containsKey("posicion") ? Jugador.Posicion.valueOf(body.get("posicion").toString()) : null;
         String foto = body.getOrDefault("foto", "").toString();
         return jugadorService.editarPerfil(id, nombre, numeroCamiseta, posicion, foto);
+    }
+
+    @Operation(summary = "Create sports profile", description = "The Player creates their sports profile with positions, jersey number, age, gender and ID.")
+    @PostMapping("/jugadores/{id}/perfil")
+    public PerfilDeportivo crearPerfilDeportivo(@PathVariable Long id,
+                                                @RequestBody Map<String, Object> body) {
+        List<Jugador.Posicion> posiciones = ((List<?>) body.get("posiciones")).stream()
+                .map(p -> Jugador.Posicion.valueOf(p.toString()))
+                .toList();
+        int dorsal = Integer.parseInt(body.get("dorsal").toString());
+        String foto = body.getOrDefault("foto", "").toString();
+        int edad = Integer.parseInt(body.get("edad").toString());
+        PerfilDeportivo.Genero genero = PerfilDeportivo.Genero.valueOf(body.get("genero").toString());
+        String identificacion = body.get("identificacion").toString();
+        Integer semestre = body.containsKey("semestre") ? Integer.parseInt(body.get("semestre").toString()) : null;
+        return perfilDeportivoService.crearPerfil(id, posiciones, dorsal, foto, edad, genero, identificacion, semestre);
+    }
+
+    @Operation(summary = "Get sports profile", description = "Returns the sports profile of a player.")
+    @GetMapping("/jugadores/{id}/perfil")
+    public PerfilDeportivo consultarPerfilDeportivo(@PathVariable Long id) {
+        return perfilDeportivoService.consultarPerfil(id);
     }
 
     @Operation(summary = "Accept invitation", description = "The Player accepts the invitation sent by a Captain to join their team.")
