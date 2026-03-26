@@ -2,7 +2,6 @@ package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.ConsultaAuditoriaRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.RegistroAuditoriaRepositoryImpl;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,20 +1,35 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "usuarios")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public abstract class Usuario {
 
     public enum TipoUsuario {
         ESTUDIANTE, GRADUADO, PROFESOR, PERSONAL_ADMIN, FAMILIAR
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type")
     private TipoUsuario userType;
 
-    public Usuario() {
-
-    }
+    public Usuario() {}
 
     public Usuario(Long id, String name, String email, String password, TipoUsuario userType) {
         this.id = id;
@@ -24,44 +39,18 @@ public abstract class Usuario {
         this.userType = userType;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public TipoUsuario getUserType() {
-        return userType;
-    }
-
-    public void setUserType(TipoUsuario userType) {
-        this.userType = userType;
-    }
+    public TipoUsuario getUserType() { return userType; }
+    public void setUserType(TipoUsuario userType) { this.userType = userType; }
 }
-

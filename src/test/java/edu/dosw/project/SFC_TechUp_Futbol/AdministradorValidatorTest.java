@@ -4,10 +4,6 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdminis
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RolNoPermitidoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.AdministradorRepositoryImpl;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.ArbitroRepositoryImpl;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.OrganizadorRepositoryImpl;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepositoryImpl;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AdministradorValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

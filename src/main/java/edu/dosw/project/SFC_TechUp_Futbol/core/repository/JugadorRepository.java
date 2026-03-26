@@ -1,12 +1,10 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.repository;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
-
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
-import java.util.Optional;
 
-public interface JugadorRepository {
-    Jugador save(Jugador jugador);
-    Optional<Jugador> findById(Long id);
-    List<Jugador> findAll();
+public interface JugadorRepository extends JpaRepository<Jugador, Long> {
+    List<Jugador> findByAvailableTrue();
+    List<Jugador> findByPosition(Jugador.Posicion posicion);
 }
