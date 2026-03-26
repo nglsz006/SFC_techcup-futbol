@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -55,16 +54,6 @@ public class ErrorHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(armarError(409, ex.getMessage()));
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Map<String, Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        if ("fechaDesde".equals(ex.getName()) || "fechaHasta".equals(ex.getName())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(armarError(400, "La fecha '" + ex.getName() + "' debe tener el formato yyyy-MM-dd."));
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(armarError(400, "El valor del parametro '" + ex.getName() + "' no es valido."));
     }
 
     @ExceptionHandler(Exception.class)

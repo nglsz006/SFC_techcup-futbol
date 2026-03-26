@@ -3,13 +3,10 @@ package edu.dosw.project.SFC_TechUp_Futbol.controller;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.JugadorRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.PartidoRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.PerfilDeportivoRepositoryImpl;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.RegistroAuditoriaRepositoryImpl;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,28 +32,13 @@ public class UsuarioController {
     private final EquipoService equipoService;
     private final TorneoService torneoService;
     private final PerfilDeportivoService perfilDeportivoService;
-    private final AuditoriaService auditoriaService;
 
     public UsuarioController(JugadorService jugadorService, JugadorRepository jugadorRepository,
                              CapitanService capitanService, ArbitroService arbitroService,
                              PartidoRepository partidoRepository, OrganizadorService organizadorService,
                              PagoService pagoService, PartidoService partidoService,
                              PartidoValidator partidoValidator, EquipoService equipoService,
-                             TorneoService torneoService) {
-        this(jugadorService, jugadorRepository, capitanService, arbitroService, partidoRepository,
-                organizadorService, pagoService, partidoService, partidoValidator, equipoService,
-                torneoService, new PerfilDeportivoServiceImpl(new PerfilDeportivoRepositoryImpl(), jugadorRepository),
-                new AuditoriaService(new RegistroAuditoriaRepositoryImpl()));
-    }
-
-    @Autowired
-    public UsuarioController(JugadorService jugadorService, JugadorRepository jugadorRepository,
-                             CapitanService capitanService, ArbitroService arbitroService,
-                             PartidoRepository partidoRepository, OrganizadorService organizadorService,
-                             PagoService pagoService, PartidoService partidoService,
-                             PartidoValidator partidoValidator, EquipoService equipoService,
-                             TorneoService torneoService, PerfilDeportivoService perfilDeportivoService,
-                             AuditoriaService auditoriaService) {
+                             TorneoService torneoService, PerfilDeportivoService perfilDeportivoService) {
         this.jugadorService = jugadorService;
         this.jugadorRepository = jugadorRepository;
         this.capitanService = capitanService;
@@ -69,9 +51,9 @@ public class UsuarioController {
         this.equipoService = equipoService;
         this.torneoService = torneoService;
         this.perfilDeportivoService = perfilDeportivoService;
-        this.auditoriaService = auditoriaService;
     }
 
+    // ── Jugadores ──────────────────────────────────────────────────────────────
 
     @Operation(summary = "Get actions by actor", description = "Returns the available actions for a system actor. Valid actors: jugador, capitan, arbitro, organizador.")
     @GetMapping("/{actor}")
@@ -148,10 +130,7 @@ public class UsuarioController {
             true,
             body.getOrDefault("foto", "").toString()
         );
-        Jugador guardado = jugadorRepository.save(jugador);
-        auditar(guardado.getId(), guardado.getEmail(), TipoAccionAuditoria.REGISTRO_JUGADOR,
-                "Registro de jugador.");
-        return guardado;
+        return jugadorRepository.save(jugador);
     }
 
     @Operation(summary = "List players", description = "Returns all registered players. Useful for the Captain when looking for team members.")
@@ -167,10 +146,7 @@ public class UsuarioController {
         int numeroCamiseta = body.containsKey("numeroCamiseta") ? Integer.parseInt(body.get("numeroCamiseta").toString()) : 0;
         Jugador.Posicion posicion = body.containsKey("posicion") ? Jugador.Posicion.valueOf(body.get("posicion").toString()) : null;
         String foto = body.getOrDefault("foto", "").toString();
-        Jugador jugador = jugadorService.editarPerfil(id, nombre, numeroCamiseta, posicion, foto);
-        auditar(id, jugador.getEmail(), TipoAccionAuditoria.EDICION_PERFIL_JUGADOR,
-                "Edicion del perfil basico del jugador.");
-        return jugador;
+        return jugadorService.editarPerfil(id, nombre, numeroCamiseta, posicion, foto);
     }
 
     @Operation(summary = "Create sports profile", description = "The Player creates their sports profile with positions, jersey number, age, gender and ID.")
@@ -186,10 +162,7 @@ public class UsuarioController {
         PerfilDeportivo.Genero genero = PerfilDeportivo.Genero.valueOf(body.get("genero").toString());
         String identificacion = body.get("identificacion").toString();
         Integer semestre = body.containsKey("semestre") ? Integer.parseInt(body.get("semestre").toString()) : null;
-        PerfilDeportivo perfil = perfilDeportivoService.crearPerfil(id, posiciones, dorsal, foto, edad, genero, identificacion, semestre);
-        auditar(id, "jugador:" + id, TipoAccionAuditoria.CREACION_PERFIL_DEPORTIVO,
-                "Creacion del perfil deportivo del jugador.");
-        return perfil;
+        return perfilDeportivoService.crearPerfil(id, posiciones, dorsal, foto, edad, genero, identificacion, semestre);
     }
 
     @Operation(summary = "Get sports profile", description = "Returns the sports profile of a player.")
@@ -202,8 +175,6 @@ public class UsuarioController {
     @PatchMapping("/jugadores/{id}/aceptarInvitacion")
     public String aceptarInvitacion(@PathVariable Long id) {
         jugadorService.aceptarInvitacion(id);
-        auditar(id, "jugador:" + id, TipoAccionAuditoria.ACEPTACION_INVITACION,
-                "Aceptacion de invitacion por parte del jugador.");
         return "Invitacion aceptada correctamente";
     }
 
@@ -211,8 +182,6 @@ public class UsuarioController {
     @PatchMapping("/jugadores/{id}/rechazarInvitacion")
     public String rechazarInvitacion(@PathVariable Long id) {
         jugadorService.rechazarInvitacion(id);
-        auditar(id, "jugador:" + id, TipoAccionAuditoria.RECHAZO_INVITACION,
-                "Rechazo de invitacion por parte del jugador.");
         return "Invitacion rechazada correctamente";
     }
 
@@ -220,8 +189,6 @@ public class UsuarioController {
     @PatchMapping("/jugadores/{id}/disponibilidad")
     public String marcarDisponible(@PathVariable Long id) {
         jugadorService.marcarDisponible(id);
-        auditar(id, "jugador:" + id, TipoAccionAuditoria.MARCAR_DISPONIBILIDAD,
-                "Jugador marcado como disponible.");
         return "Jugador marcado como disponible";
     }
 
@@ -250,43 +217,7 @@ public class UsuarioController {
             body.getOrDefault("foto", "").toString(),
             null
         );
-        Capitan guardado = capitanService.save(capitan);
-        auditar(guardado.getId(), guardado.getEmail(), TipoAccionAuditoria.REGISTRO_CAPITAN,
-                "Registro de capitan.");
-        return guardado;
-    }
-
-    @Operation(summary = "Create referee", description = "Registers a new Referee in the system.")
-    @PostMapping("/arbitros")
-    public Arbitro crearArbitro(@RequestBody Map<String, Object> body) {
-        Arbitro arbitro = new Arbitro(
-                null,
-                body.get("nombre").toString(),
-                body.get("email").toString(),
-                body.get("password").toString(),
-                Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString())
-        );
-        Arbitro guardado = arbitroService.save(arbitro);
-        auditar(guardado.getId(), guardado.getEmail(), TipoAccionAuditoria.REGISTRO_ARBITRO,
-                "Registro de arbitro.");
-        return guardado;
-    }
-
-    @Operation(summary = "Create organizer", description = "Registers a new Organizer in the system.")
-    @PostMapping("/organizadores")
-    public Organizador crearOrganizador(@RequestBody Map<String, Object> body) {
-        Organizador organizador = new Organizador(
-                null,
-                body.get("nombre").toString(),
-                body.get("email").toString(),
-                body.get("password").toString(),
-                Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString()),
-                null
-        );
-        Organizador guardado = organizadorService.save(organizador);
-        auditar(guardado.getId(), guardado.getEmail(), TipoAccionAuditoria.REGISTRO_ORGANIZADOR,
-                "Registro de organizador.");
-        return guardado;
+        return capitanService.save(capitan);
     }
 
     @Operation(summary = "Validate team composition", description = "The Captain verifies if their team meets the rules: minimum 7 and maximum 12 players.")
@@ -300,10 +231,7 @@ public class UsuarioController {
                 .filter(e -> e.getCapitanId() == capitan.getId().intValue())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("El capitán no tiene equipo registrado"));
-        Map<String, Object> respuesta = equipoService.validarComposicion(equipo.getId());
-        auditar(id, capitan.getEmail(), TipoAccionAuditoria.VALIDACION_EQUIPO,
-                "Validacion de composicion del equipo.");
-        return respuesta;
+        return equipoService.validarComposicion(equipo.getId());
     }
 
     @Operation(summary = "List captains", description = "Returns all captains registered in the system.")
@@ -316,8 +244,6 @@ public class UsuarioController {
     @PostMapping("/capitanes/{id}/equipo")
     public String crearEquipo(@PathVariable Long id, @RequestParam String nombreEquipo) {
         capitanService.crearEquipo(id, nombreEquipo);
-        auditar(id, "capitan:" + id, TipoAccionAuditoria.CREACION_EQUIPO,
-                "Creacion de equipo por parte del capitan.");
         return "Equipo creado correctamente";
     }
 
@@ -325,36 +251,25 @@ public class UsuarioController {
     @PostMapping("/capitanes/{id}/invitar/{jugadorId}")
     public String invitarJugador(@PathVariable Long id, @PathVariable Long jugadorId) {
         capitanService.invitarJugador(id, jugadorId);
-        auditar(id, "capitan:" + id, TipoAccionAuditoria.INVITACION_JUGADOR,
-                "Invitacion de jugador " + jugadorId + " al equipo.");
         return "Invitacion enviada correctamente";
     }
 
     @Operation(summary = "Define lineup", description = "The Captain defines the starting players for the next match.")
     @PostMapping("/capitanes/{id}/alineacion")
     public String definirAlineacion(@PathVariable Long id, @RequestBody List<Jugador> titulares) {
-        String respuesta = capitanService.definirAlineacion(id, titulares);
-        auditar(id, "capitan:" + id, TipoAccionAuditoria.DEFINICION_ALINEACION,
-                "Definicion de alineacion titular.");
-        return respuesta;
+        return capitanService.definirAlineacion(id, titulares);
     }
 
     @Operation(summary = "Upload payment receipt", description = "The Captain uploads the registration payment receipt for their team.")
     @PostMapping("/capitanes/{id}/comprobante")
     public String subirComprobante(@PathVariable Long id, @RequestParam String comprobante) {
-        String respuesta = capitanService.subirComprobantePago(id, comprobante);
-        auditar(id, "capitan:" + id, TipoAccionAuditoria.SUBIDA_COMPROBANTE_PAGO,
-                "Subida de comprobante de pago.");
-        return respuesta;
+        return capitanService.subirComprobantePago(id, comprobante);
     }
 
     @Operation(summary = "Search players by position", description = "The Captain searches for available players filtering by position (PORTERO, DEFENSA, MEDIOCAMPISTA, DELANTERO).")
     @GetMapping("/capitanes/{id}/buscarJugadores")
     public List<Jugador> buscarJugadores(@PathVariable Long id, @RequestParam String posicion) {
-        List<Jugador> jugadores = capitanService.buscarJugadores(posicion);
-        auditar(id, "capitan:" + id, TipoAccionAuditoria.BUSQUEDA_JUGADORES,
-                "Busqueda de jugadores por posicion " + posicion + ".");
-        return jugadores;
+        return capitanService.buscarJugadores(posicion);
     }
 
     // ── Arbitros ───────────────────────────────────────────────────────────────
@@ -376,8 +291,6 @@ public class UsuarioController {
                 .orElseThrow(() -> new IllegalArgumentException("Partido no encontrado"));
         arbitro.getAssignedMatches().add(partido);
         arbitroService.save(arbitro);
-        auditar(id, arbitro.getEmail(), TipoAccionAuditoria.ASIGNACION_ARBITRO_PARTIDO,
-                "Asignacion del arbitro al partido " + partidoId + ".");
         return "Arbitro asignado al partido correctamente";
     }
 
@@ -390,10 +303,7 @@ public class UsuarioController {
     @Operation(summary = "Start match", description = "The Referee changes the match status to EN_CURSO.")
     @PutMapping("/arbitros/{id}/partidos/{partidoId}/iniciar")
     public Partido iniciarPartido(@PathVariable Long id, @PathVariable Long partidoId) {
-        Partido partido = partidoService.iniciarPartido(partidoId);
-        auditar(id, "arbitro:" + id, TipoAccionAuditoria.INICIO_PARTIDO,
-                "Inicio del partido " + partidoId + ".");
-        return partido;
+        return partidoService.iniciarPartido(partidoId);
     }
 
     @Operation(summary = "Register result", description = "The Referee registers the match score.")
@@ -401,19 +311,13 @@ public class UsuarioController {
     public Partido registrarResultado(@PathVariable Long id, @PathVariable Long partidoId,
                                       @RequestBody Map<String, Integer> body) {
         partidoValidator.validarResultado(body.get("golesLocal"), body.get("golesVisitante"));
-        Partido partido = partidoService.registrarResultado(partidoId, body.get("golesLocal"), body.get("golesVisitante"));
-        auditar(id, "arbitro:" + id, TipoAccionAuditoria.REGISTRO_RESULTADO_PARTIDO,
-                "Registro de resultado del partido " + partidoId + ".");
-        return partido;
+        return partidoService.registrarResultado(partidoId, body.get("golesLocal"), body.get("golesVisitante"));
     }
 
     @Operation(summary = "End match", description = "The Referee closes the match and marks it as FINALIZADO.")
     @PutMapping("/arbitros/{id}/partidos/{partidoId}/finalizar")
     public Partido finalizarPartido(@PathVariable Long id, @PathVariable Long partidoId) {
-        Partido partido = partidoService.finalizarPartido(partidoId);
-        auditar(id, "arbitro:" + id, TipoAccionAuditoria.FINALIZACION_PARTIDO,
-                "Finalizacion del partido " + partidoId + ".");
-        return partido;
+        return partidoService.finalizarPartido(partidoId);
     }
 
     @Operation(summary = "Register goal scorer", description = "The Referee registers a goal indicating the player and the minute.")
@@ -423,10 +327,7 @@ public class UsuarioController {
         Long jugadorId = Long.valueOf(body.get("jugadorId").toString());
         int minuto = Integer.parseInt(body.get("minuto").toString());
         partidoValidator.validarGoleador(jugadorId, minuto);
-        Partido partido = partidoService.registrarGoleador(partidoId, jugadorId, minuto);
-        auditar(id, "arbitro:" + id, TipoAccionAuditoria.REGISTRO_GOLEADOR,
-                "Registro de goleador " + jugadorId + " en el partido " + partidoId + ".");
-        return partido;
+        return partidoService.registrarGoleador(partidoId, jugadorId, minuto);
     }
 
     @Operation(summary = "Register card", description = "The Referee registers a card (AMARILLA or ROJA) for a player.")
@@ -437,10 +338,7 @@ public class UsuarioController {
         Partido.Tarjeta.TipoTarjeta tipo = Partido.Tarjeta.TipoTarjeta.valueOf(body.get("tipo").toString());
         int minuto = Integer.parseInt(body.get("minuto").toString());
         partidoValidator.validarTarjeta(jugadorId, tipo, minuto);
-        Partido partido = partidoService.registrarTarjeta(partidoId, jugadorId, tipo, minuto);
-        auditar(id, "arbitro:" + id, TipoAccionAuditoria.REGISTRO_TARJETA,
-                "Registro de tarjeta " + tipo + " al jugador " + jugadorId + ".");
-        return partido;
+        return partidoService.registrarTarjeta(partidoId, jugadorId, tipo, minuto);
     }
 
     // ── Organizadores ──────────────────────────────────────────────────────────
@@ -454,46 +352,31 @@ public class UsuarioController {
     @Operation(summary = "Create tournament", description = "The Organizer creates a new tournament with name, dates, number of teams and registration cost.")
     @PostMapping("/organizadores/{id}/torneo")
     public Torneo crearTorneo(@PathVariable Long id, @RequestBody Torneo torneo) {
-        Torneo creado = organizadorService.crearTorneo(id, torneo);
-        auditar(id, "organizador:" + id, TipoAccionAuditoria.CREACION_TORNEO,
-                "Creacion del torneo " + creado.getNombre() + ".");
-        return creado;
+        return organizadorService.crearTorneo(id, torneo);
     }
 
     @Operation(summary = "Start tournament", description = "The Organizer changes the tournament status to EN_CURSO, enabling match registration.")
     @PatchMapping("/organizadores/{id}/torneo/iniciar")
     public Torneo iniciarTorneo(@PathVariable Long id) {
-        Torneo torneo = organizadorService.iniciarTorneo(id);
-        auditar(id, "organizador:" + id, TipoAccionAuditoria.INICIO_TORNEO,
-                "Inicio del torneo " + torneo.getNombre() + ".");
-        return torneo;
+        return organizadorService.iniciarTorneo(id);
     }
 
     @Operation(summary = "End tournament", description = "The Organizer closes the tournament and marks it as FINALIZADO.")
     @PatchMapping("/organizadores/{id}/torneo/finalizar")
     public Torneo finalizarTorneo(@PathVariable Long id) {
-        Torneo torneo = organizadorService.finalizarTorneo(id);
-        auditar(id, "organizador:" + id, TipoAccionAuditoria.FINALIZACION_TORNEO,
-                "Finalizacion del torneo " + torneo.getNombre() + ".");
-        return torneo;
+        return organizadorService.finalizarTorneo(id);
     }
 
     @Operation(summary = "View pending payments", description = "The Organizer queries all payment receipts that have not yet been verified.")
     @GetMapping("/organizadores/{id}/pagos/pendientes")
     public List<Pago> pagosPendientes(@PathVariable Long id) {
-        List<Pago> pagos = pagoService.consultarPagosPendientes();
-        auditar(id, "organizador:" + id, TipoAccionAuditoria.CONSULTA_PAGOS_PENDIENTES,
-                "Consulta de pagos pendientes.");
-        return pagos;
+        return pagoService.consultarPagosPendientes();
     }
 
     @Operation(summary = "Approve payment", description = "The Organizer approves a team's payment receipt, confirming their registration.")
     @PutMapping("/organizadores/{id}/pagos/{pagoId}/aprobar")
     public Pago aprobarPago(@PathVariable Long id, @PathVariable Long pagoId) {
-        Pago pago = pagoService.aprobarPago(pagoId);
-        auditar(id, "organizador:" + id, TipoAccionAuditoria.APROBACION_PAGO,
-                "Aprobacion del pago " + pagoId + ".");
-        return pago;
+        return pagoService.aprobarPago(pagoId);
     }
 
     @Operation(summary = "Configure tournament", description = "The Organizer defines the regulations, courts, schedules, sanctions and registration closing date.")
@@ -507,7 +390,7 @@ public class UsuarioController {
         if (torneoActual == null) throw new IllegalStateException("El organizador no tiene torneo activo");
         LocalDateTime cierre = body.containsKey("cierreInscripciones")
                 ? LocalDateTime.parse(body.get("cierreInscripciones").toString()) : null;
-        Torneo torneoConfigurado = torneoService.configurar(
+        return torneoService.configurar(
                 torneoActual.getId(),
                 body.getOrDefault("reglamento", "").toString(),
                 body.getOrDefault("canchas", "").toString(),
@@ -515,18 +398,12 @@ public class UsuarioController {
                 body.getOrDefault("sanciones", "").toString(),
                 cierre
         );
-        auditar(id, "organizador:" + id, TipoAccionAuditoria.CONFIGURACION_TORNEO,
-                "Configuracion del torneo " + torneoActual.getId() + ".");
-        return torneoConfigurado;
     }
 
     @Operation(summary = "Reject payment", description = "The Organizer rejects a team's payment receipt for being invalid or incomplete.")
     @PutMapping("/organizadores/{id}/pagos/{pagoId}/rechazar")
     public Pago rechazarPago(@PathVariable Long id, @PathVariable Long pagoId) {
-        Pago pago = pagoService.rechazarPago(pagoId);
-        auditar(id, "organizador:" + id, TipoAccionAuditoria.RECHAZO_PAGO,
-                "Rechazo del pago " + pagoId + ".");
-        return pago;
+        return pagoService.rechazarPago(pagoId);
     }
 
     @Operation(summary = "Create match", description = "The Organizer schedules a match between two teams within a tournament.")
@@ -538,22 +415,12 @@ public class UsuarioController {
         java.time.LocalDateTime fecha = java.time.LocalDateTime.parse(body.get("fecha").toString());
         String cancha = body.get("cancha").toString();
         partidoValidator.validarCrearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
-        Partido partido = partidoService.crearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
-        auditar(id, "organizador:" + id, TipoAccionAuditoria.CREACION_PARTIDO,
-                "Creacion del partido " + partido.getId() + ".");
-        return partido;
+        return partidoService.crearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
     }
 
     @PostMapping("/jugadores/{id}/foto")
     public String subirFotoJugador(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
-        String respuesta = jugadorService.subirFoto(id, file);
-        auditar(id, "jugador:" + id, TipoAccionAuditoria.CARGA_FOTO_JUGADOR,
-                "Carga de foto del jugador.");
-        return respuesta;
-    }
-
-    private void auditar(Long actorId, String usuario, TipoAccionAuditoria tipoAccion, String descripcion) {
-        auditoriaService.registrarEvento(actorId, usuario, tipoAccion, descripcion);
+        return jugadorService.subirFoto(id, file);
     }
 }
 
