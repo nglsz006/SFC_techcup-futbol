@@ -1,44 +1,21 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
-import jakarta.persistence.*;
 import java.util.List;
 
-@Entity
-@Table(name = "perfiles_deportivos")
 public class PerfilDeportivo {
 
-    public enum Genero { MASCULINO, FEMENINO, OTRO }
+    public enum Genero {
+        MASCULINO, FEMENINO, OTRO
+    }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "jugador_id", nullable = false)
     private Long jugadorId;
-
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "perfil_posiciones", joinColumns = @JoinColumn(name = "perfil_id"))
-    @Column(name = "posicion")
     private List<Jugador.Posicion> posiciones;
-
-    @Column(nullable = false)
     private int dorsal;
-
-    @Column
     private String foto;
-
-    @Column(nullable = false)
     private int edad;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Genero genero;
-
-    @Column(nullable = false)
     private String identificacion;
-
-    @Column
     private Integer semestre;
 
     public PerfilDeportivo() {}

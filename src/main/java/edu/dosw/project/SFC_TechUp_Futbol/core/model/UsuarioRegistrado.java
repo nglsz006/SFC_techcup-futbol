@@ -1,9 +1,5 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
-import jakarta.persistence.*;
-
-@Entity
-@DiscriminatorValue("USUARIO_REGISTRADO")
 public class UsuarioRegistrado extends Usuario {
 
     public UsuarioRegistrado() {}

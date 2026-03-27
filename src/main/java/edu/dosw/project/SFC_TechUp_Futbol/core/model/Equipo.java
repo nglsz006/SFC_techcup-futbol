@@ -1,40 +1,22 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
-import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "equipos")
 public class Equipo {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(nullable = false)
     private String nombre;
-
-    @Column
     private String escudo;
-
-    @Column(name = "color_principal", nullable = false)
     private String colorPrincipal;
-
-    @Column(name = "color_secundario")
     private String colorSecundario;
-
-    @Column(name = "capitan_id")
     private int capitanId;
+    private List<Integer> jugadores;
 
-    @ElementCollection
-    @CollectionTable(name = "equipo_jugadores", joinColumns = @JoinColumn(name = "equipo_id"))
-    @Column(name = "jugador_id")
-    private List<Integer> jugadores = new ArrayList<>();
+    public Equipo() {
+        this.jugadores = new ArrayList<>();
+    }
 
-    public Equipo() {}
-
-    public Equipo(int id, String nombre, String escudo, String colorPrincipal,
+    public Equipo(int id, String nombre, String escudo, String colorPrincipal, 
                   String colorSecundario, int capitanId) {
         this.id = id;
         this.nombre = nombre;
@@ -42,9 +24,12 @@ public class Equipo {
         this.colorPrincipal = colorPrincipal;
         this.colorSecundario = colorSecundario;
         this.capitanId = capitanId;
+        this.jugadores = new ArrayList<>();
     }
 
-    public void agregarJugador(int jugadorId) { this.jugadores.add(jugadorId); }
+    public void agregarJugador(int jugadorId) {
+        this.jugadores.add(jugadorId);
+    }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -67,3 +52,4 @@ public class Equipo {
     public List<Integer> getJugadores() { return jugadores; }
     public void setJugadores(List<Integer> jugadores) { this.jugadores = jugadores; }
 }
+

@@ -1,0 +1,36 @@
+package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
+
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Arbitro;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.ArbitroEntity;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ArbitroMapper {
+
+    public ArbitroEntity toEntity(Arbitro arbitro) {
+        if (arbitro == null) {
+            return null;
+        }
+        ArbitroEntity entity = new ArbitroEntity();
+        entity.setId(arbitro.getId());
+        entity.setName(arbitro.getName());
+        entity.setEmail(arbitro.getEmail());
+        entity.setPassword(arbitro.getPassword());
+        entity.setUserType(arbitro.getUserType());
+        return entity;
+    }
+
+    public Arbitro toDomain(ArbitroEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        Arbitro arbitro = new Arbitro();
+        arbitro.setId(entity.getId());
+        arbitro.setName(entity.getName());
+        arbitro.setEmail(entity.getEmail());
+        arbitro.setPassword(entity.getPassword());
+        arbitro.setUserType(entity.getUserType());
+        // assignedMatches se carga aparte si se necesita (evita ciclos)
+        return arbitro;
+    }
+}
