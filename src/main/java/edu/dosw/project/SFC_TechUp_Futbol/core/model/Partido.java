@@ -24,7 +24,8 @@ public class Partido {
     private Equipo equipoLocal;
     private Equipo equipoVisitante;
     private List<Gol> goles = new ArrayList<>();
-    private List<Tarjeta> tarjetas = new ArrayList<>();
+    private List<Sancion> sanciones = new ArrayList<>();
+
     private PartidoState state;
 
     public Partido() {
@@ -66,8 +67,8 @@ public class Partido {
     public List<Gol> getGoles() { return goles; }
     public void setGoles(List<Gol> goles) { this.goles = goles; }
 
-    public List<Tarjeta> getTarjetas() { return tarjetas; }
-    public void setTarjetas(List<Tarjeta> tarjetas) { this.tarjetas = tarjetas; }
+    public List<Sancion> getSanciones() { return sanciones; }
+    public void setSanciones(List<Sancion> sanciones) { this.sanciones = sanciones; }
 
     public PartidoState getState() { return state; }
     public void setState(PartidoState state) { this.state = state; }

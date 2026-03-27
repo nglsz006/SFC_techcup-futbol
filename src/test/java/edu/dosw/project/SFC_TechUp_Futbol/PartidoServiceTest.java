@@ -43,13 +43,13 @@ class PartidoServiceTest {
     @Test
     void crearPartido_mismoEquipo_lanzaExcepcion() {
         assertThrows(IllegalArgumentException.class, () ->
-            service.crearPartido((long) torneo.getId(), (long) local.getId(), (long) local.getId(), LocalDateTime.now(), "cancha 1"));
+                service.crearPartido((long) torneo.getId(), (long) local.getId(), (long) local.getId(), LocalDateTime.now(), "cancha 1"));
     }
 
     @Test
     void crearPartido_torneoInexistente_lanzaExcepcion() {
         assertThrows(RuntimeException.class, () ->
-            service.crearPartido(99L, (long) local.getId(), (long) visitante.getId(), LocalDateTime.now(), "cancha 1"));
+                service.crearPartido(99L, (long) local.getId(), (long) visitante.getId(), LocalDateTime.now(), "cancha 1"));
     }
 
     @Test
@@ -95,13 +95,48 @@ class PartidoServiceTest {
     }
 
     @Test
-    void registrarTarjeta_enCurso_agregaTarjeta() {
+    void registrarSancion_enCurso_agregaSancionAlPartidoYAlJugador() {
         Jugador jugador = new Jugador(1L, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
         jugadorRepo.save(jugador);
         Partido p = service.crearPartido((long) torneo.getId(), (long) local.getId(), (long) visitante.getId(), LocalDateTime.now(), "cancha 1");
         service.iniciarPartido(p.getId());
-        Partido con_tarjeta = service.registrarTarjeta(p.getId(), 1L, Partido.Tarjeta.TipoTarjeta.AMARILLA, 45);
-        assertEquals(1, con_tarjeta.getTarjetas().size());
+        Partido conSancion = service.registrarSancion(p.getId(), 1L, Sancion.TipoSancion.TARJETA_AMARILLA, "Falta reiterada sobre el rival");
+        assertEquals(1, conSancion.getSanciones().size());
+        assertEquals(Sancion.TipoSancion.TARJETA_AMARILLA, conSancion.getSanciones().get(0).getTipoSancion());
+        assertEquals("Falta reiterada sobre el rival", conSancion.getSanciones().get(0).getDescripcion());
+        assertTrue(jugador.tieneSancion(Sancion.TipoSancion.TARJETA_AMARILLA));
+    }
+
+    @Test
+    void registrarSancion_noEnCurso_lanzaExcepcion() {
+        Jugador jugador = new Jugador(1L, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
+        jugadorRepo.save(jugador);
+        Partido p = service.crearPartido((long) torneo.getId(), (long) local.getId(), (long) visitante.getId(), LocalDateTime.now(), "cancha 1");
+        assertThrows(IllegalStateException.class, () ->
+                service.registrarSancion(p.getId(), 1L, Sancion.TipoSancion.TARJETA_ROJA, "Juego brusco"));
+    }
+
+    @Test
+    void registrarSancion_agresionVerbal_agregaCorrectamente() {
+        Jugador jugador = new Jugador(1L, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
+        jugadorRepo.save(jugador);
+        Partido p = service.crearPartido((long) torneo.getId(), (long) local.getId(), (long) visitante.getId(), LocalDateTime.now(), "cancha 1");
+        service.iniciarPartido(p.getId());
+        service.registrarSancion(p.getId(), 1L, Sancion.TipoSancion.AGRESION_VERBAL, "Insultos al árbitro en el minuto 35");
+        assertTrue(jugador.tieneSancion(Sancion.TipoSancion.AGRESION_VERBAL));
+        assertEquals(1, jugador.getSancionesPorTipo(Sancion.TipoSancion.AGRESION_VERBAL).size());
+    }
+
+    @Test
+    void registrarSancion_multiplesSancionesAlMismoJugador_acumula() {
+        Jugador jugador = new Jugador(1L, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
+        jugadorRepo.save(jugador);
+        Partido p = service.crearPartido((long) torneo.getId(), (long) local.getId(), (long) visitante.getId(), LocalDateTime.now(), "cancha 1");
+        service.iniciarPartido(p.getId());
+        service.registrarSancion(p.getId(), 1L, Sancion.TipoSancion.TARJETA_AMARILLA, "Primera falta en minuto 20");
+        service.registrarSancion(p.getId(), 1L, Sancion.TipoSancion.TARJETA_AMARILLA, "Segunda falta en minuto 60");
+        assertEquals(2, jugador.getSancionesPorTipo(Sancion.TipoSancion.TARJETA_AMARILLA).size());
+        assertEquals(2, jugador.getSanciones().size());
     }
 
     @Test

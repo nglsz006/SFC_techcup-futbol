@@ -53,52 +53,52 @@ public class UsuarioController {
         this.perfilDeportivoService = perfilDeportivoService;
     }
 
-    // ── Jugadores ──────────────────────────────────────────────────────────────
 
     @Operation(summary = "Get actions by actor", description = "Returns the available actions for a system actor. Valid actors: jugador, capitan, arbitro, organizador.")
     @GetMapping("/{actor}")
     public Map<String, Object> accionesPorActor(@PathVariable String actor) {
         Map<String, List<String>> acciones = new LinkedHashMap<>();
         acciones.put("jugador", List.of(
-            "POST   /api/usuarios/jugadores                        - Crear jugador",
-            "GET    /api/usuarios/jugadores                        - Listar jugadores",
-            "PATCH  /api/usuarios/jugadores/{id}/perfil            - Editar perfil deportivo",
-            "PATCH  /api/usuarios/jugadores/{id}/aceptarInvitacion - Aceptar invitacion",
-            "PATCH  /api/usuarios/jugadores/{id}/rechazarInvitacion- Rechazar invitacion",
-            "PATCH  /api/usuarios/jugadores/{id}/disponibilidad    - Marcar disponibilidad"
+                "POST   /api/usuarios/jugadores                        - Crear jugador",
+                "GET    /api/usuarios/jugadores                        - Listar jugadores",
+                "PATCH  /api/usuarios/jugadores/{id}/perfil            - Editar perfil deportivo",
+                "PATCH  /api/usuarios/jugadores/{id}/aceptarInvitacion - Aceptar invitacion",
+                "PATCH  /api/usuarios/jugadores/{id}/rechazarInvitacion- Rechazar invitacion",
+                "PATCH  /api/usuarios/jugadores/{id}/disponibilidad    - Marcar disponibilidad"
         ));
         acciones.put("capitan", List.of(
-            "POST   /api/usuarios/capitanes                              - Crear capitan",
-            "GET    /api/usuarios/capitanes                              - Listar capitanes",
-            "POST   /api/usuarios/capitanes/{id}/equipo                  - Crear equipo",
-            "GET    /api/usuarios/capitanes/{id}/equipo/validar          - Validar composicion del equipo",
-            "POST   /api/usuarios/capitanes/{id}/invitar/{jugadorId}     - Invitar jugador",
-            "POST   /api/usuarios/capitanes/{id}/alineacion              - Definir alineacion",
-            "POST   /api/usuarios/capitanes/{id}/comprobante             - Subir comprobante de pago",
-            "GET    /api/usuarios/capitanes/{id}/buscarJugadores         - Buscar jugadores por posicion"
+                "POST   /api/usuarios/capitanes                              - Crear capitan",
+                "GET    /api/usuarios/capitanes                              - Listar capitanes",
+                "POST   /api/usuarios/capitanes/{id}/equipo                  - Crear equipo",
+                "GET    /api/usuarios/capitanes/{id}/equipo/validar          - Validar composicion del equipo",
+                "POST   /api/usuarios/capitanes/{id}/invitar/{jugadorId}     - Invitar jugador",
+                "POST   /api/usuarios/capitanes/{id}/alineacion              - Definir alineacion",
+                "POST   /api/usuarios/capitanes/{id}/comprobante             - Subir comprobante de pago",
+                "GET    /api/usuarios/capitanes/{id}/buscarJugadores         - Buscar jugadores por posicion"
         ));
+
         acciones.put("arbitro", List.of(
-            "POST   /api/admin/usuarios                                        - Registrar arbitro (solo administrador)",
-            "GET    /api/usuarios/arbitros                                    - Listar arbitros",
-            "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}          - Asignar arbitro a partido",
-            "GET    /api/usuarios/arbitros/{id}/partidos                      - Consultar partidos asignados",
-            "PUT    /api/usuarios/arbitros/{id}/partidos/{partidoId}/iniciar   - Iniciar partido",
-            "PUT    /api/usuarios/arbitros/{id}/partidos/{partidoId}/resultado - Registrar resultado",
-            "PUT    /api/usuarios/arbitros/{id}/partidos/{partidoId}/finalizar - Finalizar partido",
-            "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}/goles     - Registrar goleador",
-            "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}/tarjetas  - Registrar tarjeta"
+                "POST   /api/admin/usuarios                                        - Registrar arbitro (solo administrador)",
+                "GET    /api/usuarios/arbitros                                    - Listar arbitros",
+                "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}          - Asignar arbitro a partido",
+                "GET    /api/usuarios/arbitros/{id}/partidos                      - Consultar partidos asignados",
+                "PUT    /api/usuarios/arbitros/{id}/partidos/{partidoId}/iniciar   - Iniciar partido",
+                "PUT    /api/usuarios/arbitros/{id}/partidos/{partidoId}/resultado - Registrar resultado",
+                "PUT    /api/usuarios/arbitros/{id}/partidos/{partidoId}/finalizar - Finalizar partido",
+                "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}/goles     - Registrar goleador",
+                "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}/sanciones  - Registrar sanción"
         ));
         acciones.put("organizador", List.of(
-            "POST   /api/admin/usuarios                                                - Registrar organizador (solo administrador)",
-            "GET    /api/usuarios/organizadores                                        - Listar organizadores",
-            "POST   /api/usuarios/organizadores/{id}/torneo                            - Crear torneo",
-            "PATCH  /api/usuarios/organizadores/{id}/torneo/iniciar                    - Iniciar torneo",
-            "PATCH  /api/usuarios/organizadores/{id}/torneo/finalizar                  - Finalizar torneo",
-            "PATCH  /api/usuarios/organizadores/{id}/torneo/configurar                 - Configurar torneo",
-            "POST   /api/usuarios/organizadores/{id}/partidos                          - Crear partido",
-            "GET    /api/usuarios/organizadores/{id}/pagos/pendientes                  - Ver pagos pendientes",
-            "PUT    /api/usuarios/organizadores/{id}/pagos/{pagoId}/aprobar            - Aprobar pago",
-            "PUT    /api/usuarios/organizadores/{id}/pagos/{pagoId}/rechazar           - Rechazar pago"
+                "POST   /api/admin/usuarios                                                - Registrar organizador (solo administrador)",
+                "GET    /api/usuarios/organizadores                                        - Listar organizadores",
+                "POST   /api/usuarios/organizadores/{id}/torneo                            - Crear torneo",
+                "PATCH  /api/usuarios/organizadores/{id}/torneo/iniciar                    - Iniciar torneo",
+                "PATCH  /api/usuarios/organizadores/{id}/torneo/finalizar                  - Finalizar torneo",
+                "PATCH  /api/usuarios/organizadores/{id}/torneo/configurar                 - Configurar torneo",
+                "POST   /api/usuarios/organizadores/{id}/partidos                          - Crear partido",
+                "GET    /api/usuarios/organizadores/{id}/pagos/pendientes                  - Ver pagos pendientes",
+                "PUT    /api/usuarios/organizadores/{id}/pagos/{pagoId}/aprobar            - Aprobar pago",
+                "PUT    /api/usuarios/organizadores/{id}/pagos/{pagoId}/rechazar           - Rechazar pago"
         ));
 
         String actorNormalizado = actor.toLowerCase();
@@ -120,15 +120,15 @@ public class UsuarioController {
     public Jugador crearJugador(@RequestBody Map<String, Object> body) {
         Long id = (long) (jugadorService.getJugadores().size() + 1);
         Jugador jugador = new Jugador(
-            id,
-            body.get("nombre").toString(),
-            body.get("email").toString(),
-            body.get("password").toString(),
-            Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString()),
-            Integer.parseInt(body.get("numeroCamiseta").toString()),
-            Jugador.Posicion.valueOf(body.get("posicion").toString()),
-            true,
-            body.getOrDefault("foto", "").toString()
+                id,
+                body.get("nombre").toString(),
+                body.get("email").toString(),
+                body.get("password").toString(),
+                Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString()),
+                Integer.parseInt(body.get("numeroCamiseta").toString()),
+                Jugador.Posicion.valueOf(body.get("posicion").toString()),
+                true,
+                body.getOrDefault("foto", "").toString()
         );
         return jugadorRepository.save(jugador);
     }
@@ -192,7 +192,6 @@ public class UsuarioController {
         return "Jugador marcado como disponible";
     }
 
-    // ── Capitanes ──────────────────────────────────────────────────────────────
 
     @Operation(summary = "Create captain", description = "Registers a new Captain. The Captain is a Player with permissions to manage a team.")
     @PostMapping("/capitanes")
@@ -206,16 +205,16 @@ public class UsuarioController {
             throw new IllegalArgumentException("Valor de tipoUsuario o posicion no valido");
         }
         Capitan capitan = new Capitan(
-            null,
-            body.get("nombre").toString(),
-            body.get("email").toString(),
-            body.get("password").toString(),
-            tipoUsuario,
-            Integer.parseInt(body.get("numeroCamiseta").toString()),
-            posicion,
-            true,
-            body.getOrDefault("foto", "").toString(),
-            null
+                null,
+                body.get("nombre").toString(),
+                body.get("email").toString(),
+                body.get("password").toString(),
+                tipoUsuario,
+                Integer.parseInt(body.get("numeroCamiseta").toString()),
+                posicion,
+                true,
+                body.getOrDefault("foto", "").toString(),
+                null
         );
         return capitanService.save(capitan);
     }
@@ -271,8 +270,6 @@ public class UsuarioController {
     public List<Jugador> buscarJugadores(@PathVariable Long id, @RequestParam String posicion) {
         return capitanService.buscarJugadores(posicion);
     }
-
-    // ── Arbitros ───────────────────────────────────────────────────────────────
 
     @Operation(summary = "List referees", description = "Returns all available referees in the system.")
     @GetMapping("/arbitros")
@@ -330,16 +327,23 @@ public class UsuarioController {
         return partidoService.registrarGoleador(partidoId, jugadorId, minuto);
     }
 
-    @Operation(summary = "Register card", description = "The Referee registers a card (AMARILLA or ROJA) for a player.")
-    @PostMapping("/arbitros/{id}/partidos/{partidoId}/tarjetas")
-    public Partido registrarTarjeta(@PathVariable Long id, @PathVariable Long partidoId,
+    @Operation(summary = "Register sanction", description = "Registers a sanction for a player with type and description.")
+    @PostMapping("/arbitros/{id}/partidos/{partidoId}/sanciones")
+    public Partido registrarSancion(@PathVariable Long id, @PathVariable Long partidoId,
                                     @RequestBody Map<String, Object> body) {
         Long jugadorId = Long.valueOf(body.get("jugadorId").toString());
-        Partido.Tarjeta.TipoTarjeta tipo = Partido.Tarjeta.TipoTarjeta.valueOf(body.get("tipo").toString());
-        int minuto = Integer.parseInt(body.get("minuto").toString());
-        partidoValidator.validarTarjeta(jugadorId, tipo, minuto);
-        return partidoService.registrarTarjeta(partidoId, jugadorId, tipo, minuto);
+        Sancion.TipoSancion tipoSancion = Sancion.TipoSancion.valueOf(body.get("tipoSancion").toString());
+        String descripcion = body.get("descripcion").toString();
+        Jugador jugador = jugadorRepository.findById(jugadorId)
+                .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado"));
+        Sancion sancion = new Sancion();
+        sancion.setJugador(jugador);
+        sancion.setTipoSancion(tipoSancion);
+        sancion.setDescripcion(descripcion);
+        partidoValidator.validarSancion(sancion);
+        return partidoService.registrarSancion(partidoId, jugadorId, tipoSancion, descripcion);
     }
+
 
     // ── Organizadores ──────────────────────────────────────────────────────────
 
@@ -423,6 +427,3 @@ public class UsuarioController {
         return jugadorService.subirFoto(id, file);
     }
 }
-
-
-
