@@ -1,9 +1,9 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Entity
-@DiscriminatorValue("JUGADOR")
 public class Jugador extends Usuario {
 
     public enum Posicion { PORTERO, DEFENSA, VOLANTE, DELANTERO }
@@ -23,6 +23,7 @@ public class Jugador extends Usuario {
 
     @Column(name = "equipo_id")
     private Integer equipoId;
+    private ArrayList<Sancion> sanciones = new ArrayList<>();
 
     public Jugador() {}
 
@@ -47,6 +48,34 @@ public class Jugador extends Usuario {
     public String getPhoto() { return photo; }
     public void setPhoto(String photo) { this.photo = photo; }
 
+public void setAvailable(boolean available) {
+        this.available = available;
+    }
+    public String getPhoto() {
+        return photo;
+    }
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
     public Integer getEquipo() { return equipoId; }
     public void setEquipo(Integer equipoId) { this.equipoId = equipoId; }
+
+    public ArrayList<Sancion> getSanciones() {
+        return sanciones;
+    }
+    public void setSanciones(ArrayList<Sancion> sanciones) {
+        this.sanciones = sanciones;
+    }
+    public void agregarSancion(Sancion sancion) {
+        this.sanciones.add(sancion);
+    }
+    public List<Sancion> getSancionesPorTipo(Sancion.TipoSancion tipo) {
+        return sanciones.stream()
+                .filter(s -> s.getTipoSancion() == tipo)
+                .collect(Collectors.toList());
+    }
+    public boolean tieneSancion(Sancion.TipoSancion tipo) {
+        return sanciones.stream()
+                .anyMatch(s -> s.getTipoSancion() == tipo);
+    }
 }

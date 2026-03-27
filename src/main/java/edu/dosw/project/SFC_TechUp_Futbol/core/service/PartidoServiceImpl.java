@@ -99,20 +99,21 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
-    public Partido registrarTarjeta(Long partidoId, Long jugadorId, Partido.Tarjeta.TipoTarjeta tipo, int minuto) {
+    public Partido registrarSancion(Long partidoId, Long jugadorId, Sancion.TipoSancion tipoSancion, String descripcion) {
         Partido partido = getPartidoOrThrow(partidoId);
         validarPartidoEnCurso(partido);
 
         Jugador jugador = jugadorRepository.findById(jugadorId)
                 .orElseThrow(() -> new RuntimeException("Jugador no encontrado con id: " + jugadorId));
 
-        Partido.Tarjeta tarjeta = new Partido.Tarjeta();
-        tarjeta.setJugador(jugador);
-        tarjeta.setTipo(tipo);
-        tarjeta.setMinuto(minuto);
-        partido.getTarjetas().add(tarjeta);
+        Sancion sancion = new Sancion();
+        sancion.setJugador(jugador);
+        sancion.setTipoSancion(tipoSancion);
+        sancion.setDescripcion(descripcion);
+        partido.getSanciones().add(sancion);
+        jugador.agregarSancion(sancion);
 
-        log.info("Tarjeta registrada");
+        log.info("Sanción registrada");
         return partidoRepository.save(partido);
     }
 
