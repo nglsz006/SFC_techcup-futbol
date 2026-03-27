@@ -1,10 +1,9 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.validator;
 
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Sancion;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 public class PartidoValidator {
@@ -30,11 +29,10 @@ public class PartidoValidator {
         if (minuto < 1 || minuto > 120) throw new IllegalArgumentException("El minuto debe estar entre 1 y 120.");
     }
 
-    public void validarTarjeta(Long jugadorId, Partido.Tarjeta.TipoTarjeta tipo, int minuto) {
-        if (jugadorId == null) throw new IllegalArgumentException("El id del jugador es obligatorio.");
-        if (tipo == null) throw new IllegalArgumentException("El tipo de tarjeta es obligatorio (AMARILLA o ROJA).");
-        if (minuto < 1 || minuto > 120) throw new IllegalArgumentException("El minuto debe estar entre 1 y 120.");
+    public void validarSancion(Sancion sancion) {
+        if (sancion == null) throw new IllegalArgumentException("La sanción no puede ser nula.");
+        if (sancion.getJugador() == null) throw new IllegalArgumentException("El jugador sancionado es obligatorio.");
+        if (sancion.getTipoSancion() == null) throw new IllegalArgumentException("El tipo de sanción es obligatorio.");
+        if (sancion.getDescripcion() == null || sancion.getDescripcion().isBlank()) throw new IllegalArgumentException("La descripción de la sanción es obligatoria.");
     }
-
 }
-
