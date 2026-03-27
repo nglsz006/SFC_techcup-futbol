@@ -267,9 +267,9 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(Map.of("jugadorId", jugador.getId(), "minuto", 10))))
                 .andExpect(status().isOk());
-        usuarioMvc.perform(post("/api/usuarios/arbitros/" + arbId + "/partidos/" + pid + "/tarjetas")
+        usuarioMvc.perform(post("/api/usuarios/arbitros/" + arbId + "/partidos/" + pid + "/sanciones")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(Map.of("jugadorId", jugador.getId(), "tipo", "AMARILLA", "minuto", 30))))
+                        .content(mapper.writeValueAsString(Map.of("jugadorId", jugador.getId(), "tipoSancion", "TARJETA_AMARILLA", "descripcion", "Falta reiterada en minuto 30"))))
                 .andExpect(status().isOk());
         usuarioMvc.perform(put("/api/usuarios/arbitros/" + arbId + "/partidos/" + pid + "/resultado")
                         .contentType(MediaType.APPLICATION_JSON)
