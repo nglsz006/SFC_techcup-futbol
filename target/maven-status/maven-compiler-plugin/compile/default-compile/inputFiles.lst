@@ -92,6 +92,8 @@ c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\core\service\TorneoService.java
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\core\util\AccesoMapper.java
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\core\util\IdGeneratorUtil.java
+c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\core\util\JwtFilter.java
+c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\core\util\JwtService.java
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\core\util\PasswordUtil.java
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\core\validator\AccesoValidator.java
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\core\validator\AdministradorValidator.java
@@ -168,5 +170,6 @@ c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\TorneoRepositoryJpaImpl.java
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\UsuarioRegistradoJpaRepository.java
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\UsuarioRegistradoRepositoryJpaImpl.java
+c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\SecurityConfig.java
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\SFCTechCupFutbolApiApplication.java
 c:\Users\ADMIN\terminar final\SFC_techcup-futbol\src\main\java\edu\dosw\project\SFC_TechUp_Futbol\SwaggerConfig.java
