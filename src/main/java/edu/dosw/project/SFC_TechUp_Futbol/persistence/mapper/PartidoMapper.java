@@ -38,7 +38,6 @@ public class PartidoMapper {
         entity.setEquipoLocal(equipoMapper.toEntity(partido.getEquipoLocal()));
         entity.setEquipoVisitante(equipoMapper.toEntity(partido.getEquipoVisitante()));
         entity.setGoles(golesAEntity(partido.getGoles(), entity));
-        entity.setTarjetas(tarjetasAEntity(partido.getTarjetas(), entity));
         return entity;
     }
 
@@ -58,7 +57,6 @@ public class PartidoMapper {
         partido.setEquipoLocal(equipoMapper.toDomain(entity.getEquipoLocal()));
         partido.setEquipoVisitante(equipoMapper.toDomain(entity.getEquipoVisitante()));
         partido.setGoles(golesADomain(entity.getGoles()));
-        partido.setTarjetas(tarjetasADomain(entity.getTarjetas()));
         return partido;
     }
 
