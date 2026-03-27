@@ -8,27 +8,16 @@ public class Jugador extends Usuario {
 
     public enum Posicion { PORTERO, DEFENSA, VOLANTE, DELANTERO }
 
-    @Column(name = "jersey_number")
     private int jerseyNumber;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "posicion")
     private Posicion position;
-
-    @Column(name = "available")
     private boolean available;
-
-    @Column(name = "photo")
     private String photo;
-
-    @Column(name = "equipo_id")
     private Integer equipoId;
     private ArrayList<Sancion> sanciones = new ArrayList<>();
 
     public Jugador() {}
 
-    public Jugador(Long id, String name, String email, String password, TipoUsuario userType,
-                   int jerseyNumber, Posicion position, boolean available, String photo) {
+    public Jugador(Long id, String name, String email, String password, TipoUsuario userType, int jerseyNumber, Posicion position, boolean available, String photo) {
         super(id, name, email, password, userType);
         this.jerseyNumber = jerseyNumber;
         this.position = position;
@@ -36,17 +25,25 @@ public class Jugador extends Usuario {
         this.photo = photo;
     }
 
-    public int getJerseyNumber() { return jerseyNumber; }
-    public void setJerseyNumber(int jerseyNumber) { this.jerseyNumber = jerseyNumber; }
+    public int getJerseyNumber() {
+        return jerseyNumber;
+    }
 
-    public Posicion getPosition() { return position; }
-    public void setPosition(Posicion position) { this.position = position; }
+    public void setJerseyNumber(int jerseyNumber) {
+        this.jerseyNumber = jerseyNumber;
+    }
 
-    public boolean isAvailable() { return available; }
-    public void setAvailable(boolean available) { this.available = available; }
+    public Posicion getPosition() {
+        return position;
+    }
 
-    public String getPhoto() { return photo; }
-    public void setPhoto(String photo) { this.photo = photo; }
+    public void setPosition(Posicion position) {
+        this.position = position;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
 
 public void setAvailable(boolean available) {
         this.available = available;

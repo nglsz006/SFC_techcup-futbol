@@ -1,11 +1,8 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
-import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "alineaciones")
 public class Alineacion {
 
     public enum Formacion {
@@ -23,37 +20,25 @@ public class Alineacion {
         }
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(name = "equipo_id")
     private int equipoId;
-
-    @Column(name = "partido_id")
     private int partidoId;
-
-    @Enumerated(EnumType.STRING)
-    @Column
     private Formacion formacion;
+    private List<Integer> titulares;
+    private List<Integer> reservas;
 
-    @ElementCollection
-    @CollectionTable(name = "alineacion_titulares", joinColumns = @JoinColumn(name = "alineacion_id"))
-    @Column(name = "jugador_id")
-    private List<Integer> titulares = new ArrayList<>();
-
-    @ElementCollection
-    @CollectionTable(name = "alineacion_reservas", joinColumns = @JoinColumn(name = "alineacion_id"))
-    @Column(name = "jugador_id")
-    private List<Integer> reservas = new ArrayList<>();
-
-    public Alineacion() {}
+    public Alineacion() {
+        this.titulares = new ArrayList<>();
+        this.reservas = new ArrayList<>();
+    }
 
     public Alineacion(int id, int equipoId, int partidoId, Formacion formacion) {
         this.id = id;
         this.equipoId = equipoId;
         this.partidoId = partidoId;
         this.formacion = formacion;
+        this.titulares = new ArrayList<>();
+        this.reservas = new ArrayList<>();
     }
 
     public int getId() { return id; }
@@ -74,3 +59,4 @@ public class Alineacion {
     public List<Integer> getReservas() { return reservas; }
     public void setReservas(List<Integer> reservas) { this.reservas = reservas; }
 }
+

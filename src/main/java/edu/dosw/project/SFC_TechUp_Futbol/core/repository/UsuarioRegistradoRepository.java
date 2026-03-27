@@ -1,9 +1,12 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.repository;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
-import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 import java.util.Optional;
 
-public interface UsuarioRegistradoRepository extends JpaRepository<UsuarioRegistrado, Long> {
+public interface UsuarioRegistradoRepository {
+    UsuarioRegistrado save(UsuarioRegistrado usuario);
     Optional<UsuarioRegistrado> findByEmail(String email);
+    List<UsuarioRegistrado> findAll();
 }

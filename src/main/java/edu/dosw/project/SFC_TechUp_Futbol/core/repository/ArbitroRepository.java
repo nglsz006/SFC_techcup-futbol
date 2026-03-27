@@ -1,9 +1,13 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.repository;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Arbitro;
-import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 import java.util.Optional;
 
-public interface ArbitroRepository extends JpaRepository<Arbitro, Long> {
+public interface ArbitroRepository {
+    Arbitro save(Arbitro arbitro);
+    Optional<Arbitro> findById(Long id);
     Optional<Arbitro> findByEmail(String email);
+    List<Arbitro> findAll();
 }
