@@ -8,6 +8,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,13 +31,14 @@ public class UsuarioController {
     private final PartidoValidator partidoValidator;
     private final EquipoService equipoService;
     private final TorneoService torneoService;
+    private final PerfilDeportivoService perfilDeportivoService;
 
     public UsuarioController(JugadorService jugadorService, JugadorRepository jugadorRepository,
                              CapitanService capitanService, ArbitroService arbitroService,
                              PartidoRepository partidoRepository, OrganizadorService organizadorService,
                              PagoService pagoService, PartidoService partidoService,
                              PartidoValidator partidoValidator, EquipoService equipoService,
-                             TorneoService torneoService) {
+                             TorneoService torneoService, PerfilDeportivoService perfilDeportivoService) {
         this.jugadorService = jugadorService;
         this.jugadorRepository = jugadorRepository;
         this.capitanService = capitanService;
@@ -48,6 +50,7 @@ public class UsuarioController {
         this.partidoValidator = partidoValidator;
         this.equipoService = equipoService;
         this.torneoService = torneoService;
+        this.perfilDeportivoService = perfilDeportivoService;
     }
 
 
@@ -73,8 +76,9 @@ public class UsuarioController {
                 "POST   /api/usuarios/capitanes/{id}/comprobante             - Subir comprobante de pago",
                 "GET    /api/usuarios/capitanes/{id}/buscarJugadores         - Buscar jugadores por posicion"
         ));
+
         acciones.put("arbitro", List.of(
-                "POST   /api/usuarios/arbitros                                    - Crear arbitro",
+                "POST   /api/admin/usuarios                                        - Registrar arbitro (solo administrador)",
                 "GET    /api/usuarios/arbitros                                    - Listar arbitros",
                 "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}          - Asignar arbitro a partido",
                 "GET    /api/usuarios/arbitros/{id}/partidos                      - Consultar partidos asignados",
@@ -85,7 +89,7 @@ public class UsuarioController {
                 "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}/sanciones  - Registrar sanción"
         ));
         acciones.put("organizador", List.of(
-                "POST   /api/usuarios/organizadores                                        - Crear organizador",
+                "POST   /api/admin/usuarios                                                - Registrar organizador (solo administrador)",
                 "GET    /api/usuarios/organizadores                                        - Listar organizadores",
                 "POST   /api/usuarios/organizadores/{id}/torneo                            - Crear torneo",
                 "PATCH  /api/usuarios/organizadores/{id}/torneo/iniciar                    - Iniciar torneo",
@@ -143,6 +147,28 @@ public class UsuarioController {
         Jugador.Posicion posicion = body.containsKey("posicion") ? Jugador.Posicion.valueOf(body.get("posicion").toString()) : null;
         String foto = body.getOrDefault("foto", "").toString();
         return jugadorService.editarPerfil(id, nombre, numeroCamiseta, posicion, foto);
+    }
+
+    @Operation(summary = "Create sports profile", description = "The Player creates their sports profile with positions, jersey number, age, gender and ID.")
+    @PostMapping("/jugadores/{id}/perfil")
+    public PerfilDeportivo crearPerfilDeportivo(@PathVariable Long id,
+                                                @RequestBody Map<String, Object> body) {
+        List<Jugador.Posicion> posiciones = ((List<?>) body.get("posiciones")).stream()
+                .map(p -> Jugador.Posicion.valueOf(p.toString()))
+                .toList();
+        int dorsal = Integer.parseInt(body.get("dorsal").toString());
+        String foto = body.getOrDefault("foto", "").toString();
+        int edad = Integer.parseInt(body.get("edad").toString());
+        PerfilDeportivo.Genero genero = PerfilDeportivo.Genero.valueOf(body.get("genero").toString());
+        String identificacion = body.get("identificacion").toString();
+        Integer semestre = body.containsKey("semestre") ? Integer.parseInt(body.get("semestre").toString()) : null;
+        return perfilDeportivoService.crearPerfil(id, posiciones, dorsal, foto, edad, genero, identificacion, semestre);
+    }
+
+    @Operation(summary = "Get sports profile", description = "Returns the sports profile of a player.")
+    @GetMapping("/jugadores/{id}/perfil")
+    public PerfilDeportivo consultarPerfilDeportivo(@PathVariable Long id) {
+        return perfilDeportivoService.consultarPerfil(id);
     }
 
     @Operation(summary = "Accept invitation", description = "The Player accepts the invitation sent by a Captain to join their team.")
@@ -245,20 +271,6 @@ public class UsuarioController {
         return capitanService.buscarJugadores(posicion);
     }
 
-
-    @Operation(summary = "Create referee", description = "The Organizer registers a new Referee in the system.")
-    @PostMapping("/arbitros")
-    public Arbitro crearArbitro(@RequestBody Map<String, Object> body) {
-        Arbitro arbitro = new Arbitro(
-                null,
-                body.get("nombre").toString(),
-                body.get("email").toString(),
-                body.get("password").toString(),
-                Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString())
-        );
-        return arbitroService.save(arbitro);
-    }
-
     @Operation(summary = "List referees", description = "Returns all available referees in the system.")
     @GetMapping("/arbitros")
     public List<Arbitro> listarArbitros() {
@@ -332,19 +344,8 @@ public class UsuarioController {
         return partidoService.registrarSancion(partidoId, jugadorId, tipoSancion, descripcion);
     }
 
-    @Operation(summary = "Create organizer", description = "Registers a new Organizer, responsible for managing the tournament.")
-    @PostMapping("/organizadores")
-    public Organizador crearOrganizador(@RequestBody Map<String, Object> body) {
-        Organizador organizador = new Organizador(
-                null,
-                body.get("nombre").toString(),
-                body.get("email").toString(),
-                body.get("password").toString(),
-                Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString()),
-                null
-        );
-        return organizadorService.save(organizador);
-    }
+
+    // ── Organizadores ──────────────────────────────────────────────────────────
 
     @Operation(summary = "List organizers", description = "Returns all organizers registered in the system.")
     @GetMapping("/organizadores")
@@ -419,5 +420,10 @@ public class UsuarioController {
         String cancha = body.get("cancha").toString();
         partidoValidator.validarCrearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
         return partidoService.crearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
+    }
+
+    @PostMapping("/jugadores/{id}/foto")
+    public String subirFotoJugador(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        return jugadorService.subirFoto(id, file);
     }
 }
