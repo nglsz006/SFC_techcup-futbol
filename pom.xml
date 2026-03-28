@@ -28,16 +28,17 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
-		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.organization>nglsz006</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.projectKey>SFC_TechUp_Futbol</sonar.projectKey>
 		<sonar.projectName>SFC TechUp Futbol</sonar.projectName>
 		<sonar.coverage.jacoco.xmlReportPaths>
 			target/site/jacoco/jacoco.xml
 		</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.exclusions>
-			**/persistence/entity/**,
-			**/persistence/mapper/**,
-			**/persistence/repository/**
+			*/persistence/entity/*,
+			*/persistence/mapper/*,
+			*/persistence/repository/*
 		</sonar.exclusions>
 	</properties>
 	<dependencies>
