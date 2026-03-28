@@ -91,7 +91,7 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 | Mockup Figma                        | [Ver diseño](https://www.figma.com/design/RBlkiZOJCzHNZrpJdHP88Q/TECHCUP?node-id=0-1&p=f&t=hCEw9tLBCOW7NR71-0)                             |
 | Manual de identidad                 | [Ver manual](https://github.com/nglsz006/SFC_techcup-futbol/blob/develop/SFC_TechUp_Futbol/docs/planing/manual%20identidad.md)                                       |
 | Tablero JIRA                        | [Ver tablero](https://mail-team-w4y4k0y5.atlassian.net/jira/software/projects/TF/boards/35?atlOrigin=eyJpIjoiY2ZjNWQ5ZGRjMTM3NDAwMGIxNDEwYWUwNjFkNGY1NTMiLCJwIjoiaiJ9) |
-| Video mockup                        | [Ver video](https://www.youtube.com/watch?v=RVWfsO4EjQk)                                                                                                             |
+| Video mockup                        | [Ver video](https://www.youtube.com/watch?v=u2pviu8SbS0)                                                                                                             |
 | Video demo tecnica persistencia     | [Ver video](https://www.youtube.com/watch?v=RVWfsO4EjQk)                                                                                                             |
 | Video demo tecnica seguridad jwt    | [Ver video](https://www.youtube.com/watch?v=un_0RBnjYJM)                                                                                                           |
 | Video demo tecnica seguridad AOuth2 | [Ver video](https://www.youtube.com/watch?v=Jcp5-ZxAYo4)                                                                                                           |
