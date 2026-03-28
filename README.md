@@ -1,62 +1,49 @@
-# SFC_techcup-futbol
-repositorio dedicado al desarrollo del proyecto TECHCUP FÚTBOL
+# TECHCUP FÚTBOL
 
-### Nombre del equipo
-  SHAWARMA F.C
-  
-### Nombre de los integrantes
+Repositorio dedicado al desarrollo del proyecto **TECHCUP FÚTBOL**.
 
-- Daniel Felipe Rayo Rodriguez
-- Juan Esteban hernandez moreno
-- Juan Manuel Lopez Barrera
-- Nicolas Andres Parrado Gonzalez
-- Nicolas Guillermo Ibañez Leon
-- Jeyder Nicolay Leon Lancheros
-### Título del proyecto
+---
 
-  TECHCUP FÚTBOL
-  
-### Enunciado del problema
-Introducción al problema: 
-Los programas de Ingeniería de Sistemas, IA, Ciberseguridad y Estadística realizan
-cada semestre un torneo interno de fútbol en el que participan estudiantes de
-distintos semestres. Aunque la actividad tiene alta acogida, su organización
-actualmente depende de procesos manuales: mensajes por WhatsApp,
-formularios aislados y hojas de cálculo.
-Esta forma de manejo genera desorden, retrasos y confusión entre participantes y
-organizadores. Muchos estudiantes no conocen el proceso de inscripción, los
-equipos se completan tarde, los pagos se verifican manualmente y la información
-del torneo (fechas, reglas, resultados) se encuentra dispersa.
-TECHCUP FÚTBOL propone desarrollar una plataforma web que centralice toda la
-gestión del torneo, permitiendo que estudiantes, capitanes y organizadores
-interactúen en un solo sistema organizado y transparente.
-### Problema abordado
-Actualmente, el torneo presenta las siguientes dificultades:
+## Equipo
 
-● El proceso de inscripción no es claro para los participantes.
+**SHAWARMA F.C**
 
-● Los capitanes tienen problemas para completar sus equipos.
+| Integrante |
+|---|
+| Daniel Felipe Rayo Rodriguez |
+| Juan Esteban Hernandez Moreno |
+| Juan Manuel Lopez Barrera |
+| Nicolas Andres Parrado Gonzalez |
+| Nicolas Guillermo Ibañez Leon |
+| Jeyder Nicolay Leon Lancheros |
 
-● Los pagos no se verifican de forma rápida y es un proceso manual.
+---
 
-● Los resultados y la tabla de posiciones se actualizan manualmente.
+## Descripción del problema
 
-● Las llaves eliminatorias se organizan a mano.
+Los programas de Ingeniería de Sistemas, IA, Ciberseguridad y Estadística realizan cada semestre un torneo interno de fútbol en el que participan estudiantes de distintos semestres. Aunque la actividad tiene alta acogida, su organización actualmente depende de procesos manuales: mensajes por WhatsApp, formularios aislados y hojas de cálculo.
 
-● No existe historial ni estadísticas del torneo.
+Esta forma de manejo genera desorden, retrasos y confusión entre participantes y organizadores. Muchos estudiantes no conocen el proceso de inscripción, los equipos se completan tarde, los pagos se verifican manualmente y la información del torneo (fechas, reglas, resultados) se encuentra dispersa.
 
-● La información oficial está dispersa.
+**TECHCUP FÚTBOL** propone desarrollar una plataforma web que centralice toda la gestión del torneo, permitiendo que estudiantes, capitanes y organizadores interactúen en un solo sistema organizado y transparente.
 
-● Esto ocasiona retrasos, errores administrativos y conflictos entre los
-participantes.
+### Dificultades actuales
 
-### Índice:
-### Diagrama de contexto del sistema
+- El proceso de inscripción no es claro para los participantes.
+- Los capitanes tienen problemas para completar sus equipos.
+- Los pagos no se verifican de forma rápida y es un proceso manual.
+- Los resultados y la tabla de posiciones se actualizan manualmente.
+- Las llaves eliminatorias se organizan a mano.
+- No existe historial ni estadísticas del torneo.
+- La información oficial está dispersa.
+- Esto ocasiona retrasos, errores administrativos y conflictos entre los participantes.
 
-![Diagrama de contexto](SFC_TechUp_Futbol/docs/uml/DiagramaContexto(2).png)
+---
 
-### Definición de requerimientos:
-Funcionales:
+## Requerimientos
+
+### Funcionales
+
 - Crear torneo
 - Gestionar torneo
 - Consultar torneo
@@ -68,111 +55,60 @@ Funcionales:
 - Gestionar equipo
 - Validar equipo
 - Buscar jugadores
-- Subir comporbante de pago
+- Subir comprobante de pago
 - Verificar pago
 - Configurar torneo
-- Gestionar alineacion
-- Consultar alineacion rival
+- Gestionar alineación
+- Consultar alineación rival
 - Registrar partido
 - Consultar partido
 - Tabla de posiciones
 - Llave eliminatoria
-- Estadisticas
-  
-No funcionales:
+- Estadísticas
+
+### No funcionales
+
 - Paleta de colores
 - Diseño responsive
 - Tiempo de respuesta
 - Cifrado de contraseñas
-- Limite de archivos
+- Límite de archivos
 - Disponibilidad del sistema
 - Compatibilidad de navegadores
 
-### pruebas cobertura sonarqube:
+### Análisis de requerimientos
 
-<img width="530" height="680" alt="image" src="https://github.com/user-attachments/assets/541b9e72-7420-4731-9a75-bf89c3868339" />
+[Ver requerimientos del sistema](https://github.com/nglsz006/SFC_techcup-futbol/blob/feature/requirments/SFC_TechUp_Futbol/docs/requierments/requirements.md)
 
-### reporte de jacoco pruebas
+---
 
-<img width="1917" height="871" alt="image" src="https://github.com/user-attachments/assets/fa9b13af-e122-4bae-8144-e845e07acb14" />
+## Enlaces
 
-### Diagramas:
+| Recurso | Enlace |
+|---|---|
+| Mockup Figma | [Ver diseño](https://www.figma.com/make/WNTggpZgFEF4BYVkYZ1XYE/Dise%C3%B1ar-interfaz-torneo-deportivo?fullscreen=1&t=GqAIgO7dSHhi9Omi-1) |
+| Manual de identidad | [Ver manual](https://github.com/nglsz006/SFC_techcup-futbol/blob/develop/SFC_TechUp_Futbol/docs/planing/manual%20identidad.md) |
+| Tablero JIRA | [Ver tablero](https://mail-team-w4y4k0y5.atlassian.net/jira/software/projects/TF/boards/35?atlOrigin=eyJpIjoiY2ZjNWQ5ZGRjMTM3NDAwMGIxNDEwYWUwNjFkNGY1NTMiLCJwIjoiaiJ9) |
 
-- diagrama de clases
+---
 
-primera parte diagrama clases
+## Diagramas
 
-<img width="1268" height="724" alt="image" src="https://github.com/user-attachments/assets/3d7f2d01-8cdc-47e3-91c8-237de78c26b5" />
+### Diagrama de contexto del sistema
 
-segunda parte diagrama clases
+![Diagrama de contexto](SFC_TechUp_Futbol/docs/uml/DiagramaContexto(2).png)
 
-<img width="618" height="708" alt="image" src="https://github.com/user-attachments/assets/61635ba4-e939-4cef-a4a4-eccec6da1458" />
+### Diagrama de clases
 
-tercera parte diagrama clases
+[Ver diagrama de clases](docs/uml/diagramas-clases.md)
 
-<img width="1453" height="622" alt="image" src="https://github.com/user-attachments/assets/9d080056-8f94-406b-81d8-2bf0a865540a" />
+### Diagramas de componentes
 
-cuarta parte diagrama clases
+[Ver diagramas de componentes](docs/uml/diagramas-componentes.md)
 
-<img width="1362" height="365" alt="image" src="https://github.com/user-attachments/assets/f94f411a-6273-4dc7-8db2-0b153d456566" />
+### Diagrama de Entidad-Relacion
 
-### diagrama componentes especifico
-- parte de pago
-
-<img width="448" height="612" alt="image" src="https://github.com/user-attachments/assets/18aa3f53-9515-4c51-bc63-41023b6d0e19" />
-
-- parte de partido
-
-<img width="437" height="599" alt="image" src="https://github.com/user-attachments/assets/e803bab5-bcfe-4e9e-abc6-6d9897b15f2e" />
-
-- parte de torneo
-
-<img width="437" height="596" alt="image" src="https://github.com/user-attachments/assets/03893296-1cd4-4552-983a-6691a5c15e6e" />
-
-- parte de equipo
-
-<img width="441" height="597" alt="image" src="https://github.com/user-attachments/assets/976cdd5f-b3a2-4adf-9d2b-f35986888815" />
-
-- parte de usuario
-
-<img width="558" height="595" alt="image" src="https://github.com/user-attachments/assets/aa6b7b29-050c-4ffc-ba37-5472eee05125" />
-
-### duagrama de componentes general 
-
-<img width="304" height="542" alt="image" src="https://github.com/user-attachments/assets/18c074fe-b614-4267-8ff3-f57cf9fe90f7" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-### Análisis de requerimientos:
-[Ver requerimientos del sistema] https://github.com/nglsz006/SFC_techcup-futbol/blob/feature/requirments/SFC_TechUp_Futbol/docs/requierments/requirements.md
-
-### Mockup (con enlace a Figma).
-
-enlace a figma:
-
-https://www.figma.com/make/WNTggpZgFEF4BYVkYZ1XYE/Dise%C3%B1ar-interfaz-torneo-deportivo?fullscreen=1&t=GqAIgO7dSHhi9Omi-1
-
-
-### Manual de identidad
-
-https://github.com/nglsz006/SFC_techcup-futbol/blob/develop/SFC_TechUp_Futbol/docs/planing/manual%20identidad.md
-
-### Link de JIRA (recuerden invitarme al espacio), donde se evidencien:
-
-
-https://mail-team-w4y4k0y5.atlassian.net/jira/software/projects/TF/boards/35?atlOrigin=eyJpIjoiY2ZjNWQ5ZGRjMTM3NDAwMGIxNDEwYWUwNjFkNGY1NTMiLCJwIjoiaiJ9
+[Ver diagrama Entidad-Relacion](docs/uml/DiagramaER/DiagramaER.jpg)
 
 ### Diagramas de secuencia
 
@@ -187,3 +123,9 @@ https://mail-team-w4y4k0y5.atlassian.net/jira/software/projects/TF/boards/35?atl
 - [09 - Organizadores](docs/uml/diagramas-secuencia/09-organizadores.md)
 - [10 - Árbitros](docs/uml/diagramas-secuencia/10-arbitros.md)
 - [11 - Alineaciones](docs/uml/diagramas-secuencia/11-alineaciones.md)
+
+---
+
+## Pruebas
+
+[Ver reporte de pruebas](docs/planing/pruebas.md)
