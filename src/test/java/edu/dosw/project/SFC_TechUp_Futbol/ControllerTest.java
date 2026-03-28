@@ -36,7 +36,7 @@ class ControllerTest {
 
     @BeforeEach
     void setUp() {
-        AccesoServiceImpl accesoService = new AccesoServiceImpl(new UsuarioRegistradoRepositoryImpl());
+        AccesoServiceImpl accesoService = new AccesoServiceImpl(new UsuarioRegistradoRepositoryImpl(), new edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService());
         accesoMvc = MockMvcBuilders
                 .standaloneSetup(new AccesoController(accesoService, new AccesoValidator()))
                 .setControllerAdvice(new ErrorHandler()).build();
@@ -67,10 +67,13 @@ class ControllerTest {
         OrganizadorService organizadorService = new OrganizadorService(new OrganizadorRepositoryImpl(), torneoService);
         PagoServiceImpl pagoService = new PagoServiceImpl(new PagoRepositoryImpl(), equipoRepo2);
         PartidoValidator partidoValidator = new PartidoValidator();
+        edu.dosw.project.SFC_TechUp_Futbol.core.service.PerfilDeportivoService perfilService =
+                new edu.dosw.project.SFC_TechUp_Futbol.core.service.PerfilDeportivoServiceImpl(
+                        new PerfilDeportivoRepositoryImpl(), jugadorRepo2);
         usuarioMvc = MockMvcBuilders
                 .standaloneSetup(new UsuarioController(jugadorService, jugadorRepo2, capitanService,
                         arbitroService, partidoRepo2, organizadorService, pagoService,
-                        partidoService2, partidoValidator, equipoService2, torneoService))
+                        partidoService2, partidoValidator, equipoService2, torneoService, perfilService))
                 .setControllerAdvice(new ErrorHandler()).build();
     }
 

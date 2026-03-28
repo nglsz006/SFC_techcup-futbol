@@ -78,10 +78,13 @@ class PagoPartidoControllerTest {
         PartidoServiceImpl partidoServiceUsuario = new PartidoServiceImpl(partidoRepoUsuario, torneoRepo, equipoRepo, jugadorRepo);
         EquipoService equipoServiceUsuario = new EquipoService(equipoRepo);
         PartidoValidator partidoValidatorUsuario = new PartidoValidator();
+        edu.dosw.project.SFC_TechUp_Futbol.core.service.PerfilDeportivoService perfilService =
+                new edu.dosw.project.SFC_TechUp_Futbol.core.service.PerfilDeportivoServiceImpl(
+                        new PerfilDeportivoRepositoryImpl(), jugadorRepo);
         usuarioMvc = MockMvcBuilders
                 .standaloneSetup(new UsuarioController(jugadorService, jugadorRepo, capitanService,
                         arbitroService, partidoRepoArbitro, organizadorService, pagoService,
-                        partidoServiceUsuario, partidoValidatorUsuario, equipoServiceUsuario, torneoService))
+                        partidoServiceUsuario, partidoValidatorUsuario, equipoServiceUsuario, torneoService, perfilService))
                 .setControllerAdvice(new ErrorHandler()).build();
     }
 

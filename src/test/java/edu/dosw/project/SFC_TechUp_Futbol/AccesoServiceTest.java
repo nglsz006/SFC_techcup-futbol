@@ -17,7 +17,7 @@ class AccesoServiceTest {
 
     @BeforeEach
     void setUp() {
-        accesoService = new AccesoServiceImpl(new UsuarioRegistradoRepositoryImpl());
+        accesoService = new AccesoServiceImpl(new UsuarioRegistradoRepositoryImpl(), new edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService());
     }
 
     private RegistroRequest registroValido() {
