@@ -78,7 +78,7 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 
 ### Análisis de requerimientos
 
-[Ver requerimientos del sistema](https://github.com/nglsz006/SFC_techcup-futbol/blob/feature/requirments/SFC_TechUp_Futbol/docs/requierments/requirements.md)
+[Ver requerimientos del sistema](docs/requierments/requirements.md)
 
 ---
 
