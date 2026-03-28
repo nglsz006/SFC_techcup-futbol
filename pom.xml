@@ -36,9 +36,7 @@
 			target/site/jacoco/jacoco.xml
 		</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.exclusions>
-			*/persistence/entity/*,
-			*/persistence/mapper/*,
-			*/persistence/repository/*
+			**/persistence/**
 		</sonar.exclusions>
 	</properties>
 	<dependencies>
@@ -121,9 +119,7 @@
 				<version>0.8.12</version>
 				<configuration>
 					<excludes>
-						<exclude>**/persistence/entity/**</exclude>
-						<exclude>**/persistence/mapper/**</exclude>
-						<exclude>**/persistence/repository/**</exclude>
+						**/persistence/**
 					</excludes>
 				</configuration>
 				<executions>

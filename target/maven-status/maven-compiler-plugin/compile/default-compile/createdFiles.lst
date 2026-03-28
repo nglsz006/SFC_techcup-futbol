@@ -1,3 +1,4 @@
+edu\dosw\project\SFC_TechUp_Futbol\core\service\OAuth2Service.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\TorneoMapper.class
 edu\dosw\project\SFC_TechUp_Futbol\core\exception\RolNoPermitidoException.class
 edu\dosw\project\SFC_TechUp_Futbol\core\repository\AdministradorRepository.class
@@ -120,6 +121,7 @@ edu\dosw\project\SFC_TechUp_Futbol\persistence\entity\JugadorEntity.class
 edu\dosw\project\SFC_TechUp_Futbol\core\repository\ArbitroRepository.class
 edu\dosw\project\SFC_TechUp_Futbol\core\service\ArbitroService.class
 edu\dosw\project\SFC_TechUp_Futbol\core\repository\PerfilDeportivoRepository.class
+edu\dosw\project\SFC_TechUp_Futbol\controller\OAuth2Controller.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\AprobadoState.class
 edu\dosw\project\SFC_TechUp_Futbol\SecurityConfig.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\entity\TorneoEntity.class
