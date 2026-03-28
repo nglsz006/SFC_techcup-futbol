@@ -65,6 +65,8 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 - Tabla de posiciones
 - Llave eliminatoria
 - Estadísticas
+- Registro de arbitros y organizadores
+- Consultar auditoria
 
 ### No funcionales
 
@@ -78,17 +80,21 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 
 ### Análisis de requerimientos
 
-[Ver requerimientos del sistema](https://github.com/nglsz006/SFC_techcup-futbol/blob/feature/requirments/SFC_TechUp_Futbol/docs/requierments/requirements.md)
+[Ver requerimientos del sistema](docs/requierments/requirements.md)
 
 ---
 
 ## Enlaces
 
-| Recurso | Enlace |
-|---|---|
-| Mockup Figma | [Ver diseño](https://www.figma.com/make/WNTggpZgFEF4BYVkYZ1XYE/Dise%C3%B1ar-interfaz-torneo-deportivo?fullscreen=1&t=GqAIgO7dSHhi9Omi-1) |
-| Manual de identidad | [Ver manual](https://github.com/nglsz006/SFC_techcup-futbol/blob/develop/SFC_TechUp_Futbol/docs/planing/manual%20identidad.md) |
-| Tablero JIRA | [Ver tablero](https://mail-team-w4y4k0y5.atlassian.net/jira/software/projects/TF/boards/35?atlOrigin=eyJpIjoiY2ZjNWQ5ZGRjMTM3NDAwMGIxNDEwYWUwNjFkNGY1NTMiLCJwIjoiaiJ9) |
+| Recurso                             | Enlace                                                                                                                                                               |
+|-------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Mockup Figma                        | [Ver diseño](https://www.figma.com/design/RBlkiZOJCzHNZrpJdHP88Q/TECHCUP?node-id=0-1&p=f&t=hCEw9tLBCOW7NR71-0)                             |
+| Manual de identidad                 | [Ver manual](https://github.com/nglsz006/SFC_techcup-futbol/blob/develop/SFC_TechUp_Futbol/docs/planing/manual%20identidad.md)                                       |
+| Tablero JIRA                        | [Ver tablero](https://mail-team-w4y4k0y5.atlassian.net/jira/software/projects/TF/boards/35?atlOrigin=eyJpIjoiY2ZjNWQ5ZGRjMTM3NDAwMGIxNDEwYWUwNjFkNGY1NTMiLCJwIjoiaiJ9) |
+| Video mockup                        | [Ver video](https://www.youtube.com/watch?v=u2pviu8SbS0)                                                                                                             |
+| Video demo tecnica persistencia     | [Ver video](https://www.youtube.com/watch?v=RVWfsO4EjQk)                                                                                                             |
+| Video demo tecnica seguridad jwt    | [Ver video](https://www.youtube.com/watch?v=un_0RBnjYJM)                                                                                                           |
+| Video demo tecnica seguridad AOuth2 | [Ver video](https://www.youtube.com/watch?v=Jcp5-ZxAYo4)                                                                                                           |
 
 ---
 
@@ -96,7 +102,7 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 
 ### Diagrama de contexto del sistema
 
-![Diagrama de contexto](SFC_TechUp_Futbol/docs/uml/DiagramaContexto(2).png)
+[DiagramaContexto(2).png](docs/uml/DiagramaContexto%282%29.png)
 
 ### Diagrama de clases
 
