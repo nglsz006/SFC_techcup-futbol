@@ -16,8 +16,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -28,23 +35,184 @@ class ControllerTest {
     private MockMvc equipoMvc;
     private MockMvc partidoMvc;
     private MockMvc usuarioMvc;
-    private TorneoRepositoryImpl torneoRepo2;
-    private EquipoRepositoryImpl equipoRepo2;
-    private JugadorRepositoryImpl jugadorRepo2;
-    private PartidoRepositoryImpl partidoRepo2;
+    private TorneoRepository torneoRepo2;
+    private EquipoRepository equipoRepo2;
+    private JugadorRepository jugadorRepo2;
+    private PartidoRepository partidoRepo2;
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeEach
     void setUp() {
-        AccesoServiceImpl accesoService = new AccesoServiceImpl(new UsuarioRegistradoRepositoryImpl());
+        Map<Long, UsuarioRegistrado> usuarioStore = new HashMap<>();
+        AtomicLong usuarioIdGen = new AtomicLong(1);
+        UsuarioRegistradoRepository usuarioRepo = mock(UsuarioRegistradoRepository.class);
+        when(usuarioRepo.save(any())).thenAnswer(inv -> {
+            UsuarioRegistrado u = inv.getArgument(0);
+            usuarioStore.put(usuarioIdGen.getAndIncrement(), u);
+            return u;
+        });
+        when(usuarioRepo.findByEmail(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return usuarioStore.values().stream().filter(u -> email.equals(u.getEmail())).findFirst();
+        });
+        when(usuarioRepo.findAll()).thenAnswer(inv -> new ArrayList<>(usuarioStore.values()));
+
+        AccesoServiceImpl accesoService = new AccesoServiceImpl(usuarioRepo, new edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService());
         accesoMvc = MockMvcBuilders
                 .standaloneSetup(new AccesoController(accesoService, new AccesoValidator()))
                 .setControllerAdvice(new ErrorHandler()).build();
 
-        torneoRepo2 = new TorneoRepositoryImpl();
-        equipoRepo2 = new EquipoRepositoryImpl();
-        jugadorRepo2 = new JugadorRepositoryImpl();
-        partidoRepo2 = new PartidoRepositoryImpl();
+        Map<Integer, Torneo> torneoStore = new HashMap<>();
+        AtomicInteger torneoIdGen = new AtomicInteger(1);
+        torneoRepo2 = mock(TorneoRepository.class);
+        when(torneoRepo2.save(any())).thenAnswer(inv -> {
+            Torneo t = inv.getArgument(0);
+            if (t.getId() == 0) t.setId(torneoIdGen.getAndIncrement());
+            torneoStore.put(t.getId(), t);
+            return t;
+        });
+        when(torneoRepo2.findById(anyInt())).thenAnswer(inv -> Optional.ofNullable(torneoStore.get(inv.<Integer>getArgument(0))));
+        when(torneoRepo2.findAll()).thenAnswer(inv -> new ArrayList<>(torneoStore.values()));
+
+        Map<Integer, Equipo> equipoStore = new HashMap<>();
+        AtomicInteger equipoIdGen = new AtomicInteger(1);
+        equipoRepo2 = mock(EquipoRepository.class);
+        when(equipoRepo2.save(any())).thenAnswer(inv -> {
+            Equipo e = inv.getArgument(0);
+            if (e.getId() == 0) e.setId(equipoIdGen.getAndIncrement());
+            equipoStore.put(e.getId(), e);
+            return e;
+        });
+        when(equipoRepo2.findById(anyInt())).thenAnswer(inv -> Optional.ofNullable(equipoStore.get(inv.<Integer>getArgument(0))));
+        when(equipoRepo2.findById(any(Long.class))).thenAnswer(inv -> Optional.ofNullable(equipoStore.get(((Long) inv.getArgument(0)).intValue())));
+        when(equipoRepo2.findAll()).thenAnswer(inv -> new ArrayList<>(equipoStore.values()));
+
+        Map<Long, Jugador> jugadorStore = new HashMap<>();
+        AtomicLong jugadorIdGen = new AtomicLong(1);
+        jugadorRepo2 = mock(JugadorRepository.class);
+        when(jugadorRepo2.save(any())).thenAnswer(inv -> {
+            Jugador j = inv.getArgument(0);
+            if (j.getId() == null) j.setId(jugadorIdGen.getAndIncrement());
+            jugadorStore.put(j.getId(), j);
+            return j;
+        });
+        when(jugadorRepo2.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(jugadorStore.get(inv.<Long>getArgument(0))));
+        when(jugadorRepo2.findAll()).thenAnswer(inv -> new ArrayList<>(jugadorStore.values()));
+
+        Map<Long, Partido> partidoStore = new HashMap<>();
+        AtomicLong partidoIdGen = new AtomicLong(1);
+        partidoRepo2 = mock(PartidoRepository.class);
+        when(partidoRepo2.save(any())).thenAnswer(inv -> {
+            Partido p = inv.getArgument(0);
+            if (p.getId() == null) p.setId(partidoIdGen.getAndIncrement());
+            partidoStore.put(p.getId(), p);
+            return p;
+        });
+        when(partidoRepo2.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(partidoStore.get(inv.<Long>getArgument(0))));
+        when(partidoRepo2.findByTorneoId(anyLong())).thenAnswer(inv -> {
+            Long tid = inv.getArgument(0);
+            return partidoStore.values().stream().filter(p -> p.getTorneo() != null && p.getTorneo().getId() == tid.intValue()).collect(Collectors.toList());
+        });
+        when(partidoRepo2.findByEstado(any())).thenAnswer(inv -> {
+            Partido.PartidoEstado estado = inv.getArgument(0);
+            return partidoStore.values().stream().filter(p -> p.getEstado() == estado).collect(Collectors.toList());
+        });
+        when(partidoRepo2.findByEquipoLocalIdOrEquipoVisitanteId(anyLong(), anyLong())).thenAnswer(inv -> {
+            Long lid = inv.getArgument(0); Long vid = inv.getArgument(1);
+            return partidoStore.values().stream().filter(p ->
+                    (p.getEquipoLocal() != null && p.getEquipoLocal().getId() == lid.intValue()) ||
+                    (p.getEquipoVisitante() != null && p.getEquipoVisitante().getId() == vid.intValue())
+            ).collect(Collectors.toList());
+        });
+
+        Map<Long, Capitan> capitanStore = new HashMap<>();
+        AtomicLong capitanIdGen = new AtomicLong(1);
+        CapitanRepository capitanRepo = mock(CapitanRepository.class);
+        when(capitanRepo.save(any())).thenAnswer(inv -> {
+            Capitan c = inv.getArgument(0);
+            if (c.getId() == null) c.setId(capitanIdGen.getAndIncrement());
+            capitanStore.put(c.getId(), c);
+            return c;
+        });
+        when(capitanRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(capitanStore.get(inv.<Long>getArgument(0))));
+        when(capitanRepo.findAll()).thenAnswer(inv -> new ArrayList<>(capitanStore.values()));
+
+        Map<Long, Arbitro> arbitroStore = new HashMap<>();
+        AtomicLong arbitroIdGen = new AtomicLong(1);
+        ArbitroRepository arbitroRepo = mock(ArbitroRepository.class);
+        when(arbitroRepo.save(any())).thenAnswer(inv -> {
+            Arbitro a = inv.getArgument(0);
+            if (a.getId() == null) a.setId(arbitroIdGen.getAndIncrement());
+            arbitroStore.put(a.getId(), a);
+            return a;
+        });
+        when(arbitroRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(arbitroStore.get(inv.<Long>getArgument(0))));
+        when(arbitroRepo.findByEmail(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return arbitroStore.values().stream().filter(a -> email.equals(a.getEmail())).findFirst();
+        });
+        when(arbitroRepo.findAll()).thenAnswer(inv -> new ArrayList<>(arbitroStore.values()));
+
+        Map<Long, Organizador> orgStore = new HashMap<>();
+        AtomicLong orgIdGen = new AtomicLong(1);
+        OrganizadorRepository orgRepo = mock(OrganizadorRepository.class);
+        when(orgRepo.save(any())).thenAnswer(inv -> {
+            Organizador o = inv.getArgument(0);
+            if (o.getId() == null) o.setId(orgIdGen.getAndIncrement());
+            orgStore.put(o.getId(), o);
+            return o;
+        });
+        when(orgRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(orgStore.get(inv.<Long>getArgument(0))));
+        when(orgRepo.findByEmail(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return orgStore.values().stream().filter(o -> email.equals(o.getEmail())).findFirst();
+        });
+        when(orgRepo.findAll()).thenAnswer(inv -> new ArrayList<>(orgStore.values()));
+
+        Map<Long, Pago> pagoStore = new HashMap<>();
+        AtomicLong pagoIdGen = new AtomicLong(1);
+        PagoRepository pagoRepo = mock(PagoRepository.class);
+        when(pagoRepo.save(any())).thenAnswer(inv -> {
+            Pago p = inv.getArgument(0);
+            if (p.getId() == null) p.setId(pagoIdGen.getAndIncrement());
+            pagoStore.put(p.getId(), p);
+            return p;
+        });
+        when(pagoRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(pagoStore.get(inv.<Long>getArgument(0))));
+        when(pagoRepo.findByEquipoId(anyLong())).thenAnswer(inv -> {
+            Long eid = inv.getArgument(0);
+            return pagoStore.values().stream().filter(p -> p.getEquipo() != null && p.getEquipo().getId() == eid.intValue()).collect(Collectors.toList());
+        });
+        when(pagoRepo.findByEstado(any())).thenAnswer(inv -> {
+            Pago.PagoEstado estado = inv.getArgument(0);
+            return pagoStore.values().stream().filter(p -> p.getEstado() == estado).collect(Collectors.toList());
+        });
+        when(pagoRepo.findByEquipoIdAndEstado(anyLong(), any())).thenAnswer(inv -> {
+            Long eid = inv.getArgument(0);
+            Pago.PagoEstado estado = inv.getArgument(1);
+            return pagoStore.values().stream().filter(p -> p.getEquipo() != null && p.getEquipo().getId() == eid.intValue() && p.getEstado() == estado).findFirst();
+        });
+        when(pagoRepo.existsByEquipoIdAndEstado(anyLong(), any())).thenAnswer(inv -> {
+            Long eid = inv.getArgument(0);
+            Pago.PagoEstado estado = inv.getArgument(1);
+            return pagoStore.values().stream().anyMatch(p -> p.getEquipo() != null && p.getEquipo().getId() == eid.intValue() && p.getEstado() == estado);
+        });
+
+        Map<Long, PerfilDeportivo> perfilStore = new HashMap<>();
+        AtomicLong perfilIdGen = new AtomicLong(1);
+        PerfilDeportivoRepository perfilRepo = mock(PerfilDeportivoRepository.class);
+        when(perfilRepo.save(any())).thenAnswer(inv -> {
+            PerfilDeportivo pf = inv.getArgument(0);
+            if (pf.getId() == null) pf.setId(perfilIdGen.getAndIncrement());
+            perfilStore.put(pf.getId(), pf);
+            return pf;
+        });
+        when(perfilRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(perfilStore.get(inv.<Long>getArgument(0))));
+        when(perfilRepo.findByJugadorId(anyLong())).thenAnswer(inv -> {
+            Long jid = inv.getArgument(0);
+            return perfilStore.values().stream().filter(pf -> jid.equals(pf.getJugadorId())).findFirst();
+        });
+
         TorneoService torneoService = new TorneoService(torneoRepo2);
         PartidoServiceImpl partidoService2 = new PartidoServiceImpl(partidoRepo2, torneoRepo2, equipoRepo2, jugadorRepo2);
         EquipoService equipoService2 = new EquipoService(equipoRepo2);
@@ -62,15 +230,18 @@ class ControllerTest {
                 .setControllerAdvice(new ErrorHandler()).build();
 
         JugadorService jugadorService = new JugadorService(jugadorRepo2);
-        ArbitroService arbitroService = new ArbitroService(new ArbitroRepositoryImpl());
-        CapitanService capitanService = new CapitanService(new CapitanRepositoryImpl(), jugadorService);
-        OrganizadorService organizadorService = new OrganizadorService(new OrganizadorRepositoryImpl(), torneoService);
-        PagoServiceImpl pagoService = new PagoServiceImpl(new PagoRepositoryImpl(), equipoRepo2);
+        ArbitroService arbitroService = new ArbitroService(arbitroRepo);
+        CapitanService capitanService = new CapitanService(capitanRepo, jugadorService);
+        OrganizadorService organizadorService = new OrganizadorService(orgRepo, torneoService);
+        PagoServiceImpl pagoService = new PagoServiceImpl(pagoRepo, equipoRepo2);
         PartidoValidator partidoValidator = new PartidoValidator();
+        edu.dosw.project.SFC_TechUp_Futbol.core.service.PerfilDeportivoService perfilService =
+                new edu.dosw.project.SFC_TechUp_Futbol.core.service.PerfilDeportivoServiceImpl(
+                        perfilRepo, jugadorRepo2);
         usuarioMvc = MockMvcBuilders
                 .standaloneSetup(new UsuarioController(jugadorService, jugadorRepo2, capitanService,
                         arbitroService, partidoRepo2, organizadorService, pagoService,
-                        partidoService2, partidoValidator, equipoService2, torneoService))
+                        partidoService2, partidoValidator, equipoService2, torneoService, perfilService))
                 .setControllerAdvice(new ErrorHandler()).build();
     }
 

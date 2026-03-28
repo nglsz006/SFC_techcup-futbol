@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn test-compile:*)",
+      "Bash(mvn test:*)",
+      "Bash(cd:*)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/nglsz/SFC_techcup-futbol/src/main/java/edu/dosw/project/SFC_TechUp_Futbol/core/model/**)"
+    ]
+  }
+}

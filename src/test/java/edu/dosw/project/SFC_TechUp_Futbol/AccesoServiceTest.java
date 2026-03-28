@@ -1,15 +1,25 @@
 package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
+import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoServiceImpl;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class AccesoServiceTest {
 
@@ -17,7 +27,21 @@ class AccesoServiceTest {
 
     @BeforeEach
     void setUp() {
-        accesoService = new AccesoServiceImpl(new UsuarioRegistradoRepositoryImpl());
+        Map<Long, UsuarioRegistrado> store = new HashMap<>();
+        AtomicLong idGen = new AtomicLong(1);
+        UsuarioRegistradoRepository repo = mock(UsuarioRegistradoRepository.class);
+        when(repo.save(any())).thenAnswer(inv -> {
+            UsuarioRegistrado u = inv.getArgument(0);
+            if (u.getId() == null) u.setId(idGen.getAndIncrement());
+            store.put(u.getId(), u);
+            return u;
+        });
+        when(repo.findByEmail(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return store.values().stream().filter(u -> email.equals(u.getEmail())).findFirst();
+        });
+        when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store.values()));
+        accesoService = new AccesoServiceImpl(repo, new JwtService());
     }
 
     private RegistroRequest registroValido() {

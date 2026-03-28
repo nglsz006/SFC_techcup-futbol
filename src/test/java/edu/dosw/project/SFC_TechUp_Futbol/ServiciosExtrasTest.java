@@ -8,10 +8,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class ServiciosExtrasTest {
 
@@ -21,17 +23,87 @@ class ServiciosExtrasTest {
     private OrganizadorService organizadorService;
     private TorneoService torneoService;
     private JugadorService jugadorService;
-    private JugadorRepositoryImpl jugadorRepo;
+    private JugadorRepository jugadorRepo;
 
     @BeforeEach
     void setUp() {
-        alineacionService = new AlineacionService(new AlineacionRepositoryImpl());
-        arbitroService = new ArbitroService(new ArbitroRepositoryImpl());
-        jugadorRepo = new JugadorRepositoryImpl();
+        Map<Integer, Alineacion> alineacionStore = new HashMap<>();
+        AtomicInteger alineacionIdGen = new AtomicInteger(1);
+        AlineacionRepository alineacionRepo = mock(AlineacionRepository.class);
+        when(alineacionRepo.save(any())).thenAnswer(inv -> {
+            Alineacion a = inv.getArgument(0);
+            if (a.getId() == 0) a.setId(alineacionIdGen.getAndIncrement());
+            alineacionStore.put(a.getId(), a);
+            return a;
+        });
+        when(alineacionRepo.findById(anyInt())).thenAnswer(inv -> Optional.ofNullable(alineacionStore.get(inv.<Integer>getArgument(0))));
+        when(alineacionRepo.findAll()).thenAnswer(inv -> new ArrayList<>(alineacionStore.values()));
+        alineacionService = new AlineacionService(alineacionRepo);
+
+        Map<Long, Arbitro> arbitroStore = new HashMap<>();
+        AtomicLong arbitroIdGen = new AtomicLong(1);
+        ArbitroRepository arbitroRepository = mock(ArbitroRepository.class);
+        when(arbitroRepository.save(any())).thenAnswer(inv -> {
+            Arbitro a = inv.getArgument(0);
+            if (a.getId() == null) a.setId(arbitroIdGen.getAndIncrement());
+            arbitroStore.put(a.getId(), a);
+            return a;
+        });
+        when(arbitroRepository.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(arbitroStore.get(inv.<Long>getArgument(0))));
+        when(arbitroRepository.findAll()).thenAnswer(inv -> new ArrayList<>(arbitroStore.values()));
+        arbitroService = new ArbitroService(arbitroRepository);
+
+        Map<Long, Jugador> jugadorStore = new HashMap<>();
+        AtomicLong jugadorIdGen = new AtomicLong(1);
+        jugadorRepo = mock(JugadorRepository.class);
+        when(jugadorRepo.save(any())).thenAnswer(inv -> {
+            Jugador j = inv.getArgument(0);
+            if (j.getId() == null) j.setId(jugadorIdGen.getAndIncrement());
+            jugadorStore.put(j.getId(), j);
+            return j;
+        });
+        when(jugadorRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(jugadorStore.get(inv.<Long>getArgument(0))));
+        when(jugadorRepo.findAll()).thenAnswer(inv -> new ArrayList<>(jugadorStore.values()));
         jugadorService = new JugadorService(jugadorRepo);
-        capitanService = new CapitanService(new CapitanRepositoryImpl(), jugadorService);
-        torneoService = new TorneoService(new TorneoRepositoryImpl());
-        organizadorService = new OrganizadorService(new OrganizadorRepositoryImpl(), torneoService);
+
+        Map<Long, Capitan> capitanStore = new HashMap<>();
+        AtomicLong capitanIdGen = new AtomicLong(1);
+        CapitanRepository capitanRepository = mock(CapitanRepository.class);
+        when(capitanRepository.save(any())).thenAnswer(inv -> {
+            Capitan c = inv.getArgument(0);
+            if (c.getId() == null) c.setId(capitanIdGen.getAndIncrement());
+            capitanStore.put(c.getId(), c);
+            return c;
+        });
+        when(capitanRepository.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(capitanStore.get(inv.<Long>getArgument(0))));
+        when(capitanRepository.findAll()).thenAnswer(inv -> new ArrayList<>(capitanStore.values()));
+        capitanService = new CapitanService(capitanRepository, jugadorService);
+
+        Map<Integer, Torneo> torneoStore = new HashMap<>();
+        AtomicInteger torneoIdGen = new AtomicInteger(1);
+        TorneoRepository torneoRepository = mock(TorneoRepository.class);
+        when(torneoRepository.save(any())).thenAnswer(inv -> {
+            Torneo t = inv.getArgument(0);
+            if (t.getId() == 0) t.setId(torneoIdGen.getAndIncrement());
+            torneoStore.put(t.getId(), t);
+            return t;
+        });
+        when(torneoRepository.findById(anyInt())).thenAnswer(inv -> Optional.ofNullable(torneoStore.get(inv.<Integer>getArgument(0))));
+        when(torneoRepository.findAll()).thenAnswer(inv -> new ArrayList<>(torneoStore.values()));
+        torneoService = new TorneoService(torneoRepository);
+
+        Map<Long, Organizador> orgStore = new HashMap<>();
+        AtomicLong orgIdGen = new AtomicLong(1);
+        OrganizadorRepository orgRepository = mock(OrganizadorRepository.class);
+        when(orgRepository.save(any())).thenAnswer(inv -> {
+            Organizador o = inv.getArgument(0);
+            if (o.getId() == null) o.setId(orgIdGen.getAndIncrement());
+            orgStore.put(o.getId(), o);
+            return o;
+        });
+        when(orgRepository.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(orgStore.get(inv.<Long>getArgument(0))));
+        when(orgRepository.findAll()).thenAnswer(inv -> new ArrayList<>(orgStore.values()));
+        organizadorService = new OrganizadorService(orgRepository, torneoService);
     }
 
     @Test
@@ -62,7 +134,7 @@ class ServiciosExtrasTest {
 
     @Test
     void arbitro_save_retornaArbitro() {
-        Arbitro arbitro = new Arbitro(1L, "Ref", "ref@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE);
+        Arbitro arbitro = new Arbitro(null, "Ref", "ref@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE);
         assertNotNull(arbitroService.save(arbitro));
     }
 
@@ -126,10 +198,10 @@ class ServiciosExtrasTest {
 
     @Test
     void jugador_editarPerfil_actualizaCampos() {
-        Jugador jugador = new Jugador(1L, "Original", "orig@test.com", "pass",
+        Jugador jugador = new Jugador(null, "Original", "orig@test.com", "pass",
                 Usuario.TipoUsuario.ESTUDIANTE, 5, Jugador.Posicion.DEFENSA, true, "");
         jugadorRepo.save(jugador);
-        Jugador editado = jugadorService.editarPerfil(1L, "Editado", 10, Jugador.Posicion.PORTERO, "foto.jpg");
+        Jugador editado = jugadorService.editarPerfil(jugador.getId(), "Editado", 10, Jugador.Posicion.PORTERO, "foto.jpg");
         assertEquals("Editado", editado.getName());
         assertEquals(10, editado.getJerseyNumber());
         assertEquals(Jugador.Posicion.PORTERO, editado.getPosition());
