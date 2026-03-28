@@ -1,16 +1,21 @@
 package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.ConsultaAuditoriaRequest;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.RegistroAuditoria;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
+import edu.dosw.project.SFC_TechUp_Futbol.core.repository.RegistroAuditoriaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 class AuditoriaServiceTest {
 
@@ -18,7 +23,17 @@ class AuditoriaServiceTest {
 
     @BeforeEach
     void setUp() {
-        auditoriaService = new AuditoriaService(new RegistroAuditoriaRepositoryImpl());
+        List<RegistroAuditoria> store = new ArrayList<>();
+        AtomicLong idGen = new AtomicLong(1);
+        RegistroAuditoriaRepository repo = mock(RegistroAuditoriaRepository.class);
+        when(repo.save(any())).thenAnswer(inv -> {
+            RegistroAuditoria r = inv.getArgument(0);
+            if (r.getId() == null) r.setId(idGen.getAndIncrement());
+            store.add(r);
+            return r;
+        });
+        when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store));
+        auditoriaService = new AuditoriaService(repo);
     }
 
     @Test

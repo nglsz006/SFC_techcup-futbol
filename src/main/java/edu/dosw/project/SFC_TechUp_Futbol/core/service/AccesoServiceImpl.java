@@ -10,7 +10,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.util.AccesoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
 import java.util.logging.Logger;
 
 @Service
@@ -19,9 +19,11 @@ public class AccesoServiceImpl implements AccesoService {
     private static final Logger log = Logger.getLogger(AccesoServiceImpl.class.getName());
 
     private final UsuarioRegistradoRepository usuarioRepository;
+    private final JwtService jwtService;
 
-    public AccesoServiceImpl(UsuarioRegistradoRepository usuarioRepository) {
+    public AccesoServiceImpl(UsuarioRegistradoRepository usuarioRepository, JwtService jwtService) {
         this.usuarioRepository = usuarioRepository;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class AccesoServiceImpl implements AccesoService {
         if (!PasswordUtil.verificar(request.getPassword(), usuario.getPassword()))
             throw new IllegalArgumentException("Credenciales incorrectas.");
 
-        String token = UUID.randomUUID().toString();
+        String token = jwtService.generarToken(usuario.getEmail(), usuario.getUserType());
         log.info("Login exitoso");
         return AccesoMapper.toLoginResponse(usuario, token);
     }

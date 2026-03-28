@@ -1,8 +1,5 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
-import lombok.Data;
-
-@Data
 public class Sancion {
 
     public enum TipoSancion {
@@ -25,4 +22,16 @@ public class Sancion {
         this.descripcion = descripcion;
         this.jugador = jugador;
     }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public TipoSancion getTipoSancion() { return tipoSancion; }
+    public void setTipoSancion(TipoSancion tipoSancion) { this.tipoSancion = tipoSancion; }
+
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    public Jugador getJugador() { return jugador; }
+    public void setJugador(Jugador jugador) { this.jugador = jugador; }
 }
