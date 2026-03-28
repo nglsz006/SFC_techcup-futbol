@@ -5,7 +5,8 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.AdministradorController;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdministrativoRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ErrorHandler;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
+import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AdministradorService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AutenticacionAdministradorService;
@@ -16,8 +17,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,16 +38,84 @@ class AdministradorControllerTest {
 
     @BeforeEach
     void setUp() {
-        AdministradorRepositoryImpl administradorRepository = new AdministradorRepositoryImpl();
-        OrganizadorRepositoryImpl organizadorRepository = new OrganizadorRepositoryImpl();
-        ArbitroRepositoryImpl arbitroRepository = new ArbitroRepositoryImpl();
-        UsuarioRegistradoRepositoryImpl usuarioRegistradoRepository = new UsuarioRegistradoRepositoryImpl();
+        Map<Long, Administrador> adminStore = new HashMap<>();
+        AtomicLong adminIdGen = new AtomicLong(1);
+        AdministradorRepository administradorRepository = mock(AdministradorRepository.class);
+        when(administradorRepository.save(any())).thenAnswer(inv -> {
+            Administrador a = inv.getArgument(0);
+            if (a.getId() == null) a.setId(adminIdGen.getAndIncrement());
+            adminStore.put(a.getId(), a);
+            return a;
+        });
+        when(administradorRepository.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(adminStore.get(inv.<Long>getArgument(0))));
+        when(administradorRepository.findByEmail(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return adminStore.values().stream().filter(a -> email.equals(a.getEmail())).findFirst();
+        });
+        when(administradorRepository.findAll()).thenAnswer(inv -> new ArrayList<>(adminStore.values()));
+
+        Map<Long, Organizador> orgStore = new HashMap<>();
+        AtomicLong orgIdGen = new AtomicLong(1);
+        OrganizadorRepository organizadorRepository = mock(OrganizadorRepository.class);
+        when(organizadorRepository.save(any())).thenAnswer(inv -> {
+            Organizador o = inv.getArgument(0);
+            if (o.getId() == null) o.setId(orgIdGen.getAndIncrement());
+            orgStore.put(o.getId(), o);
+            return o;
+        });
+        when(organizadorRepository.findByEmail(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return orgStore.values().stream().filter(o -> email.equals(o.getEmail())).findFirst();
+        });
+        when(organizadorRepository.findAll()).thenAnswer(inv -> new ArrayList<>(orgStore.values()));
+
+        Map<Long, Arbitro> arbitroStore = new HashMap<>();
+        AtomicLong arbitroIdGen = new AtomicLong(1);
+        ArbitroRepository arbitroRepository = mock(ArbitroRepository.class);
+        when(arbitroRepository.save(any())).thenAnswer(inv -> {
+            Arbitro a = inv.getArgument(0);
+            if (a.getId() == null) a.setId(arbitroIdGen.getAndIncrement());
+            arbitroStore.put(a.getId(), a);
+            return a;
+        });
+        when(arbitroRepository.findByEmail(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return arbitroStore.values().stream().filter(a -> email.equals(a.getEmail())).findFirst();
+        });
+        when(arbitroRepository.findAll()).thenAnswer(inv -> new ArrayList<>(arbitroStore.values()));
+
+        UsuarioRegistradoRepository usuarioRegistradoRepository = mock(UsuarioRegistradoRepository.class);
+        when(usuarioRegistradoRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(usuarioRegistradoRepository.findAll()).thenReturn(new ArrayList<>());
+
+        List<RegistroAuditoria> auditoriaList1 = new ArrayList<>();
+        AtomicLong auditoriaIdGen1 = new AtomicLong(1);
+        RegistroAuditoriaRepository auditoriaRepo1 = mock(RegistroAuditoriaRepository.class);
+        when(auditoriaRepo1.save(any())).thenAnswer(inv -> {
+            RegistroAuditoria r = inv.getArgument(0);
+            if (r.getId() == null) r.setId(auditoriaIdGen1.getAndIncrement());
+            auditoriaList1.add(r);
+            return r;
+        });
+        when(auditoriaRepo1.findAll()).thenAnswer(inv -> new ArrayList<>(auditoriaList1));
+
+        List<RegistroAuditoria> auditoriaList2 = new ArrayList<>();
+        AtomicLong auditoriaIdGen2 = new AtomicLong(1);
+        RegistroAuditoriaRepository auditoriaRepo2 = mock(RegistroAuditoriaRepository.class);
+        when(auditoriaRepo2.save(any())).thenAnswer(inv -> {
+            RegistroAuditoria r = inv.getArgument(0);
+            if (r.getId() == null) r.setId(auditoriaIdGen2.getAndIncrement());
+            auditoriaList2.add(r);
+            return r;
+        });
+        when(auditoriaRepo2.findAll()).thenAnswer(inv -> new ArrayList<>(auditoriaList2));
+
         administradorService = new AdministradorService(
                 administradorRepository,
                 organizadorRepository,
                 arbitroRepository,
                 usuarioRegistradoRepository,
-                new AuditoriaService(new RegistroAuditoriaRepositoryImpl())
+                new AuditoriaService(auditoriaRepo1)
         );
         autenticacionAdministradorService = new AutenticacionAdministradorService(administradorRepository);
         AdministradorValidator administradorValidator = new AdministradorValidator(
@@ -54,7 +129,7 @@ class AdministradorControllerTest {
                         administradorService,
                         administradorValidator,
                         autenticacionAdministradorService,
-                        new AuditoriaService(new RegistroAuditoriaRepositoryImpl())
+                        new AuditoriaService(auditoriaRepo2)
                 ))
                 .setControllerAdvice(new ErrorHandler())
                 .build();
@@ -62,26 +137,26 @@ class AdministradorControllerTest {
 
     @Test
     void registrarUsuario_conRolPermitido_retorna200() throws Exception {
-        administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
+        Administrador admin = administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
         String token = loginAdmin("admin@escuelaing.edu.co", "password123");
 
         mockMvc.perform(post("/api/admin/usuarios")
-                        .header("X-Administrador-Id", 1)
+                        .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(crearBody("Organizador", "organizador@escuelaing.edu.co", "ORGANIZADOR"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rol").value("ORGANIZADOR"))
-                .andExpect(jsonPath("$.registradoPor").value(1));
+                .andExpect(jsonPath("$.registradoPor").value(admin.getId()));
     }
 
     @Test
     void registrarUsuario_conRolNoPermitido_retorna400() throws Exception {
-        administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
+        Administrador admin = administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
         String token = loginAdmin("admin@escuelaing.edu.co", "password123");
 
         mockMvc.perform(post("/api/admin/usuarios")
-                        .header("X-Administrador-Id", 1)
+                        .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(crearBody("Supervisor", "supervisor@escuelaing.edu.co", "SUPERVISOR"))))
@@ -91,10 +166,10 @@ class AdministradorControllerTest {
 
     @Test
     void registrarUsuario_sinTokenValido_retorna401() throws Exception {
-        administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
+        Administrador admin = administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
 
         mockMvc.perform(post("/api/admin/usuarios")
-                        .header("X-Administrador-Id", 1)
+                        .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", "token-invalido")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(crearBody("Organizador", "organizador2@escuelaing.edu.co", "ORGANIZADOR"))))
