@@ -133,11 +133,7 @@ La paleta responde a eso: moderna y directa para los más jóvenes, clara e intu
 ### 4. Tipografia:
 Poppins se emplea en títulos y botones debido a su estructura geométrica clara, que facilita la identificación de elementos importantes dentro de la interfaz.
 
-![PoppingsHeader.PNG](../Images/ManualDeIdentidad/PoppingsHeader.PNG)
-
 Montserrat se utiliza en subtítulos y secciones porque mantiene una buena legibilidad incluso en tamaños pequeños, permitiendo que el contenido sea fácil de escanear visualmente.
-
-![MonserratEje.PNG](../Images/ManualDeIdentidad/MonserratEje.PNG)
 
 ---
 
@@ -164,13 +160,11 @@ Componente que muestra el proceso de uso de la plataforma mediante una secuencia
 
 - nuestra pagina principal
 
-![PaginaPrincipal.PNG](../Images/ManualDeIdentidad/PaginaPrincipal.PNG)
+<img width="341" height="681" alt="image" src="https://github.com/user-attachments/assets/3f68bba2-b672-44bd-b543-a4b20fc708c4" />
 
 - nuestro espacio de registro
 
-![Registro.PNG](../Images/ManualDeIdentidad/Registro.PNG)
-
-- 
+<img width="330" height="598" alt="image" src="https://github.com/user-attachments/assets/141e40e8-7f0e-4d28-bd07-17c642b0fc6f" />
 
 
 
