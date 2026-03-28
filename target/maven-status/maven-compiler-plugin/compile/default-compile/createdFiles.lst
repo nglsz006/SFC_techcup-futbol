@@ -1,3 +1,4 @@
+edu\dosw\project\SFC_TechUp_Futbol\core\service\OAuth2Service.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\TorneoMapper.class
 edu\dosw\project\SFC_TechUp_Futbol\core\exception\RolNoPermitidoException.class
 edu\dosw\project\SFC_TechUp_Futbol\core\repository\AdministradorRepository.class
@@ -5,6 +6,7 @@ edu\dosw\project\SFC_TechUp_Futbol\core\validator\RegistroValidator.class
 edu\dosw\project\SFC_TechUp_Futbol\core\service\AccesoServiceImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\EstadoTorneoInterface.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\Torneo.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\ArbitroRepositoryJpaImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\core\util\IdGeneratorUtil.class
 edu\dosw\project\SFC_TechUp_Futbol\core\repository\EquipoRepository.class
 edu\dosw\project\SFC_TechUp_Futbol\controller\dto\request\RegistroAdministrativoRequest.class
@@ -14,6 +16,7 @@ edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\AlineacionMapper.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\Organizador.class
 edu\dosw\project\SFC_TechUp_Futbol\controller\UsuarioController.class
 edu\dosw\project\SFC_TechUp_Futbol\core\util\JwtService.class
+edu\dosw\project\SFC_TechUp_Futbol\SecurityConfig$CorsProperties.class
 edu\dosw\project\SFC_TechUp_Futbol\controller\dto\response\RegistroAdministrativoResponse.class
 edu\dosw\project\SFC_TechUp_Futbol\core\repository\SancionRepository.class
 edu\dosw\project\SFC_TechUp_Futbol\core\exception\CorreoYaRegistradoException.class
@@ -30,6 +33,7 @@ edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\OrganizadorJpaReposito
 edu\dosw\project\SFC_TechUp_Futbol\core\model\Partido.class
 edu\dosw\project\SFC_TechUp_Futbol\core\service\NotificadorTorneo.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\PartidoState.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\AlineacionRepositoryJpaImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\RegistroAuditoriaMapper.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\entity\GolEntity.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\Sancion$TipoSancion.class
@@ -50,11 +54,13 @@ edu\dosw\project\SFC_TechUp_Futbol\persistence\entity\RegistroAuditoriaEntity.cl
 edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\UsuarioRegistradoJpaRepository.class
 edu\dosw\project\SFC_TechUp_Futbol\core\exception\AccesoDenegadoException.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\PerfilDeportivo.class
+edu\dosw\project\SFC_TechUp_Futbol\HttpsRedirectConfig.class
 edu\dosw\project\SFC_TechUp_Futbol\core\service\PartidoService.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\Pago$PagoEstado.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\TorneoEnCurso.class
 edu\dosw\project\SFC_TechUp_Futbol\controller\PartidoController.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\JugadorMapper.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\EquipoRepositoryJpaImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\core\service\Subject.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\EnCursoState.class
 edu\dosw\project\SFC_TechUp_Futbol\controller\dto\request\LoginRequest.class
@@ -67,10 +73,13 @@ edu\dosw\project\SFC_TechUp_Futbol\core\repository\PagoRepository.class
 edu\dosw\project\SFC_TechUp_Futbol\core\validator\ValidacionAlineacion.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\Partido$PartidoEstado.class
 edu\dosw\project\SFC_TechUp_Futbol\core\validator\SancionValidator.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\PartidoRepositoryJpaImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\PagoJpaRepository.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\UsuarioRegistradoMapper.class
 edu\dosw\project\SFC_TechUp_Futbol\SFCTechCupFutbolApiApplication.class
 edu\dosw\project\SFC_TechUp_Futbol\controller\AuditoriaController.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\JugadorRepositoryJpaImpl.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\RegistroAuditoriaRepositoryJpaImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\core\exception\ErrorHandler.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\EnRevisionState.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\TorneoFinalizado.class
@@ -95,6 +104,7 @@ edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\AdministradorJpaReposi
 edu\dosw\project\SFC_TechUp_Futbol\core\service\AutenticacionAdministradorService.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\Jugador.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\PerfilDeportivoMapper.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\AdministradorRepositoryJpaImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\core\service\PerfilDeportivoServiceImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\entity\EquipoEntity.class
 edu\dosw\project\SFC_TechUp_Futbol\controller\EquipoController.class
@@ -107,6 +117,7 @@ edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\RegistroAuditoriaJpaRe
 edu\dosw\project\SFC_TechUp_Futbol\persistence\entity\ArbitroEntity.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\PerfilDeportivoJpaRepository.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\JugadorJpaRepository.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\TorneoRepositoryJpaImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\SwaggerConfig.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\entity\AlineacionEntity.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\ArbitroJpaRepository.class
@@ -120,9 +131,12 @@ edu\dosw\project\SFC_TechUp_Futbol\persistence\entity\JugadorEntity.class
 edu\dosw\project\SFC_TechUp_Futbol\core\repository\ArbitroRepository.class
 edu\dosw\project\SFC_TechUp_Futbol\core\service\ArbitroService.class
 edu\dosw\project\SFC_TechUp_Futbol\core\repository\PerfilDeportivoRepository.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\UsuarioRegistradoRepositoryJpaImpl.class
+edu\dosw\project\SFC_TechUp_Futbol\controller\OAuth2Controller.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\AprobadoState.class
 edu\dosw\project\SFC_TechUp_Futbol\SecurityConfig.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\entity\TorneoEntity.class
+edu\dosw\project\SFC_TechUp_Futbol\HttpsRedirectConfig$1.class
 edu\dosw\project\SFC_TechUp_Futbol\core\repository\RegistroAuditoriaRepository.class
 edu\dosw\project\SFC_TechUp_Futbol\core\validator\AuditoriaValidator.class
 edu\dosw\project\SFC_TechUp_Futbol\core\repository\TorneoRepository.class
@@ -132,6 +146,8 @@ edu\dosw\project\SFC_TechUp_Futbol\core\model\state\FinalizadoPartidoState.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\entity\AdministradorEntity.class
 edu\dosw\project\SFC_TechUp_Futbol\core\service\CapitanService.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\TorneoMapper$1.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\SancionRepositoryJpaImpl.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\OrganizadorRepositoryJpaImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\PartidoMapper$1.class
 edu\dosw\project\SFC_TechUp_Futbol\controller\AdministradorController.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\ArbitroMapper.class
@@ -155,6 +171,7 @@ edu\dosw\project\SFC_TechUp_Futbol\core\model\UsuarioRegistrado.class
 edu\dosw\project\SFC_TechUp_Futbol\core\service\AccesoService.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\Capitan.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\AlineacionJpaRepository.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\PagoRepositoryJpaImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\TipoAccionAuditoria.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\TorneoCreado.class
 edu\dosw\project\SFC_TechUp_Futbol\core\util\PasswordUtil.class
@@ -164,6 +181,7 @@ edu\dosw\project\SFC_TechUp_Futbol\core\model\Pago.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\ProgramadoState.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\state\PagoState.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\Usuario$TipoUsuario.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\PerfilDeportivoRepositoryJpaImpl.class
 edu\dosw\project\SFC_TechUp_Futbol\core\model\Usuario.class
 edu\dosw\project\SFC_TechUp_Futbol\core\validator\AccesoValidator.class
 edu\dosw\project\SFC_TechUp_Futbol\core\validator\PartidoValidator.class
@@ -174,3 +192,4 @@ edu\dosw\project\SFC_TechUp_Futbol\controller\PagoController.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\CapitanMapper.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\mapper\PagoMapper.class
 edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\CapitanJpaRepository.class
+edu\dosw\project\SFC_TechUp_Futbol\persistence\repository\CapitanRepositoryJpaImpl.class
