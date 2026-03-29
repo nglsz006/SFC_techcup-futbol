@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.AdministradorController;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdministrativoRequest;
-import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ErrorHandler;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.ErrorHandler;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AdministradorService;
@@ -140,7 +140,7 @@ class AdministradorControllerTest {
         Administrador admin = administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
         String token = loginAdmin("admin@escuelaing.edu.co", "password123");
 
-        mockMvc.perform(post("/api/admin/usuarios")
+        mockMvc.perform(post("/api/admin/users")
                         .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -155,7 +155,7 @@ class AdministradorControllerTest {
         Administrador admin = administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
         String token = loginAdmin("admin@escuelaing.edu.co", "password123");
 
-        mockMvc.perform(post("/api/admin/usuarios")
+        mockMvc.perform(post("/api/admin/users")
                         .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -168,11 +168,11 @@ class AdministradorControllerTest {
     void registrarUsuario_sinTokenValido_retorna401() throws Exception {
         Administrador admin = administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
 
-        mockMvc.perform(post("/api/admin/usuarios")
+        mockMvc.perform(post("/api/admin/users")
                         .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", "token-invalido")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(crearBody("Organizador", "organizador2@escuelaing.edu.co", "ORGANIZADOR"))))
+                        .content(mapper.writeValueAsString(crearBody("Org", "org2@escuelaing.edu.co", "ORGANIZADOR"))))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.codigo").value(401));
     }

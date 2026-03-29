@@ -2,7 +2,7 @@ package edu.dosw.project.SFC_TechUp_Futbol;
 
 import edu.dosw.project.SFC_TechUp_Futbol.controller.AuditoriaController;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdministrativoRequest;
-import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ErrorHandler;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.ErrorHandler;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AdministradorService;
@@ -129,7 +129,7 @@ class AuditoriaControllerTest {
         String token = autenticacionAdministradorService.login("admin@escuelaing.edu.co", "password123");
         auditoriaService.registrarEvento(admin.getId(), "organizador@escuelaing.edu.co", TipoAccionAuditoria.REGISTRO_ORGANIZADOR, "Registro administrativo");
 
-        mockMvc.perform(get("/api/admin/auditoria")
+        mockMvc.perform(get("/api/admin/audit")
                         .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", token)
                         .param("usuario", "organizador")
@@ -144,7 +144,7 @@ class AuditoriaControllerTest {
         Administrador admin = administradorService.registrarAdministrador(crearAdmin("Admin", "admin@escuelaing.edu.co"));
         String token = autenticacionAdministradorService.login("admin@escuelaing.edu.co", "password123");
 
-        mockMvc.perform(get("/api/admin/auditoria")
+        mockMvc.perform(get("/api/admin/audit")
                         .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", token)
                         .param("fechaDesde", "2026-03-25")
@@ -158,7 +158,7 @@ class AuditoriaControllerTest {
         Administrador admin = administradorService.registrarAdministrador(crearAdmin("Admin", "admin@escuelaing.edu.co"));
         String token = autenticacionAdministradorService.login("admin@escuelaing.edu.co", "password123");
 
-        mockMvc.perform(get("/api/admin/auditoria")
+        mockMvc.perform(get("/api/admin/audit")
                         .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", token)
                         .param("usuario", "nadie"))

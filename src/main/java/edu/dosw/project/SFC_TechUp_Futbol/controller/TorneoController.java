@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Tag(name = "Tournaments", description = "Creation, query, standings table, elimination bracket and tournament statistics. Accessible by Organizers.")
 @RestController
-@RequestMapping("/api/torneos")
+@RequestMapping("/api/tournaments")
 public class TorneoController {
     private final TorneoService service;
     private final PartidoService partidoService;
@@ -42,7 +42,7 @@ public class TorneoController {
     }
 
     @Operation(summary = "Standings table", description = "Calculates and returns the tournament standings based on finished matches.")
-    @GetMapping("/{id}/posiciones")
+    @GetMapping("/{id}/positions")
     public List<Map<String, Object>> tablaPosiciones(@PathVariable int id) {
         List<Partido> partidos = partidoService.consultarPartidosPorTorneo((long) id);
         Map<Integer, Map<String, Object>> tabla = new LinkedHashMap<>();
@@ -71,7 +71,7 @@ public class TorneoController {
     }
 
     @Operation(summary = "Elimination bracket", description = "Returns all tournament matches with their status, score and date to display the bracket.")
-    @GetMapping("/{id}/llave")
+    @GetMapping("/{id}/bracket")
     public List<Map<String, Object>> llaveEliminatoria(@PathVariable int id) {
         List<Partido> partidos = partidoService.consultarPartidosPorTorneo((long) id);
         return partidos.stream().map(p -> {
@@ -87,7 +87,7 @@ public class TorneoController {
     }
 
     @Operation(summary = "Tournament statistics", description = "Returns general metrics: total matches, goals, averages and match statuses.")
-    @GetMapping("/{id}/estadisticas")
+    @GetMapping("/{id}/statistics")
     public Map<String, Object> estadisticas(@PathVariable int id) {
         List<Partido> partidos = partidoService.consultarPartidosPorTorneo((long) id);
         int totalGoles = partidos.stream().mapToInt(p -> p.getMarcadorLocal() + p.getMarcadorVisitante()).sum();

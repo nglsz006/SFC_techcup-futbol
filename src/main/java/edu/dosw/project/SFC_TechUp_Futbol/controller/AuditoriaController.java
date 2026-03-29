@@ -22,7 +22,7 @@ import java.util.List;
 
 @Tag(name = "Auditoria", description = "Consulta de historial de acciones administrativas.")
 @RestController
-@RequestMapping("/api/admin/auditoria")
+@RequestMapping("/api/admin/audit")
 public class AuditoriaController {
 
     private final AuditoriaService auditoriaService;

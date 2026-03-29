@@ -10,7 +10,7 @@ import java.util.List;
 
 @Tag(name = "Lineups", description = "Lineup query. To create or view the rival lineup use the Users endpoints (captain).")
 @RestController
-@RequestMapping("/api/alineaciones")
+@RequestMapping("/api/lineups")
 public class AlineacionController {
 
     private final AlineacionService service;

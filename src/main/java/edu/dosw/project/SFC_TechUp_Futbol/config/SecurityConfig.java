@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol;
+package edu.dosw.project.SFC_TechUp_Futbol.config;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtFilter;
 import org.springframework.context.annotation.Bean;

@@ -56,7 +56,7 @@ public class AdministradorController {
     }
 
     @Operation(summary = "Register organizer or referee", description = "Protected endpoint that only accepts roles ORGANIZADOR and ARBITRO.")
-    @PostMapping("/usuarios")
+    @PostMapping("/users")
     public RegistroAdministrativoResponse registrarUsuario(
             @RequestHeader("X-Administrador-Id") Long administradorId,
             @RequestHeader("X-Administrador-Token") String token,

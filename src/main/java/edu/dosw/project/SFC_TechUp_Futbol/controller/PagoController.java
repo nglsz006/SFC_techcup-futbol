@@ -11,7 +11,7 @@ import java.util.List;
 
 @Tag(name = "Payments", description = "Tournament payment query. To upload or verify receipts use the Users endpoints (captain or organizer).")
 @RestController
-@RequestMapping("/api/pagos")
+@RequestMapping("/api/payments")
 public class PagoController {
 
     private final PagoService pagoService;
@@ -29,8 +29,8 @@ public class PagoController {
     }
 
     @Operation(summary = "Get payments by team", description = "Lists all payments registered for a team.")
-    @GetMapping("/equipo/{equipoId}")
-    public List<Pago> consultarPagosPorEquipo(@PathVariable Long equipoId) {
-        return pagoService.consultarPagosPorEquipo(equipoId);
+    @GetMapping("/team/{teamId}")
+    public List<Pago> consultarPagosPorEquipo(@PathVariable Long teamId) {
+        return pagoService.consultarPagosPorEquipo(teamId);
     }
 }

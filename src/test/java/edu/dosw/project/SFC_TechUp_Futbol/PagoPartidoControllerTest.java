@@ -8,7 +8,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PagoValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
-import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ErrorHandler;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.ErrorHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -143,10 +143,11 @@ class PagoPartidoControllerTest {
             return partidoStore.values().stream().filter(p -> p.getEstado() == estado).collect(Collectors.toList());
         });
         when(partidoRepo.findByEquipoLocalIdOrEquipoVisitanteId(anyLong(), anyLong())).thenAnswer(inv -> {
-            Long lid = inv.getArgument(0); Long vid = inv.getArgument(1);
+            Long lid = inv.getArgument(0);
+            Long vid = inv.getArgument(1);
             return partidoStore.values().stream().filter(p ->
                     (p.getEquipoLocal() != null && p.getEquipoLocal().getId() == lid.intValue()) ||
-                    (p.getEquipoVisitante() != null && p.getEquipoVisitante().getId() == vid.intValue())
+                            (p.getEquipoVisitante() != null && p.getEquipoVisitante().getId() == vid.intValue())
             ).collect(Collectors.toList());
         });
 
@@ -303,10 +304,11 @@ class PagoPartidoControllerTest {
             return partidoStoreUsuario.values().stream().filter(p -> p.getEstado() == estado).collect(Collectors.toList());
         });
         when(partidoRepoUsuario.findByEquipoLocalIdOrEquipoVisitanteId(anyLong(), anyLong())).thenAnswer(inv -> {
-            Long lid = inv.getArgument(0); Long vid = inv.getArgument(1);
+            Long lid = inv.getArgument(0);
+            Long vid = inv.getArgument(1);
             return partidoStoreUsuario.values().stream().filter(p ->
                     (p.getEquipoLocal() != null && p.getEquipoLocal().getId() == lid.intValue()) ||
-                    (p.getEquipoVisitante() != null && p.getEquipoVisitante().getId() == vid.intValue())
+                            (p.getEquipoVisitante() != null && p.getEquipoVisitante().getId() == vid.intValue())
             ).collect(Collectors.toList());
         });
 
@@ -323,13 +325,15 @@ class PagoPartidoControllerTest {
                 .setControllerAdvice(new ErrorHandler()).build();
     }
 
+    // ── Pagos ──────────────────────────────────────────────────────────────────
+
     @Test
     void pago_subirComprobante_retorna200() throws Exception {
         Map<String, Object> bodyOrg = Map.of(
                 "nombre", "OrgSub", "email", "orgsub@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/usuarios/organizadores")
+        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
@@ -339,29 +343,29 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 5, "posicion", "DEFENSA"
         );
-        String respCap = usuarioMvc.perform(post("/api/usuarios/capitanes")
+        String respCap = usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyCap)))
                 .andReturn().getResponse().getContentAsString();
         Long capId = mapper.readTree(respCap).get("id").asLong();
-        usuarioMvc.perform(post("/api/usuarios/capitanes/" + capId + "/comprobante")
+        usuarioMvc.perform(post("/api/users/captains/" + capId + "/receipt")
                         .param("comprobante", "pago.jpg"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void pago_consultarPendientes_retorna200() throws Exception {
-        pagoMvc.perform(get("/api/pagos/equipo/" + equipo.getId())).andExpect(status().isOk());
+        pagoMvc.perform(get("/api/payments/team/" + equipo.getId())).andExpect(status().isOk());
     }
 
     @Test
     void pago_consultarPorEquipo_retorna200() throws Exception {
-        pagoMvc.perform(get("/api/pagos/equipo/" + equipo.getId())).andExpect(status().isOk());
+        pagoMvc.perform(get("/api/payments/team/" + equipo.getId())).andExpect(status().isOk());
     }
 
     @Test
     void pago_consultarInexistente_retorna500() throws Exception {
-        pagoMvc.perform(get("/api/pagos/999")).andExpect(status().isInternalServerError());
+        pagoMvc.perform(get("/api/payments/999")).andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -371,19 +375,19 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 4, "posicion", "PORTERO"
         );
-        String respCap = usuarioMvc.perform(post("/api/usuarios/capitanes")
+        String respCap = usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyCap)))
                 .andReturn().getResponse().getContentAsString();
         Long capId = mapper.readTree(respCap).get("id").asLong();
-        usuarioMvc.perform(post("/api/usuarios/capitanes/" + capId + "/comprobante")
+        usuarioMvc.perform(post("/api/users/captains/" + capId + "/receipt")
                         .param("comprobante", "pago.jpg"))
                 .andReturn().getResponse().getContentAsString();
         Map<String, Object> bodyOrg = Map.of(
                 "nombre", "OrgPago", "email", "orgpago@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/usuarios/organizadores")
+        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
@@ -391,7 +395,7 @@ class PagoPartidoControllerTest {
         List<Pago> pendientes = pagoService.consultarPagosPendientes();
         if (!pendientes.isEmpty()) {
             Long pagoId = pendientes.get(0).getId();
-            usuarioMvc.perform(put("/api/usuarios/organizadores/" + orgId + "/pagos/" + pagoId + "/aprobar"))
+            usuarioMvc.perform(put("/api/users/organizers/" + orgId + "/payments/" + pagoId + "/approve"))
                     .andExpect(status().isOk());
         }
     }
@@ -403,18 +407,18 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 3, "posicion", "VOLANTE"
         );
-        String respCap = usuarioMvc.perform(post("/api/usuarios/capitanes")
+        String respCap = usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyCap)))
                 .andReturn().getResponse().getContentAsString();
         Long capId = mapper.readTree(respCap).get("id").asLong();
-        usuarioMvc.perform(post("/api/usuarios/capitanes/" + capId + "/comprobante")
+        usuarioMvc.perform(post("/api/users/captains/" + capId + "/receipt")
                 .param("comprobante", "pago.jpg"));
         Map<String, Object> bodyOrg = Map.of(
                 "nombre", "OrgRech", "email", "orgrech@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/usuarios/organizadores")
+        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
@@ -422,68 +426,70 @@ class PagoPartidoControllerTest {
         List<Pago> pendientes = pagoService.consultarPagosPendientes();
         if (!pendientes.isEmpty()) {
             Long pagoId = pendientes.get(0).getId();
-            usuarioMvc.perform(put("/api/usuarios/organizadores/" + orgId + "/pagos/" + pagoId + "/aprobar"));
-            usuarioMvc.perform(put("/api/usuarios/organizadores/" + orgId + "/pagos/" + pagoId + "/rechazar"))
+            usuarioMvc.perform(put("/api/users/organizers/" + orgId + "/payments/" + pagoId + "/reject"))
                     .andExpect(status().isOk());
         }
     }
 
+// ── Partidos ───────────────────────────────────────────────────────────────
+
     @Test
     void partido_crear_retorna200() throws Exception {
-        Equipo visitante = equipoRepo.save(new Equipo(0, "Visitante", "", "azul", "negro", 2));
+        Equipo visitante2 = equipoRepo.save(new Equipo(0, "Visitante2", "", "azul", "negro", 2));
         Map<String, Object> bodyOrg = Map.of(
                 "nombre", "OrgPart", "email", "orgpart@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/usuarios/organizadores")
+        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
         Long orgId = mapper.readTree(respOrg).get("id").asLong();
-        Torneo t = new Torneo(0, "Copa Part",
-                LocalDateTime.of(2025, 9, 1, 10, 0),
-                LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
-        usuarioMvc.perform(post("/api/usuarios/organizadores/" + orgId + "/torneo")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(t)));
-        Map<String, Object> body = Map.of(
-                "torneoId", torneo.getId(),
-                "equipoLocalId", equipo.getId(),
-                "equipoVisitanteId", visitante.getId(),
+        Map<String, Object> bodyPartido = Map.of(
+                "torneoId", (long) torneo.getId(),
+                "equipoLocalId", (long) equipo.getId(),
+                "equipoVisitanteId", (long) visitante2.getId(),
                 "fecha", "2025-09-01T10:00:00",
                 "cancha", "cancha 1"
         );
-        usuarioMvc.perform(post("/api/usuarios/organizadores/" + orgId + "/partidos")
+        usuarioMvc.perform(post("/api/users/organizers/" + orgId + "/matches")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
+                        .content(mapper.writeValueAsString(bodyPartido)))
                 .andExpect(status().isOk());
     }
 
     @Test
+    void partido_consultarPorTorneo_retorna200() throws Exception {
+        partidoMvc.perform(get("/api/matches/tournament/" + torneo.getId())).andExpect(status().isOk());
+    }
+
+    @Test
+    void partido_consultarPorEquipo_retorna200() throws Exception {
+        partidoMvc.perform(get("/api/matches/team/" + equipo.getId())).andExpect(status().isOk());
+    }
+
+    @Test
+    void partido_consultarInexistente_retorna500() throws Exception {
+        partidoMvc.perform(get("/api/matches/999")).andExpect(status().isInternalServerError());
+    }
+
+    @Test
     void partido_flujoCompleto_retorna200() throws Exception {
-        Equipo visitante = equipoRepo.save(new Equipo(0, "Visitante2", "", "azul", "negro", 2));
-        jugador.setEquipo(equipo.getId());
-        jugadorRepo.save(jugador);
+        Equipo visitante2 = equipoRepo.save(new Equipo(0, "Visitante2", "", "azul", "negro", 2));
         Map<String, Object> bodyOrg = Map.of(
                 "nombre", "OrgFlujo", "email", "orgflujo@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/usuarios/organizadores")
+        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
         Long orgId = mapper.readTree(respOrg).get("id").asLong();
-        Torneo t = new Torneo(0, "Copa Flujo",
-                LocalDateTime.of(2025, 9, 1, 10, 0),
-                LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
-        usuarioMvc.perform(post("/api/usuarios/organizadores/" + orgId + "/torneo")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(t)));
         Map<String, Object> bodyArbitro = Map.of(
                 "nombre", "RefFlujo", "email", "refflujo@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String respArb = usuarioMvc.perform(post("/api/usuarios/arbitros")
+        String respArb = usuarioMvc.perform(post("/api/users/referees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyArbitro)))
                 .andReturn().getResponse().getContentAsString();
@@ -491,67 +497,47 @@ class PagoPartidoControllerTest {
         Map<String, Object> bodyPartido = Map.of(
                 "torneoId", torneo.getId(),
                 "equipoLocalId", equipo.getId(),
-                "equipoVisitanteId", visitante.getId(),
+                "equipoVisitanteId", visitante2.getId(),
                 "fecha", "2025-09-01T10:00:00",
                 "cancha", "cancha 2"
         );
-        String resp = usuarioMvc.perform(post("/api/usuarios/organizadores/" + orgId + "/partidos")
+        String resp = usuarioMvc.perform(post("/api/users/organizers/" + orgId + "/matches")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyPartido)))
                 .andReturn().getResponse().getContentAsString();
         Long pid = mapper.readTree(resp).get("id").asLong();
-        usuarioMvc.perform(put("/api/usuarios/arbitros/" + arbId + "/partidos/" + pid + "/iniciar")).andExpect(status().isOk());
-        usuarioMvc.perform(post("/api/usuarios/arbitros/" + arbId + "/partidos/" + pid + "/goles")
+        usuarioMvc.perform(put("/api/users/referees/" + arbId + "/matches/" + pid + "/start")).andExpect(status().isOk());
+        usuarioMvc.perform(post("/api/users/referees/" + arbId + "/matches/" + pid + "/goals")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(Map.of("jugadorId", jugador.getId(), "minuto", 10))))
                 .andExpect(status().isOk());
-        usuarioMvc.perform(post("/api/usuarios/arbitros/" + arbId + "/partidos/" + pid + "/sanciones")
+        usuarioMvc.perform(post("/api/users/referees/" + arbId + "/matches/" + pid + "/sanctions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(Map.of("jugadorId", jugador.getId(), "tipoSancion", "TARJETA_AMARILLA", "descripcion", "Falta reiterada en minuto 30"))))
                 .andExpect(status().isOk());
-        usuarioMvc.perform(put("/api/usuarios/arbitros/" + arbId + "/partidos/" + pid + "/resultado")
+        usuarioMvc.perform(put("/api/users/referees/" + arbId + "/matches/" + pid + "/result")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(Map.of("golesLocal", 2, "golesVisitante", 1))))
                 .andExpect(status().isOk());
-        usuarioMvc.perform(put("/api/usuarios/arbitros/" + arbId + "/partidos/" + pid + "/finalizar")).andExpect(status().isOk());
-        usuarioMvc.perform(get("/api/usuarios/arbitros/" + arbId + "/partidos")).andExpect(status().isOk());
+        usuarioMvc.perform(put("/api/users/referees/" + arbId + "/matches/" + pid + "/end")).andExpect(status().isOk());
+        usuarioMvc.perform(get("/api/users/referees/" + arbId + "/matches")).andExpect(status().isOk());
     }
 
-    @Test
-    void partido_consultarInexistente_retorna500() throws Exception {
-        partidoMvc.perform(get("/api/partidos/999")).andExpect(status().isInternalServerError());
-    }
-
-    @Test
-    void partido_consultarPorTorneo_retorna200() throws Exception {
-        partidoMvc.perform(get("/api/partidos/torneo/" + torneo.getId())).andExpect(status().isOk());
-    }
-
-    @Test
-    void partido_consultarPorEquipo_retorna200() throws Exception {
-        partidoMvc.perform(get("/api/partidos/equipo/" + equipo.getId())).andExpect(status().isOk());
-    }
+// ── Alineaciones ───────────────────────────────────────────────────────────
 
     @Test
     void alineacion_crear_retorna400_porValidacion() throws Exception {
-        Map<String, Object> body = Map.of(
-                "equipoId", 1,
-                "partidoId", 1,
-                "formacion", "4-4-2",
-                "titulares", java.util.List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
-                "reservas", java.util.List.of()
-        );
         Map<String, Object> bodyCap = Map.of(
                 "nombre", "CapAlin", "email", "capalin@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 2, "posicion", "DEFENSA"
         );
-        String respCap = usuarioMvc.perform(post("/api/usuarios/capitanes")
+        String respCap = usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyCap)))
                 .andReturn().getResponse().getContentAsString();
         Long capId = mapper.readTree(respCap).get("id").asLong();
-        usuarioMvc.perform(post("/api/usuarios/capitanes/" + capId + "/alineacion")
+        usuarioMvc.perform(post("/api/users/captains/" + capId + "/lineup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(java.util.List.of())))
                 .andExpect(status().isBadRequest());
@@ -559,12 +545,12 @@ class PagoPartidoControllerTest {
 
     @Test
     void alineacion_listar_retorna200() throws Exception {
-        alineacionMvc.perform(get("/api/alineaciones")).andExpect(status().isOk());
+        alineacionMvc.perform(get("/api/lineups")).andExpect(status().isOk());
     }
 
     @Test
     void alineacion_consultarRival_sinDatos_retorna400() throws Exception {
-        alineacionMvc.perform(get("/api/alineaciones/rival")
+        alineacionMvc.perform(get("/api/lineups/rival")
                         .param("partidoId", "1")
                         .param("equipoId", "1"))
                 .andExpect(status().isInternalServerError());
@@ -572,8 +558,10 @@ class PagoPartidoControllerTest {
 
     @Test
     void alineacion_obtenerInexistente_retorna400() throws Exception {
-        alineacionMvc.perform(get("/api/alineaciones/999")).andExpect(status().isBadRequest());
+        alineacionMvc.perform(get("/api/lineups/999")).andExpect(status().isBadRequest());
     }
+
+// ── Árbitros ───────────────────────────────────────────────────────────────
 
     @Test
     void arbitro_crear_retorna200() throws Exception {
@@ -581,7 +569,7 @@ class PagoPartidoControllerTest {
                 "nombre", "Ref1", "email", "ref@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        usuarioMvc.perform(post("/api/usuarios/arbitros")
+        usuarioMvc.perform(post("/api/users/referees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andExpect(status().isOk());
@@ -589,7 +577,7 @@ class PagoPartidoControllerTest {
 
     @Test
     void arbitro_listar_retorna200() throws Exception {
-        usuarioMvc.perform(get("/api/usuarios/arbitros")).andExpect(status().isOk());
+        usuarioMvc.perform(get("/api/users/referees")).andExpect(status().isOk());
     }
 
     @Test
@@ -598,19 +586,21 @@ class PagoPartidoControllerTest {
                 "nombre", "Ref2", "email", "ref2@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String resp = usuarioMvc.perform(post("/api/usuarios/arbitros")
+        String resp = usuarioMvc.perform(post("/api/users/referees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
         Long id = mapper.readTree(resp).get("id").asLong();
-        usuarioMvc.perform(post("/api/usuarios/arbitros/" + id + "/partidos/999"))
+        usuarioMvc.perform(post("/api/users/referees/" + id + "/matches/999"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void arbitro_consultarPartidos_retorna200() throws Exception {
-        usuarioMvc.perform(get("/api/usuarios/arbitros/1/partidos")).andExpect(status().isOk());
+        usuarioMvc.perform(get("/api/users/referees/1/matches")).andExpect(status().isOk());
     }
+
+// ── Capitanes ──────────────────────────────────────────────────────────────
 
     @Test
     void capitan_crear_retorna200() throws Exception {
@@ -619,7 +609,7 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 10, "posicion", "DELANTERO"
         );
-        usuarioMvc.perform(post("/api/usuarios/capitanes")
+        usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andExpect(status().isOk());
@@ -627,7 +617,7 @@ class PagoPartidoControllerTest {
 
     @Test
     void capitan_listar_retorna200() throws Exception {
-        usuarioMvc.perform(get("/api/usuarios/capitanes")).andExpect(status().isOk());
+        usuarioMvc.perform(get("/api/users/captains")).andExpect(status().isOk());
     }
 
     @Test
@@ -637,12 +627,12 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 7, "posicion", "VOLANTE"
         );
-        String resp = usuarioMvc.perform(post("/api/usuarios/capitanes")
+        String resp = usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
         Long id = mapper.readTree(resp).get("id").asLong();
-        usuarioMvc.perform(post("/api/usuarios/capitanes/" + id + "/equipo")
+        usuarioMvc.perform(post("/api/users/captains/" + id + "/team")
                         .param("nombreEquipo", "Los Bravos"))
                 .andExpect(status().isOk());
     }
@@ -654,12 +644,12 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 8, "posicion", "DEFENSA"
         );
-        String resp = usuarioMvc.perform(post("/api/usuarios/capitanes")
+        String resp = usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
         Long id = mapper.readTree(resp).get("id").asLong();
-        usuarioMvc.perform(post("/api/usuarios/capitanes/" + id + "/invitar/" + jugador.getId()))
+        usuarioMvc.perform(post("/api/users/captains/" + id + "/invite/" + jugador.getId()))
                 .andExpect(status().isOk());
     }
 
@@ -670,21 +660,23 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 6, "posicion", "PORTERO"
         );
-        String resp = usuarioMvc.perform(post("/api/usuarios/capitanes")
+        String resp = usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
         Long id = mapper.readTree(resp).get("id").asLong();
-        usuarioMvc.perform(post("/api/usuarios/capitanes/" + id + "/comprobante")
+        usuarioMvc.perform(post("/api/users/captains/" + id + "/receipt")
                         .param("comprobante", "pago.pdf"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void capitan_buscarJugadores_retorna200() throws Exception {
-        usuarioMvc.perform(get("/api/usuarios/capitanes/1/buscarJugadores").param("posicion", "DELANTERO"))
+        usuarioMvc.perform(get("/api/users/captains/1/search-players").param("posicion", "DELANTERO"))
                 .andExpect(status().isOk());
     }
+
+// ── Jugadores ──────────────────────────────────────────────────────────────
 
     @Test
     void jugador_crear_retorna200() throws Exception {
@@ -693,7 +685,7 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 9, "posicion", "DELANTERO"
         );
-        usuarioMvc.perform(post("/api/usuarios/jugadores")
+        usuarioMvc.perform(post("/api/users/players")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andExpect(status().isOk());
@@ -701,84 +693,19 @@ class PagoPartidoControllerTest {
 
     @Test
     void jugador_listar_retorna200() throws Exception {
-        usuarioMvc.perform(get("/api/usuarios/jugadores")).andExpect(status().isOk());
+        usuarioMvc.perform(get("/api/users/players")).andExpect(status().isOk());
     }
 
     @Test
     void jugador_aceptarInvitacion_retorna200() throws Exception {
-        usuarioMvc.perform(patch("/api/usuarios/jugadores/1/aceptarInvitacion")).andExpect(status().isOk());
+        usuarioMvc.perform(patch("/api/users/players/" + jugador.getId() + "/accept-invitation"))
+                .andExpect(status().isOk());
     }
 
     @Test
     void jugador_rechazarInvitacion_retorna200() throws Exception {
-        usuarioMvc.perform(patch("/api/usuarios/jugadores/1/rechazarInvitacion")).andExpect(status().isOk());
-    }
-
-    @Test
-    void organizador_crear_retorna200() throws Exception {
-        Map<String, Object> body = Map.of(
-                "nombre", "Org1", "email", "org@test.com",
-                "password", "pass", "tipoUsuario", "ESTUDIANTE"
-        );
-        usuarioMvc.perform(post("/api/usuarios/organizadores")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
+        usuarioMvc.perform(patch("/api/users/players/1/reject-invitation"))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    void organizador_listar_retorna200() throws Exception {
-        usuarioMvc.perform(get("/api/usuarios/organizadores")).andExpect(status().isOk());
-    }
-
-    @Test
-    void organizador_crearTorneo_retorna200() throws Exception {
-        Map<String, Object> bodyOrg = Map.of(
-                "nombre", "Org3", "email", "org3@test.com",
-                "password", "pass", "tipoUsuario", "ESTUDIANTE"
-        );
-        String resp = usuarioMvc.perform(post("/api/usuarios/organizadores")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyOrg)))
-                .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
-        Torneo torneo2 = new Torneo(0, "Copa Org",
-                java.time.LocalDateTime.of(2025, 9, 1, 10, 0),
-                java.time.LocalDateTime.of(2025, 9, 10, 18, 0), 8, 50000);
-        usuarioMvc.perform(post("/api/usuarios/organizadores/" + id + "/torneo")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(torneo2)))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void organizador_pagosPendientes_retorna200() throws Exception {
-        Map<String, Object> body = Map.of(
-                "nombre", "Org4", "email", "org4@test.com",
-                "password", "pass", "tipoUsuario", "ESTUDIANTE"
-        );
-        String resp = usuarioMvc.perform(post("/api/usuarios/organizadores")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
-        usuarioMvc.perform(get("/api/usuarios/organizadores/" + id + "/pagos/pendientes"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void organizador_iniciarTorneo_sinTorneo_retorna409() throws Exception {
-        Map<String, Object> body = Map.of(
-                "nombre", "Org2", "email", "org2@test.com",
-                "password", "pass", "tipoUsuario", "ESTUDIANTE"
-        );
-        String resp = usuarioMvc.perform(post("/api/usuarios/organizadores")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
-        usuarioMvc.perform(patch("/api/usuarios/organizadores/" + id + "/torneo/iniciar"))
-                .andExpect(status().isConflict());
     }
 
     @Test
@@ -788,17 +715,110 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 5, "posicion", "DEFENSA"
         );
-        String resp = usuarioMvc.perform(post("/api/usuarios/jugadores")
+        String resp = usuarioMvc.perform(post("/api/users/players")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyJug)))
                 .andReturn().getResponse().getContentAsString();
         Long jugId = mapper.readTree(resp).get("id").asLong();
         Map<String, Object> perfil = Map.of("nombre", "JugEditado", "numeroCamiseta", 11, "posicion", "PORTERO");
-        usuarioMvc.perform(patch("/api/usuarios/jugadores/" + jugId + "/perfil")
+        usuarioMvc.perform(patch("/api/users/players/" + jugId + "/profile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(perfil)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.jerseyNumber").value(11));
+    }
+
+// ── Organizadores ──────────────────────────────────────────────────────────
+
+    @Test
+    void organizador_crear_retorna200() throws Exception {
+        Map<String, Object> body = Map.of(
+                "nombre", "Org1", "email", "org1@test.com",
+                "password", "pass", "tipoUsuario", "ESTUDIANTE"
+        );
+        usuarioMvc.perform(post("/api/users/organizers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(body)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void organizador_listar_retorna200() throws Exception {
+        usuarioMvc.perform(get("/api/users/organizers")).andExpect(status().isOk());
+    }
+
+    @Test
+    void organizador_crearTorneo_retorna200() throws Exception {
+        Map<String, Object> body = Map.of(
+                "nombre", "OrgT", "email", "orgt@test.com",
+                "password", "pass", "tipoUsuario", "ESTUDIANTE"
+        );
+        String resp = usuarioMvc.perform(post("/api/users/organizers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(body)))
+                .andReturn().getResponse().getContentAsString();
+        Long id = mapper.readTree(resp).get("id").asLong();
+        Torneo t = new Torneo(0, "Copa Nueva",
+                LocalDateTime.of(2025, 9, 1, 10, 0),
+                LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
+        usuarioMvc.perform(post("/api/users/organizers/" + id + "/tournament")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(t)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void organizador_pagosPendientes_retorna200() throws Exception {
+        Map<String, Object> body = Map.of(
+                "nombre", "OrgPend", "email", "orgpend@test.com",
+                "password", "pass", "tipoUsuario", "ESTUDIANTE"
+        );
+        String resp = usuarioMvc.perform(post("/api/users/organizers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(body)))
+                .andReturn().getResponse().getContentAsString();
+        Long id = mapper.readTree(resp).get("id").asLong();
+        usuarioMvc.perform(get("/api/users/organizers/" + id + "/payments/pending"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void organizador_iniciarTorneo_sinTorneo_retorna409() throws Exception {
+        Map<String, Object> body = Map.of(
+                "nombre", "Org2", "email", "org2@test.com",
+                "password", "pass", "tipoUsuario", "ESTUDIANTE"
+        );
+        String resp = usuarioMvc.perform(post("/api/users/organizers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(body)))
+                .andReturn().getResponse().getContentAsString();
+        Long id = mapper.readTree(resp).get("id").asLong();
+        usuarioMvc.perform(patch("/api/users/organizers/" + id + "/tournament/start"))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void organizador_configurarTorneo_retorna200() throws Exception {
+        Map<String, Object> body = Map.of(
+                "nombre", "OrgConf", "email", "orgconf@test.com",
+                "password", "pass", "tipoUsuario", "ESTUDIANTE"
+        );
+        String resp = usuarioMvc.perform(post("/api/users/organizers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(body)))
+                .andReturn().getResponse().getContentAsString();
+        Long id = mapper.readTree(resp).get("id").asLong();
+        Torneo t = new Torneo(0, "Copa Config",
+                LocalDateTime.of(2025, 9, 1, 10, 0),
+                LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
+        usuarioMvc.perform(post("/api/users/organizers/" + id + "/tournament")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(t)));
+        Map<String, Object> config = Map.of("reglamento", "Regla 1", "canchas", "Cancha A");
+        usuarioMvc.perform(patch("/api/users/organizers/" + id + "/tournament/configure")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(config)))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -808,43 +828,12 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 3, "posicion", "VOLANTE"
         );
-        String resp = usuarioMvc.perform(post("/api/usuarios/capitanes")
+        String resp = usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long capId = mapper.readTree(resp).get("id").asLong();
-        usuarioMvc.perform(get("/api/usuarios/capitanes/999/equipo/validar"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void organizador_configurarTorneo_retorna200() throws Exception {
-        Map<String, Object> bodyOrg = Map.of(
-                "nombre", "OrgConf", "email", "orgconf@test.com",
-                "password", "pass", "tipoUsuario", "ESTUDIANTE"
-        );
-        String respOrg = usuarioMvc.perform(post("/api/usuarios/organizadores")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyOrg)))
-                .andReturn().getResponse().getContentAsString();
-        Long orgId = mapper.readTree(respOrg).get("id").asLong();
-        Torneo t = new Torneo(0, "Copa Conf",
-                LocalDateTime.of(2025, 10, 1, 10, 0),
-                LocalDateTime.of(2025, 10, 30, 18, 0), 8, 50);
-        usuarioMvc.perform(post("/api/usuarios/organizadores/" + orgId + "/torneo")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(t)));
-        Map<String, Object> config = Map.of(
-                "reglamento", "Sin violencia",
-                "canchas", "Cancha Norte",
-                "horarios", "Sabados 8am",
-                "sanciones", "Tarjeta roja = 1 fecha",
-                "cierreInscripciones", "2025-09-25T00:00:00"
-        );
-        usuarioMvc.perform(patch("/api/usuarios/organizadores/" + orgId + "/torneo/configurar")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(config)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.reglamento").value("Sin violencia"));
+        Long id = mapper.readTree(resp).get("id").asLong();
+        usuarioMvc.perform(get("/api/users/captains/" + id + "/team/validate"))
+                .andExpect(status().isOk());
     }
 }
