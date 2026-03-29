@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol;
+package edu.dosw.project.SFC_TechUp_Futbol.config;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;

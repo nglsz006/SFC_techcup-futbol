@@ -8,7 +8,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AccesoValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
-import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ErrorHandler;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.ErrorHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -251,7 +251,7 @@ class ControllerTest {
                 "nombre", "Ana", "email", "ana@escuelaing.edu.co",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        accesoMvc.perform(post("/api/acceso/registro")
+        accesoMvc.perform(post("/api/access/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andExpect(status().isOk())
@@ -264,7 +264,7 @@ class ControllerTest {
                 "nombre", "Ana", "email", "correo-invalido",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        accesoMvc.perform(post("/api/acceso/registro")
+        accesoMvc.perform(post("/api/access/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andExpect(status().isBadRequest());
@@ -276,11 +276,11 @@ class ControllerTest {
                 "nombre", "Pedro", "email", "pedro@escuelaing.edu.co",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        accesoMvc.perform(post("/api/acceso/registro")
+        accesoMvc.perform(post("/api/access/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(reg)));
         Map<String, String> login = Map.of("email", "pedro@escuelaing.edu.co", "password", "12345678");
-        accesoMvc.perform(post("/api/acceso/login")
+        accesoMvc.perform(post("/api/access/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(login)))
                 .andExpect(status().isOk())
@@ -293,11 +293,11 @@ class ControllerTest {
                 "nombre", "Luis", "email", "luis@escuelaing.edu.co",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        accesoMvc.perform(post("/api/acceso/registro")
+        accesoMvc.perform(post("/api/access/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(reg)));
         Map<String, String> login = Map.of("email", "luis@escuelaing.edu.co", "password", "wrongpass");
-        accesoMvc.perform(post("/api/acceso/login")
+        accesoMvc.perform(post("/api/access/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(login)))
                 .andExpect(status().isBadRequest());
@@ -308,7 +308,7 @@ class ControllerTest {
                 "nombre", "Org", "email", emailOrg,
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/usuarios/organizadores")
+        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
@@ -316,28 +316,30 @@ class ControllerTest {
         Torneo t = new Torneo(0, nombreTorneo,
                 LocalDateTime.of(2025, 9, 1, 10, 0),
                 LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
-        String respTorneo = usuarioMvc.perform(post("/api/usuarios/organizadores/" + orgId + "/torneo")
+        String respTorneo = usuarioMvc.perform(post("/api/users/organizers/" + orgId + "/tournament")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(t)))
                 .andReturn().getResponse().getContentAsString();
         return mapper.readTree(respTorneo).get("id").asLong();
     }
 
+
     @Test
     void crearTorneo_retorna200() throws Exception {
         Long torneoId = crearOrganizadorYTorneo("orgt@escuelaing.edu.co", "Copa Test");
-        torneoMvc.perform(get("/api/torneos/" + torneoId)).andExpect(status().isOk())
+        torneoMvc.perform(get("/api/tournaments/" + torneoId)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.nombre").value("Copa Test"));
     }
 
     @Test
     void listarTorneos_retorna200() throws Exception {
-        torneoMvc.perform(get("/api/torneos")).andExpect(status().isOk());
+        torneoMvc.perform(get("/api/tournaments")).andExpect(status().isOk());
     }
+
 
     @Test
     void obtenerTorneo_inexistente_retorna400() throws Exception {
-        torneoMvc.perform(get("/api/torneos/999")).andExpect(status().isBadRequest());
+        torneoMvc.perform(get("/api/tournaments/999")).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -347,7 +349,7 @@ class ControllerTest {
                 "nombre", "Org2", "email", "orgi2@escuelaing.edu.co",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg2 = usuarioMvc.perform(post("/api/usuarios/organizadores")
+        String respOrg2 = usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg2)))
                 .andReturn().getResponse().getContentAsString();
@@ -355,12 +357,13 @@ class ControllerTest {
         Torneo t2 = new Torneo(0, "Copa Inicio2",
                 LocalDateTime.of(2025, 9, 1, 10, 0),
                 LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
-        usuarioMvc.perform(post("/api/usuarios/organizadores/" + orgId2 + "/torneo")
+        usuarioMvc.perform(post("/api/users/organizers/" + orgId2 + "/tournament")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(t2)));
-        usuarioMvc.perform(patch("/api/usuarios/organizadores/" + orgId2 + "/torneo/iniciar"))
+        usuarioMvc.perform(patch("/api/users/organizers/" + orgId2 + "/tournament/start"))
                 .andExpect(status().isOk());
     }
+
 
     @Test
     void finalizarTorneo_existente_retorna200() throws Exception {
@@ -368,7 +371,7 @@ class ControllerTest {
                 "nombre", "OrgF", "email", "orgf@escuelaing.edu.co",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/usuarios/organizadores")
+        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
@@ -376,11 +379,10 @@ class ControllerTest {
         Torneo t = new Torneo(0, "Copa Final",
                 LocalDateTime.of(2025, 9, 1, 10, 0),
                 LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
-        usuarioMvc.perform(post("/api/usuarios/organizadores/" + orgId + "/torneo")
+        usuarioMvc.perform(post("/api/users/organizers/" + orgId + "/tournament")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(t)));
-        usuarioMvc.perform(patch("/api/usuarios/organizadores/" + orgId + "/torneo/iniciar"));
-        usuarioMvc.perform(patch("/api/usuarios/organizadores/" + orgId + "/torneo/finalizar"))
+        usuarioMvc.perform(patch("/api/users/organizers/" + orgId + "/tournament/end"))
                 .andExpect(status().isOk());
     }
 
@@ -399,7 +401,7 @@ class ControllerTest {
                 "nombre", "OrgCob", "email", "orgcob@escuelaing.edu.co",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/usuarios/organizadores")
+        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
@@ -411,92 +413,89 @@ class ControllerTest {
                 "fecha", "2025-09-10T15:00:00",
                 "cancha", "Cancha 1"
         );
-        String resp = usuarioMvc.perform(post("/api/usuarios/organizadores/" + orgId + "/partidos")
+        String resp = usuarioMvc.perform(post("/api/users/organizers/" + orgId + "/matches")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyPartido)))
                 .andReturn().getResponse().getContentAsString();
         Long pid = mapper.readTree(resp).get("id").asLong();
-        usuarioMvc.perform(put("/api/usuarios/arbitros/1/partidos/" + pid + "/iniciar"));
-        usuarioMvc.perform(post("/api/usuarios/arbitros/1/partidos/" + pid + "/goles")
+        usuarioMvc.perform(put("/api/users/referees/1/matches/" + pid + "/start"));
+        usuarioMvc.perform(post("/api/users/referees/1/matches/" + pid + "/goals")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(Map.of("jugadorId", 1L, "minuto", 20))));
-        usuarioMvc.perform(put("/api/usuarios/arbitros/1/partidos/" + pid + "/resultado")
+        usuarioMvc.perform(put("/api/users/referees/1/matches/" + pid + "/result")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(Map.of("golesLocal", 2, "golesVisitante", 1))));
-        usuarioMvc.perform(put("/api/usuarios/arbitros/1/partidos/" + pid + "/finalizar"));
-        torneoMvc.perform(get("/api/torneos/" + torneo.getId() + "/posiciones")).andExpect(status().isOk());
-        torneoMvc.perform(get("/api/torneos/" + torneo.getId() + "/llave")).andExpect(status().isOk());
-        torneoMvc.perform(get("/api/torneos/" + torneo.getId() + "/estadisticas")).andExpect(status().isOk());
+        usuarioMvc.perform(put("/api/users/referees/1/matches/" + pid + "/end"));
+        torneoMvc.perform(get("/api/tournaments/" + torneo.getId() + "/positions")).andExpect(status().isOk());
+        torneoMvc.perform(get("/api/tournaments/" + torneo.getId() + "/bracket")).andExpect(status().isOk());
+        torneoMvc.perform(get("/api/tournaments/" + torneo.getId() + "/statistics")).andExpect(status().isOk());
     }
 
     @Test
     void tablaPosiciones_retorna200() throws Exception {
         Long torneoId = crearOrganizadorYTorneo("orgpos@escuelaing.edu.co", "Copa Pos");
-        torneoMvc.perform(get("/api/torneos/" + torneoId + "/posiciones")).andExpect(status().isOk());
+        torneoMvc.perform(get("/api/tournaments/" + torneoId + "/positions")).andExpect(status().isOk());
     }
 
     @Test
     void llaveEliminatoria_retorna200() throws Exception {
         Long torneoId = crearOrganizadorYTorneo("orgllave@escuelaing.edu.co", "Copa Llave");
-        torneoMvc.perform(get("/api/torneos/" + torneoId + "/llave")).andExpect(status().isOk());
+        torneoMvc.perform(get("/api/tournaments/" + torneoId + "/bracket")).andExpect(status().isOk());
     }
 
     @Test
     void estadisticasTorneo_retorna200() throws Exception {
         Long torneoId = crearOrganizadorYTorneo("orgstats@escuelaing.edu.co", "Copa Stats");
-        torneoMvc.perform(get("/api/torneos/" + torneoId + "/estadisticas")).andExpect(status().isOk());
+        torneoMvc.perform(get("/api/tournaments/" + torneoId + "/statistics")).andExpect(status().isOk());
     }
 
     @Test
     void listarEquipos_retorna200() throws Exception {
-        equipoMvc.perform(get("/api/equipos")).andExpect(status().isOk());
+        equipoMvc.perform(get("/api/teams")).andExpect(status().isOk());
     }
 
     @Test
     void obtenerEquipo_existente_retorna200() throws Exception {
         Equipo e = equipoRepo2.save(new Equipo(0, "Los Leones", "", "azul", "blanco", 1));
-        equipoMvc.perform(get("/api/equipos/" + e.getId())).andExpect(status().isOk());
+        equipoMvc.perform(get("/api/teams/" + e.getId())).andExpect(status().isOk());
     }
 
     @Test
     void obtenerEquipo_inexistente_retorna400() throws Exception {
-        equipoMvc.perform(get("/api/equipos/999")).andExpect(status().isBadRequest());
+        equipoMvc.perform(get("/api/teams/999")).andExpect(status().isBadRequest());
     }
 
     @Test
     void agregarJugador_equipo_retorna200() throws Exception {
-        Equipo e = equipoRepo2.save(new Equipo(0, "Equipo Jugador", "", "verde", "blanco", 1));
-        Jugador j = new Jugador(99L, "Test", "t@test.com", "pass",
-                Usuario.TipoUsuario.ESTUDIANTE, 5, Jugador.Posicion.DEFENSA, true, "");
-        jugadorRepo2.save(j);
         Map<String, Object> bodyCap = Map.of(
-                "nombre", "CapAgregar", "email", "capagregar@escuelaing.edu.co",
-                "password", "12345678", "tipoUsuario", "ESTUDIANTE",
-                "numeroCamiseta", 5, "posicion", "DEFENSA"
+                "nombre", "CapAg", "email", "capag@test.com",
+                "password", "pass", "tipoUsuario", "ESTUDIANTE",
+                "numeroCamiseta", 1, "posicion", "PORTERO"
         );
-        String respCap = usuarioMvc.perform(post("/api/usuarios/capitanes")
+        String respCap = usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyCap)))
                 .andReturn().getResponse().getContentAsString();
         Long capId = mapper.readTree(respCap).get("id").asLong();
-        usuarioMvc.perform(post("/api/usuarios/capitanes/" + capId + "/invitar/" + j.getId()))
+        usuarioMvc.perform(post("/api/users/captains/" + capId + "/team")
+                        .param("nombreEquipo", "Los Agiles"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void crearEquipo_viaCap_retorna200() throws Exception {
         Map<String, Object> body = Map.of(
-                "nombre", "Cap Test", "email", "captest@escuelaing.edu.co",
-                "password", "12345678", "tipoUsuario", "ESTUDIANTE",
-                "numeroCamiseta", 10, "posicion", "DELANTERO"
+                "nombre", "CapEq", "email", "capeq@test.com",
+                "password", "pass", "tipoUsuario", "ESTUDIANTE",
+                "numeroCamiseta", 2, "posicion", "DEFENSA"
         );
-        String resp = usuarioMvc.perform(post("/api/usuarios/capitanes")
+        String resp = usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long capId = mapper.readTree(resp).get("id").asLong();
-        usuarioMvc.perform(post("/api/usuarios/capitanes/" + capId + "/equipo")
-                        .param("nombreEquipo", "Los Tigres"))
+        Long id = mapper.readTree(resp).get("id").asLong();
+        usuarioMvc.perform(post("/api/users/captains/" + id + "/team")
+                        .param("nombreEquipo", "Los Bravos"))
                 .andExpect(status().isOk());
     }
 }

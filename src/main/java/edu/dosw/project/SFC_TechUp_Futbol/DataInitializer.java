@@ -1,5 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol;
 
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.DataInitializerService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 

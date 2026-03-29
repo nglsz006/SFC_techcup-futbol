@@ -10,7 +10,7 @@ import java.util.List;
 
 @Tag(name = "Teams", description = "Team query. To create a team or add players use the Users endpoints (captain).")
 @RestController
-@RequestMapping("/api/equipos")
+@RequestMapping("/api/teams")
 public class EquipoController {
 
     private final EquipoService service;

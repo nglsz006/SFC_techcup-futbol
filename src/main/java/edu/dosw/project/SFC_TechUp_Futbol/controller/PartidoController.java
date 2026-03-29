@@ -11,7 +11,7 @@ import java.util.List;
 
 @Tag(name = "Matches", description = "Match management and query. To create a match use the Users endpoints (organizer). To register results, goals and cards use the Users endpoints (referee).")
 @RestController
-@RequestMapping("/api/partidos")
+@RequestMapping("/api/matches")
 public class PartidoController {
 
     private final PartidoService partidoService;
@@ -29,14 +29,14 @@ public class PartidoController {
     }
 
     @Operation(summary = "Get matches by tournament", description = "Lists all matches in a tournament. Useful for the elimination bracket and standings table.")
-    @GetMapping("/torneo/{torneoId}")
-    public List<Partido> consultarPorTorneo(@PathVariable Long torneoId) {
-        return partidoService.consultarPartidosPorTorneo(torneoId);
+    @GetMapping("/tournament/{tournamentId}")
+    public List<Partido> consultarPorTorneo(@PathVariable Long tournamentId) {
+        return partidoService.consultarPartidosPorTorneo(tournamentId);
     }
 
     @Operation(summary = "Get matches by team", description = "Lists all matches a team has participated in.")
-    @GetMapping("/equipo/{equipoId}")
-    public List<Partido> consultarPorEquipo(@PathVariable Long equipoId) {
-        return partidoService.consultarPartidosPorEquipo(equipoId);
+    @GetMapping("/team/{teamId}")
+    public List<Partido> consultarPorEquipo(@PathVariable Long teamId) {
+        return partidoService.consultarPartidosPorEquipo(teamId);
     }
 }

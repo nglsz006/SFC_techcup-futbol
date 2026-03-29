@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Access", description = "Registration and login for all system actors.")
 @RestController
-@RequestMapping("/api/acceso")
+@RequestMapping("/api/access")
 public class AccesoController {
 
     private final AccesoService authService;
@@ -24,7 +24,7 @@ public class AccesoController {
     }
 
     @Operation(summary = "Register user", description = "Creates a new account in the system. Available for Players and Captains.")
-    @PostMapping("/registro")
+    @PostMapping("/register")
     public UsuarioResponse registrar(@RequestBody RegistroRequest request) {
         authValidator.validarRegistro(request);
         return authService.registrar(request);

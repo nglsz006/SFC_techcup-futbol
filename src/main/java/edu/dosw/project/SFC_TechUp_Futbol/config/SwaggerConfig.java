@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol;
+package edu.dosw.project.SFC_TechUp_Futbol.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

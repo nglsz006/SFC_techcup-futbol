@@ -1,6 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol;
 
-import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ErrorHandler;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.ErrorHandler;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AutenticacionAdminException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.FiltroAuditoriaInvalidoException;
