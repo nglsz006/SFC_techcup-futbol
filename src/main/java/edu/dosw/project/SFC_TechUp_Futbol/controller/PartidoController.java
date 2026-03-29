@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Matches", description = "Match management and query. To create a match use the Users endpoints (organizer). To register results, goals and cards use the Users endpoints (referee).")
+@Tag(name = "Matches", description = "Match management and query.")
 @RestController
 @RequestMapping("/api/matches")
 public class PartidoController {
@@ -22,21 +22,21 @@ public class PartidoController {
         this.partidoValidator = partidoValidator;
     }
 
-    @Operation(summary = "Get match by ID", description = "Returns the full detail of a match: teams, score, goals and cards.")
+    @Operation(summary = "Get match by ID")
     @GetMapping("/{id}")
-    public Partido consultarPartido(@PathVariable Long id) {
+    public Partido consultarPartido(@PathVariable String id) {
         return partidoService.consultarPartido(id);
     }
 
-    @Operation(summary = "Get matches by tournament", description = "Lists all matches in a tournament. Useful for the elimination bracket and standings table.")
+    @Operation(summary = "Get matches by tournament")
     @GetMapping("/tournament/{tournamentId}")
-    public List<Partido> consultarPorTorneo(@PathVariable Long tournamentId) {
+    public List<Partido> consultarPorTorneo(@PathVariable String tournamentId) {
         return partidoService.consultarPartidosPorTorneo(tournamentId);
     }
 
-    @Operation(summary = "Get matches by team", description = "Lists all matches a team has participated in.")
+    @Operation(summary = "Get matches by team")
     @GetMapping("/team/{teamId}")
-    public List<Partido> consultarPorEquipo(@PathVariable Long teamId) {
+    public List<Partido> consultarPorEquipo(@PathVariable String teamId) {
         return partidoService.consultarPartidosPorEquipo(teamId);
     }
 }

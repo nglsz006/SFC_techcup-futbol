@@ -14,37 +14,37 @@ class PartidoValidatorTest {
 
     @Test
     void validarCrear_datosCorrectos_noLanzaExcepcion() {
-        assertDoesNotThrow(() -> validator.validarCrearPartido(1L, 1L, 2L, LocalDateTime.now(), "cancha 1"));
+        assertDoesNotThrow(() -> validator.validarCrearPartido("uuid-t1", "uuid-e1", "uuid-e2", LocalDateTime.now(), "cancha 1"));
     }
 
     @Test
     void validarCrear_torneoIdNulo_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido(null, 1L, 2L, LocalDateTime.now(), "cancha"));
+        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido(null, "uuid-e1", "uuid-e2", LocalDateTime.now(), "cancha"));
     }
 
     @Test
     void validarCrear_equipoLocalNulo_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido(1L, null, 2L, LocalDateTime.now(), "cancha"));
+        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido("uuid-t1", null, "uuid-e2", LocalDateTime.now(), "cancha"));
     }
 
     @Test
     void validarCrear_equipoVisitanteNulo_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido(1L, 1L, null, LocalDateTime.now(), "cancha"));
+        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido("uuid-t1", "uuid-e1", null, LocalDateTime.now(), "cancha"));
     }
 
     @Test
     void validarCrear_mismoEquipo_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido(1L, 1L, 1L, LocalDateTime.now(), "cancha"));
+        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido("uuid-t1", "uuid-e1", "uuid-e1", LocalDateTime.now(), "cancha"));
     }
 
     @Test
     void validarCrear_fechaNula_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido(1L, 1L, 2L, null, "cancha"));
+        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido("uuid-t1", "uuid-e1", "uuid-e2", null, "cancha"));
     }
 
     @Test
     void validarCrear_canchaVacia_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido(1L, 1L, 2L, LocalDateTime.now(), ""));
+        assertThrows(IllegalArgumentException.class, () -> validator.validarCrearPartido("uuid-t1", "uuid-e1", "uuid-e2", LocalDateTime.now(), ""));
     }
 
     @Test
@@ -59,7 +59,7 @@ class PartidoValidatorTest {
 
     @Test
     void validarGoleador_valido_noLanzaExcepcion() {
-        assertDoesNotThrow(() -> validator.validarGoleador(1L, 45));
+        assertDoesNotThrow(() -> validator.validarGoleador("uuid-j1", 45));
     }
 
     @Test
@@ -69,14 +69,14 @@ class PartidoValidatorTest {
 
     @Test
     void validarGoleador_minutoFueraDeRango_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> validator.validarGoleador(1L, 0));
-        assertThrows(IllegalArgumentException.class, () -> validator.validarGoleador(1L, 121));
+        assertThrows(IllegalArgumentException.class, () -> validator.validarGoleador("uuid-j1", 0));
+        assertThrows(IllegalArgumentException.class, () -> validator.validarGoleador("uuid-j1", 121));
     }
 
     @Test
     void validarSancion_valida_noLanzaExcepcion() {
-        Jugador jugador = new Jugador(1L, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
-        Sancion sancion = new Sancion(1L, Sancion.TipoSancion.TARJETA_AMARILLA, "Falta reiterada", jugador);
+        Jugador jugador = new Jugador("uuid-j1", "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
+        Sancion sancion = new Sancion("uuid-s1", Sancion.TipoSancion.TARJETA_AMARILLA, "Falta reiterada", jugador);
         assertDoesNotThrow(() -> validator.validarSancion(sancion));
     }
 
@@ -87,28 +87,28 @@ class PartidoValidatorTest {
 
     @Test
     void validarSancion_jugadorNulo_lanzaExcepcion() {
-        Sancion sancion = new Sancion(1L, Sancion.TipoSancion.TARJETA_ROJA, "Agresión", null);
+        Sancion sancion = new Sancion("uuid-s1", Sancion.TipoSancion.TARJETA_ROJA, "Agresión", null);
         assertThrows(IllegalArgumentException.class, () -> validator.validarSancion(sancion));
     }
 
     @Test
     void validarSancion_tipoNulo_lanzaExcepcion() {
-        Jugador jugador = new Jugador(1L, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
-        Sancion sancion = new Sancion(1L, null, "Falta", jugador);
+        Jugador jugador = new Jugador("uuid-j1", "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
+        Sancion sancion = new Sancion("uuid-s1", null, "Falta", jugador);
         assertThrows(IllegalArgumentException.class, () -> validator.validarSancion(sancion));
     }
 
     @Test
     void validarSancion_descripcionVacia_lanzaExcepcion() {
-        Jugador jugador = new Jugador(1L, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
-        Sancion sancion = new Sancion(1L, Sancion.TipoSancion.AGRESION_VERBAL, "", jugador);
+        Jugador jugador = new Jugador("uuid-j1", "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
+        Sancion sancion = new Sancion("uuid-s1", Sancion.TipoSancion.AGRESION_VERBAL, "", jugador);
         assertThrows(IllegalArgumentException.class, () -> validator.validarSancion(sancion));
     }
 
     @Test
     void validarSancion_descripcionNula_lanzaExcepcion() {
-        Jugador jugador = new Jugador(1L, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
-        Sancion sancion = new Sancion(1L, Sancion.TipoSancion.AGRESION_FISICA, null, jugador);
+        Jugador jugador = new Jugador("uuid-j1", "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
+        Sancion sancion = new Sancion("uuid-s1", Sancion.TipoSancion.AGRESION_FISICA, null, jugador);
         assertThrows(IllegalArgumentException.class, () -> validator.validarSancion(sancion));
     }
 }

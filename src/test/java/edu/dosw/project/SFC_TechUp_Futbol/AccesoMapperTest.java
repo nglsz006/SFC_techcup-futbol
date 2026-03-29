@@ -37,9 +37,9 @@ class AccesoMapperTest {
 
     @Test
     void toUsuarioResponse_mapea_correctamente() {
-        UsuarioRegistrado usuario = new UsuarioRegistrado(1L, "Juan", "juan@escuelaing.edu.co", "hash", Usuario.TipoUsuario.ESTUDIANTE);
+        UsuarioRegistrado usuario = new UsuarioRegistrado("uuid-1", "Juan", "juan@escuelaing.edu.co", "hash", Usuario.TipoUsuario.ESTUDIANTE);
         UsuarioResponse response = AccesoMapper.toUsuarioResponse(usuario);
-        assertEquals(1L, response.getId());
+        assertEquals("uuid-1", response.getId());
         assertEquals("Juan", response.getNombre());
         assertEquals("juan@escuelaing.edu.co", response.getEmail());
         assertEquals(Usuario.TipoUsuario.ESTUDIANTE, response.getTipoUsuario());
@@ -47,7 +47,7 @@ class AccesoMapperTest {
 
     @Test
     void toLoginResponse_mapea_correctamente() {
-        UsuarioRegistrado usuario = new UsuarioRegistrado(1L, "Juan", "juan@escuelaing.edu.co", "hash", Usuario.TipoUsuario.ESTUDIANTE);
+        UsuarioRegistrado usuario = new UsuarioRegistrado("uuid-1", "Juan", "juan@escuelaing.edu.co", "hash", Usuario.TipoUsuario.ESTUDIANTE);
         LoginResponse response = AccesoMapper.toLoginResponse(usuario, "token123");
         assertEquals("token123", response.getToken());
         assertEquals("Juan", response.getNombre());

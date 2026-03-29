@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import java.util.logging.Logger;
 
 @org.springframework.stereotype.Service
@@ -28,16 +29,16 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
-    public Partido crearPartido(Long torneoId, Long equipoLocalId, Long equipoVisitanteId,
+    public Partido crearPartido(String torneoId, String equipoLocalId, String equipoVisitanteId,
                                 LocalDateTime fecha, String cancha) {
-        Torneo torneo = torneoRepository.findById(torneoId.intValue())
+        Torneo torneo = torneoRepository.findById(torneoId)
                 .orElseThrow(() -> new RuntimeException("Torneo no encontrado con id: " + torneoId));
-        Equipo local = equipoRepository.findById(equipoLocalId.intValue())
+        Equipo local = equipoRepository.findById(equipoLocalId)
                 .orElseThrow(() -> new RuntimeException("Equipo local no encontrado con id: " + equipoLocalId));
-        Equipo visitante = equipoRepository.findById(equipoVisitanteId.intValue())
+        Equipo visitante = equipoRepository.findById(equipoVisitanteId)
                 .orElseThrow(() -> new RuntimeException("Equipo visitante no encontrado con id: " + equipoVisitanteId));
 
-        if (local.getId() == visitante.getId())
+        if (local.getId().equals(visitante.getId()))
             throw new IllegalArgumentException("El equipo local y visitante no pueden ser el mismo.");
 
         Partido partido = new Partido();
@@ -52,7 +53,7 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
-    public Partido iniciarPartido(Long partidoId) {
+    public Partido iniciarPartido(String partidoId) {
         Partido partido = getPartidoOrThrow(partidoId);
         partido.iniciar();
         log.info("Partido iniciado");
@@ -60,7 +61,7 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
-    public Partido registrarResultado(Long partidoId, int golesLocal, int golesVisitante) {
+    public Partido registrarResultado(String partidoId, int golesLocal, int golesVisitante) {
         Partido partido = getPartidoOrThrow(partidoId);
         partido.registrarResultado(golesLocal, golesVisitante);
         log.info("Resultado registrado");
@@ -68,7 +69,7 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
-    public Partido finalizarPartido(Long partidoId) {
+    public Partido finalizarPartido(String partidoId) {
         Partido partido = getPartidoOrThrow(partidoId);
         partido.finalizar();
         log.info("Partido finalizado");
@@ -76,7 +77,7 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
-    public Partido registrarGoleador(Long partidoId, Long jugadorId, int minuto) {
+    public Partido registrarGoleador(String partidoId, String jugadorId, int minuto) {
         Partido partido = getPartidoOrThrow(partidoId);
         validarPartidoEnCurso(partido);
 
@@ -84,11 +85,12 @@ public class PartidoServiceImpl implements PartidoService {
                 .orElseThrow(() -> new RuntimeException("Jugador no encontrado con id: " + jugadorId));
 
         Partido.Gol gol = new Partido.Gol();
+        gol.setId(IdGeneratorUtil.generarId());
         gol.setJugador(jugador);
         gol.setMinuto(minuto);
         partido.getGoles().add(gol);
 
-        boolean esLocal = jugador.getEquipo() != null && partido.getEquipoLocal().getId() == jugador.getEquipo();
+        boolean esLocal = jugador.getEquipo() != null && partido.getEquipoLocal().getId().equals(jugador.getEquipo());
         if (esLocal) {
             partido.setMarcadorLocal(partido.getMarcadorLocal() + 1);
         } else {
@@ -99,7 +101,7 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
-    public Partido registrarSancion(Long partidoId, Long jugadorId, Sancion.TipoSancion tipoSancion, String descripcion) {
+    public Partido registrarSancion(String partidoId, String jugadorId, Sancion.TipoSancion tipoSancion, String descripcion) {
         Partido partido = getPartidoOrThrow(partidoId);
         validarPartidoEnCurso(partido);
 
@@ -107,6 +109,7 @@ public class PartidoServiceImpl implements PartidoService {
                 .orElseThrow(() -> new RuntimeException("Jugador no encontrado con id: " + jugadorId));
 
         Sancion sancion = new Sancion();
+        sancion.setId(IdGeneratorUtil.generarId());
         sancion.setJugador(jugador);
         sancion.setTipoSancion(tipoSancion);
         sancion.setDescripcion(descripcion);
@@ -118,17 +121,17 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
-    public Partido consultarPartido(Long partidoId) {
+    public Partido consultarPartido(String partidoId) {
         return getPartidoOrThrow(partidoId);
     }
 
     @Override
-    public List<Partido> consultarPartidosPorTorneo(Long torneoId) {
+    public List<Partido> consultarPartidosPorTorneo(String torneoId) {
         return partidoRepository.findByTorneoId(torneoId);
     }
 
     @Override
-    public List<Partido> consultarPartidosPorEquipo(Long equipoId) {
+    public List<Partido> consultarPartidosPorEquipo(String equipoId) {
         return partidoRepository.findByEquipoLocalIdOrEquipoVisitanteId(equipoId, equipoId);
     }
 
@@ -137,7 +140,7 @@ public class PartidoServiceImpl implements PartidoService {
             throw new IllegalStateException("El partido no esta EN_CURSO.");
     }
 
-    private Partido getPartidoOrThrow(Long id) {
+    private Partido getPartidoOrThrow(String id) {
         return partidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Partido no encontrado con id: " + id));
     }

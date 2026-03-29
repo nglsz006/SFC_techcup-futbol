@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface PagoJpaRepository extends JpaRepository<PagoEntity, Long> {
-    List<PagoEntity> findByEquipoId(Long equipoId);
+public interface PagoJpaRepository extends JpaRepository<PagoEntity, String> {
+    List<PagoEntity> findByEquipoId(String equipoId);
     List<PagoEntity> findByEstado(Pago.PagoEstado estado);
-    Optional<PagoEntity> findByEquipoIdAndEstado(Long equipoId, Pago.PagoEstado estado);
-    boolean existsByEquipoIdAndEstado(Long equipoId, Pago.PagoEstado estado);
+    Optional<PagoEntity> findByEquipoIdAndEstado(String equipoId, Pago.PagoEstado estado);
+    boolean existsByEquipoIdAndEstado(String equipoId, Pago.PagoEstado estado);
 }

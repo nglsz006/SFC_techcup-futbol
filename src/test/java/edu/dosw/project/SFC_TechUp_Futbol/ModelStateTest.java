@@ -31,8 +31,8 @@ class ModelStateTest {
     @Test
     void enRevision_avanzar_pasaAAprobado() {
         Pago pago = new Pago();
-        pago.avanzar(); // PENDIENTE -> EN_REVISION
-        pago.avanzar(); // EN_REVISION -> APROBADO
+        pago.avanzar();
+        pago.avanzar();
         assertEquals(Pago.PagoEstado.APROBADO, pago.getEstado());
         assertEquals("APROBADO", pago.getState().getNombre());
     }
@@ -40,7 +40,7 @@ class ModelStateTest {
     @Test
     void enRevision_rechazar_pasaARechazado() {
         Pago pago = new Pago();
-        pago.avanzar(); // PENDIENTE -> EN_REVISION
+        pago.avanzar();
         pago.rechazar();
         assertEquals(Pago.PagoEstado.RECHAZADO, pago.getEstado());
         assertEquals("RECHAZADO", pago.getState().getNombre());
@@ -159,7 +159,7 @@ class ModelStateTest {
 
     @Test
     void torneoCreado_iniciar_pasaAEnCurso() {
-        Torneo torneo = new Torneo(1, "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
+        Torneo torneo = new Torneo("uuid-1", "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
         EstadoTorneoInterface estado = new TorneoCreado();
         EstadoTorneoInterface siguiente = estado.iniciar(torneo);
         assertEquals(Torneo.EstadoTorneo.EN_CURSO, torneo.getEstado());
@@ -168,7 +168,7 @@ class ModelStateTest {
 
     @Test
     void torneoCreado_finalizar_retornaMismo() {
-        Torneo torneo = new Torneo(1, "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
+        Torneo torneo = new Torneo("uuid-1", "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
         EstadoTorneoInterface estado = new TorneoCreado();
         EstadoTorneoInterface mismo = estado.finalizar(torneo);
         assertInstanceOf(TorneoCreado.class, mismo);
@@ -181,14 +181,14 @@ class ModelStateTest {
 
     @Test
     void torneoEnCurso_iniciar_retornaMismo() {
-        Torneo torneo = new Torneo(1, "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
+        Torneo torneo = new Torneo("uuid-1", "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
         EstadoTorneoInterface estado = new TorneoEnCurso();
         assertInstanceOf(TorneoEnCurso.class, estado.iniciar(torneo));
     }
 
     @Test
     void torneoEnCurso_finalizar_pasaAFinalizado() {
-        Torneo torneo = new Torneo(1, "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
+        Torneo torneo = new Torneo("uuid-1", "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
         EstadoTorneoInterface estado = new TorneoEnCurso();
         EstadoTorneoInterface siguiente = estado.finalizar(torneo);
         assertEquals(Torneo.EstadoTorneo.FINALIZADO, torneo.getEstado());
@@ -202,14 +202,14 @@ class ModelStateTest {
 
     @Test
     void torneoFinalizado_iniciar_retornaMismo() {
-        Torneo torneo = new Torneo(1, "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
+        Torneo torneo = new Torneo("uuid-1", "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
         EstadoTorneoInterface estado = new TorneoFinalizado();
         assertInstanceOf(TorneoFinalizado.class, estado.iniciar(torneo));
     }
 
     @Test
     void torneoFinalizado_finalizar_retornaMismo() {
-        Torneo torneo = new Torneo(1, "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
+        Torneo torneo = new Torneo("uuid-1", "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
         EstadoTorneoInterface estado = new TorneoFinalizado();
         assertInstanceOf(TorneoFinalizado.class, estado.finalizar(torneo));
     }

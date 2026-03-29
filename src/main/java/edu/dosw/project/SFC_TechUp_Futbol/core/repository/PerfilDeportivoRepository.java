@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface PerfilDeportivoRepository {
     PerfilDeportivo save(PerfilDeportivo perfil);
-    Optional<PerfilDeportivo> findById(Long id);
-    Optional<PerfilDeportivo> findByJugadorId(Long jugadorId);
+    Optional<PerfilDeportivo> findById(String id);
+    Optional<PerfilDeportivo> findByJugadorId(String jugadorId);
 }

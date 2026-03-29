@@ -20,19 +20,19 @@ public class Alineacion {
         }
     }
 
-    private int id;
-    private int equipoId;
-    private int partidoId;
+    private String id;
+    private String equipoId;
+    private String partidoId;
     private Formacion formacion;
-    private List<Integer> titulares;
-    private List<Integer> reservas;
+    private List<String> titulares;
+    private List<String> reservas;
 
     public Alineacion() {
         this.titulares = new ArrayList<>();
         this.reservas = new ArrayList<>();
     }
 
-    public Alineacion(int id, int equipoId, int partidoId, Formacion formacion) {
+    public Alineacion(String id, String equipoId, String partidoId, Formacion formacion) {
         this.id = id;
         this.equipoId = equipoId;
         this.partidoId = partidoId;
@@ -41,22 +41,22 @@ public class Alineacion {
         this.reservas = new ArrayList<>();
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public int getEquipoId() { return equipoId; }
-    public void setEquipoId(int equipoId) { this.equipoId = equipoId; }
+    public String getEquipoId() { return equipoId; }
+    public void setEquipoId(String equipoId) { this.equipoId = equipoId; }
 
-    public int getPartidoId() { return partidoId; }
-    public void setPartidoId(int partidoId) { this.partidoId = partidoId; }
+    public String getPartidoId() { return partidoId; }
+    public void setPartidoId(String partidoId) { this.partidoId = partidoId; }
 
     public Formacion getFormacion() { return formacion; }
     public void setFormacion(Formacion formacion) { this.formacion = formacion; }
 
-    public List<Integer> getTitulares() { return titulares; }
-    public void setTitulares(List<Integer> titulares) { this.titulares = titulares; }
+    public List<String> getTitulares() { return titulares; }
+    public void setTitulares(List<String> titulares) { this.titulares = titulares; }
 
-    public List<Integer> getReservas() { return reservas; }
-    public void setReservas(List<Integer> reservas) { this.reservas = reservas; }
+    public List<String> getReservas() { return reservas; }
+    public void setReservas(List<String> reservas) { this.reservas = reservas; }
 }
 

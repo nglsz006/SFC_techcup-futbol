@@ -27,12 +27,12 @@ class AccesoServiceTest {
 
     @BeforeEach
     void setUp() {
-        Map<Long, UsuarioRegistrado> store = new HashMap<>();
+        Map<String, UsuarioRegistrado> store = new HashMap<>();
         AtomicLong idGen = new AtomicLong(1);
         UsuarioRegistradoRepository repo = mock(UsuarioRegistradoRepository.class);
         when(repo.save(any())).thenAnswer(inv -> {
             UsuarioRegistrado u = inv.getArgument(0);
-            if (u.getId() == null) u.setId(idGen.getAndIncrement());
+            if (u.getId() == null) u.setId(java.util.UUID.randomUUID().toString());
             store.put(u.getId(), u);
             return u;
         });

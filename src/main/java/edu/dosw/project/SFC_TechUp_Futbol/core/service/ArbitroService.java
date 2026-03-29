@@ -20,7 +20,7 @@ public class ArbitroService {
         return arbitroRepository.save(arbitro);
     }
 
-    public List<Partido> consultarPartidosAsignados(Long arbitroId) {
+    public List<Partido> consultarPartidosAsignados(String arbitroId) {
         return arbitroRepository.findById(arbitroId)
                 .map(Arbitro::getAssignedMatches)
                 .orElse(List.of());

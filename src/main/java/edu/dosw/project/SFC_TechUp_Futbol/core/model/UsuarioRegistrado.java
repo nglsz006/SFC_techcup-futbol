@@ -4,7 +4,7 @@ public class UsuarioRegistrado extends Usuario {
 
     public UsuarioRegistrado() {}
 
-    public UsuarioRegistrado(Long id, String nombre, String email, String password, TipoUsuario tipoUsuario) {
+    public UsuarioRegistrado(String id, String nombre, String email, String password, TipoUsuario tipoUsuario) {
         super(id, nombre, email, password, tipoUsuario);
     }
 }

@@ -10,14 +10,14 @@ import java.util.List;
 public class AlineacionEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false, updatable = false)
+    private String id;
 
     @Column(name = "equipo_id", nullable = false)
-    private Long equipoId;
+    private String equipoId;
 
     @Column(name = "partido_id", nullable = false)
-    private Long partidoId;
+    private String partidoId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -26,36 +26,36 @@ public class AlineacionEntity {
     @ElementCollection
     @CollectionTable(name = "alineacion_titulares", joinColumns = @JoinColumn(name = "alineacion_id"))
     @Column(name = "jugador_id")
-    private List<Integer> titulares = new ArrayList<>();
+    private List<String> titulares = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "alineacion_reservas", joinColumns = @JoinColumn(name = "alineacion_id"))
     @Column(name = "jugador_id")
-    private List<Integer> reservas = new ArrayList<>();
+    private List<String> reservas = new ArrayList<>();
 
     public AlineacionEntity() {}
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getEquipoId() {
+    public String getEquipoId() {
         return equipoId;
     }
 
-    public void setEquipoId(Long equipoId) {
+    public void setEquipoId(String equipoId) {
         this.equipoId = equipoId;
     }
 
-    public Long getPartidoId() {
+    public String getPartidoId() {
         return partidoId;
     }
 
-    public void setPartidoId(Long partidoId) {
+    public void setPartidoId(String partidoId) {
         this.partidoId = partidoId;
     }
 
@@ -67,19 +67,19 @@ public class AlineacionEntity {
         this.formacion = formacion;
     }
 
-    public List<Integer> getTitulares() {
+    public List<String> getTitulares() {
         return titulares;
     }
 
-    public void setTitulares(List<Integer> titulares) {
+    public void setTitulares(List<String> titulares) {
         this.titulares = titulares;
     }
 
-    public List<Integer> getReservas() {
+    public List<String> getReservas() {
         return reservas;
     }
 
-    public void setReservas(List<Integer> reservas) {
+    public void setReservas(List<String> reservas) {
         this.reservas = reservas;
     }
 }

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface SancionRepository {
     Sancion save(Sancion sancion);
-    Optional<Sancion> findById(Long id);
+    Optional<Sancion> findById(String id);
     List<Sancion> findAll();
-    List<Sancion> findByJugadorId(Long jugadorId);
+    List<Sancion> findByJugadorId(String jugadorId);
 }

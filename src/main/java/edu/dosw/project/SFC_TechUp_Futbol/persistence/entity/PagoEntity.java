@@ -9,8 +9,8 @@ import java.time.LocalDate;
 public class PagoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false, updatable = false)
+    private String id;
 
     @Column
     private String comprobante;
@@ -31,11 +31,11 @@ public class PagoEntity {
         this.fechaSubida = LocalDate.now();
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

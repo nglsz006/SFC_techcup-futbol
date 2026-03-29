@@ -11,7 +11,7 @@ public class Arbitro extends Usuario {
         this.assignedMatches = new ArrayList<>();
     }
 
-    public Arbitro(Long id, String name, String email,
+    public Arbitro(String id, String name, String email,
                    String password, TipoUsuario userType) {
         super(id, name, email, password, userType);
         this.assignedMatches = new ArrayList<>();

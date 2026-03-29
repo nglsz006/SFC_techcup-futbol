@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -27,81 +25,75 @@ class ServiciosExtrasTest {
 
     @BeforeEach
     void setUp() {
-        Map<Integer, Alineacion> alineacionStore = new HashMap<>();
-        AtomicInteger alineacionIdGen = new AtomicInteger(1);
+        Map<String, Alineacion> alineacionStore = new HashMap<>();
         AlineacionRepository alineacionRepo = mock(AlineacionRepository.class);
         when(alineacionRepo.save(any())).thenAnswer(inv -> {
             Alineacion a = inv.getArgument(0);
-            if (a.getId() == 0) a.setId(alineacionIdGen.getAndIncrement());
+            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
             alineacionStore.put(a.getId(), a);
             return a;
         });
-        when(alineacionRepo.findById(anyInt())).thenAnswer(inv -> Optional.ofNullable(alineacionStore.get(inv.<Integer>getArgument(0))));
+        when(alineacionRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(alineacionStore.get(inv.<String>getArgument(0))));
         when(alineacionRepo.findAll()).thenAnswer(inv -> new ArrayList<>(alineacionStore.values()));
         alineacionService = new AlineacionService(alineacionRepo);
 
-        Map<Long, Arbitro> arbitroStore = new HashMap<>();
-        AtomicLong arbitroIdGen = new AtomicLong(1);
+        Map<String, Arbitro> arbitroStore = new HashMap<>();
         ArbitroRepository arbitroRepository = mock(ArbitroRepository.class);
         when(arbitroRepository.save(any())).thenAnswer(inv -> {
             Arbitro a = inv.getArgument(0);
-            if (a.getId() == null) a.setId(arbitroIdGen.getAndIncrement());
+            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
             arbitroStore.put(a.getId(), a);
             return a;
         });
-        when(arbitroRepository.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(arbitroStore.get(inv.<Long>getArgument(0))));
+        when(arbitroRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(arbitroStore.get(inv.<String>getArgument(0))));
         when(arbitroRepository.findAll()).thenAnswer(inv -> new ArrayList<>(arbitroStore.values()));
         arbitroService = new ArbitroService(arbitroRepository);
 
-        Map<Long, Jugador> jugadorStore = new HashMap<>();
-        AtomicLong jugadorIdGen = new AtomicLong(1);
+        Map<String, Jugador> jugadorStore = new HashMap<>();
         jugadorRepo = mock(JugadorRepository.class);
         when(jugadorRepo.save(any())).thenAnswer(inv -> {
             Jugador j = inv.getArgument(0);
-            if (j.getId() == null) j.setId(jugadorIdGen.getAndIncrement());
+            if (j.getId() == null) j.setId(UUID.randomUUID().toString());
             jugadorStore.put(j.getId(), j);
             return j;
         });
-        when(jugadorRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(jugadorStore.get(inv.<Long>getArgument(0))));
+        when(jugadorRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(jugadorStore.get(inv.<String>getArgument(0))));
         when(jugadorRepo.findAll()).thenAnswer(inv -> new ArrayList<>(jugadorStore.values()));
         jugadorService = new JugadorService(jugadorRepo);
 
-        Map<Long, Capitan> capitanStore = new HashMap<>();
-        AtomicLong capitanIdGen = new AtomicLong(1);
+        Map<String, Capitan> capitanStore = new HashMap<>();
         CapitanRepository capitanRepository = mock(CapitanRepository.class);
         when(capitanRepository.save(any())).thenAnswer(inv -> {
             Capitan c = inv.getArgument(0);
-            if (c.getId() == null) c.setId(capitanIdGen.getAndIncrement());
+            if (c.getId() == null) c.setId(UUID.randomUUID().toString());
             capitanStore.put(c.getId(), c);
             return c;
         });
-        when(capitanRepository.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(capitanStore.get(inv.<Long>getArgument(0))));
+        when(capitanRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(capitanStore.get(inv.<String>getArgument(0))));
         when(capitanRepository.findAll()).thenAnswer(inv -> new ArrayList<>(capitanStore.values()));
         capitanService = new CapitanService(capitanRepository, jugadorService);
 
-        Map<Integer, Torneo> torneoStore = new HashMap<>();
-        AtomicInteger torneoIdGen = new AtomicInteger(1);
+        Map<String, Torneo> torneoStore = new HashMap<>();
         TorneoRepository torneoRepository = mock(TorneoRepository.class);
         when(torneoRepository.save(any())).thenAnswer(inv -> {
             Torneo t = inv.getArgument(0);
-            if (t.getId() == 0) t.setId(torneoIdGen.getAndIncrement());
+            if (t.getId() == null) t.setId(UUID.randomUUID().toString());
             torneoStore.put(t.getId(), t);
             return t;
         });
-        when(torneoRepository.findById(anyInt())).thenAnswer(inv -> Optional.ofNullable(torneoStore.get(inv.<Integer>getArgument(0))));
+        when(torneoRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(torneoStore.get(inv.<String>getArgument(0))));
         when(torneoRepository.findAll()).thenAnswer(inv -> new ArrayList<>(torneoStore.values()));
         torneoService = new TorneoService(torneoRepository);
 
-        Map<Long, Organizador> orgStore = new HashMap<>();
-        AtomicLong orgIdGen = new AtomicLong(1);
+        Map<String, Organizador> orgStore = new HashMap<>();
         OrganizadorRepository orgRepository = mock(OrganizadorRepository.class);
         when(orgRepository.save(any())).thenAnswer(inv -> {
             Organizador o = inv.getArgument(0);
-            if (o.getId() == null) o.setId(orgIdGen.getAndIncrement());
+            if (o.getId() == null) o.setId(UUID.randomUUID().toString());
             orgStore.put(o.getId(), o);
             return o;
         });
-        when(orgRepository.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(orgStore.get(inv.<Long>getArgument(0))));
+        when(orgRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(orgStore.get(inv.<String>getArgument(0))));
         when(orgRepository.findAll()).thenAnswer(inv -> new ArrayList<>(orgStore.values()));
         organizadorService = new OrganizadorService(orgRepository, torneoService);
     }
@@ -109,17 +101,17 @@ class ServiciosExtrasTest {
     @Test
     void alineacion_crear_retornaAlineacion() {
         Alineacion a = new Alineacion();
-        a.setEquipoId(1);
-        a.setPartidoId(1);
+        a.setEquipoId("uuid-equipo-1");
+        a.setPartidoId("uuid-partido-1");
         a.setFormacion(Alineacion.Formacion.F_4_4_2);
-        a.setTitulares(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11));
-        Alineacion saved = alineacionService.crear(a, Map.of("formacion", "4-4-2", "titulares", List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)));
-        assertTrue(saved.getId() > 0);
+        a.setTitulares(List.of("j1", "j2", "j3", "j4", "j5", "j6", "j7", "j8", "j9", "j10", "j11"));
+        Alineacion saved = alineacionService.crear(a, Map.of("formacion", "4-4-2", "titulares", List.of("j1", "j2", "j3", "j4", "j5", "j6", "j7", "j8", "j9", "j10", "j11")));
+        assertNotNull(saved.getId());
     }
 
     @Test
     void alineacion_obtener_inexistente_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> alineacionService.obtener(99));
+        assertThrows(IllegalArgumentException.class, () -> alineacionService.obtener("uuid-inexistente"));
     }
 
     @Test
@@ -129,7 +121,7 @@ class ServiciosExtrasTest {
 
     @Test
     void arbitro_sinPartidos_retornaListaVacia() {
-        assertTrue(arbitroService.consultarPartidosAsignados(99L).isEmpty());
+        assertTrue(arbitroService.consultarPartidosAsignados("uuid-inexistente").isEmpty());
     }
 
     @Test
@@ -145,7 +137,7 @@ class ServiciosExtrasTest {
 
     @Test
     void capitan_crearEquipo_capitanInexistente_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> capitanService.crearEquipo(99L, "Los Tigres"));
+        assertThrows(IllegalArgumentException.class, () -> capitanService.crearEquipo("uuid-inexistente", "Los Tigres"));
     }
 
     @Test
@@ -160,13 +152,13 @@ class ServiciosExtrasTest {
 
     @Test
     void capitan_definirAlineacion_menosDeSiete_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> capitanService.definirAlineacion(99L, List.of()));
+        assertThrows(IllegalArgumentException.class, () -> capitanService.definirAlineacion("uuid-inexistente", List.of()));
     }
 
     @Test
     void organizador_crearTorneo_organizadorInexistente_lanzaExcepcion() {
-        Torneo t = new Torneo(0, "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
-        assertThrows(IllegalArgumentException.class, () -> organizadorService.crearTorneo(99L, t));
+        Torneo t = new Torneo(null, "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
+        assertThrows(IllegalArgumentException.class, () -> organizadorService.crearTorneo("uuid-inexistente", t));
     }
 
     @Test
@@ -180,7 +172,7 @@ class ServiciosExtrasTest {
     void organizador_crearTorneo_nombreInvalido_lanzaExcepcion() {
         Organizador org = new Organizador(null, "Org", "org@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, null);
         organizadorService.save(org);
-        Torneo t = new Torneo(0, "", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
+        Torneo t = new Torneo(null, "", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
         assertThrows(IllegalArgumentException.class, () -> organizadorService.crearTorneo(org.getId(), t));
     }
 
@@ -210,6 +202,6 @@ class ServiciosExtrasTest {
     @Test
     void jugador_editarPerfil_inexistente_lanzaExcepcion() {
         assertThrows(IllegalArgumentException.class, () ->
-                jugadorService.editarPerfil(99L, "X", 1, Jugador.Posicion.DELANTERO, ""));
+                jugadorService.editarPerfil("uuid-inexistente", "X", 1, Jugador.Posicion.DELANTERO, ""));
     }
 }

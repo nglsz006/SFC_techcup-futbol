@@ -21,7 +21,7 @@ public class EquipoController {
 
     @Operation(summary = "Get team by ID", description = "Returns the information of a team, including its players.")
     @GetMapping("/{id}")
-    public Equipo obtenerEquipo(@PathVariable int id) {
+    public Equipo obtenerEquipo(@PathVariable String id) {
         return service.obtener(id);
     }
 

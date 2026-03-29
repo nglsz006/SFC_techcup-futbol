@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ArbitroRepository {
     Arbitro save(Arbitro arbitro);
-    Optional<Arbitro> findById(Long id);
+    Optional<Arbitro> findById(String id);
     Optional<Arbitro> findByEmail(String email);
     List<Arbitro> findAll();
 }

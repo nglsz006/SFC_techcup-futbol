@@ -13,11 +13,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AdministradorValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,12 +26,11 @@ class AdministradorValidatorTest {
 
     @BeforeEach
     void setUp() {
-        Map<Long, Organizador> orgStore = new HashMap<>();
-        AtomicLong orgIdGen = new AtomicLong(1);
+        Map<String, Organizador> orgStore = new HashMap<>();
         organizadorRepository = mock(OrganizadorRepository.class);
         when(organizadorRepository.save(any())).thenAnswer(inv -> {
             Organizador o = inv.getArgument(0);
-            if (o.getId() == null) o.setId(orgIdGen.getAndIncrement());
+            if (o.getId() == null) o.setId(UUID.randomUUID().toString());
             orgStore.put(o.getId(), o);
             return o;
         });

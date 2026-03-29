@@ -6,7 +6,7 @@ public class Organizador extends Usuario {
 
     public Organizador() {}
 
-    public Organizador(Long id, String name, String email, String password, TipoUsuario userType, Torneo currentTournament) {
+    public Organizador(String id, String name, String email, String password, TipoUsuario userType, Torneo currentTournament) {
         super(id, name, email, password, userType);
         this.currentTournament = currentTournament;
     }

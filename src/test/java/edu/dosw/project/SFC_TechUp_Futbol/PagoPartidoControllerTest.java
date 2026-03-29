@@ -21,8 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
@@ -48,75 +47,70 @@ class PagoPartidoControllerTest {
 
     @BeforeEach
     void setUp() {
-        Map<Integer, Equipo> equipoStore = new HashMap<>();
-        AtomicInteger equipoIdGen = new AtomicInteger(1);
+        Map<String, Equipo> equipoStore = new HashMap<>();
         equipoRepo = mock(EquipoRepository.class);
         when(equipoRepo.save(any())).thenAnswer(inv -> {
             Equipo e = inv.getArgument(0);
-            if (e.getId() == 0) e.setId(equipoIdGen.getAndIncrement());
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
             equipoStore.put(e.getId(), e);
             return e;
         });
-        when(equipoRepo.findById(anyInt())).thenAnswer(inv -> Optional.ofNullable(equipoStore.get(inv.<Integer>getArgument(0))));
-        when(equipoRepo.findById(any(Long.class))).thenAnswer(inv -> Optional.ofNullable(equipoStore.get(((Long) inv.getArgument(0)).intValue())));
+        when(equipoRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(equipoStore.get(inv.<String>getArgument(0))));
         when(equipoRepo.findAll()).thenAnswer(inv -> new ArrayList<>(equipoStore.values()));
 
-        Map<Integer, Torneo> torneoStore = new HashMap<>();
-        AtomicInteger torneoIdGen = new AtomicInteger(1);
+        Map<String, Torneo> torneoStore = new HashMap<>();
         torneoRepo = mock(TorneoRepository.class);
         when(torneoRepo.save(any())).thenAnswer(inv -> {
             Torneo t = inv.getArgument(0);
-            if (t.getId() == 0) t.setId(torneoIdGen.getAndIncrement());
+            if (t.getId() == null) t.setId(UUID.randomUUID().toString());
             torneoStore.put(t.getId(), t);
             return t;
         });
-        when(torneoRepo.findById(anyInt())).thenAnswer(inv -> Optional.ofNullable(torneoStore.get(inv.<Integer>getArgument(0))));
+        when(torneoRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(torneoStore.get(inv.<String>getArgument(0))));
         when(torneoRepo.findAll()).thenAnswer(inv -> new ArrayList<>(torneoStore.values()));
 
-        Map<Long, Jugador> jugadorStore = new HashMap<>();
-        AtomicLong jugadorIdGen = new AtomicLong(1);
+        Map<String, Jugador> jugadorStore = new HashMap<>();
         jugadorRepo = mock(JugadorRepository.class);
         when(jugadorRepo.save(any())).thenAnswer(inv -> {
             Jugador j = inv.getArgument(0);
-            if (j.getId() == null) j.setId(jugadorIdGen.getAndIncrement());
+            if (j.getId() == null) j.setId(UUID.randomUUID().toString());
             jugadorStore.put(j.getId(), j);
             return j;
         });
-        when(jugadorRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(jugadorStore.get(inv.<Long>getArgument(0))));
+        when(jugadorRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(jugadorStore.get(inv.<String>getArgument(0))));
         when(jugadorRepo.findAll()).thenAnswer(inv -> new ArrayList<>(jugadorStore.values()));
 
-        equipo = equipoRepo.save(new Equipo(0, "Los Tigres", "", "rojo", "blanco", 1));
-        torneo = torneoRepo.save(new Torneo(0, "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50));
-        jugador = new Jugador(1L, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
+        equipo = equipoRepo.save(new Equipo(null, "Los Tigres", "", "rojo", "blanco", null));
+        torneo = torneoRepo.save(new Torneo(null, "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50));
+        jugador = new Jugador(null, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
         jugadorRepo.save(jugador);
 
-        Map<Long, Pago> pagoStore = new HashMap<>();
-        AtomicLong pagoIdGen = new AtomicLong(1);
+        Map<String, Pago> pagoStore = new HashMap<>();
         PagoRepository pagoRepo = mock(PagoRepository.class);
         when(pagoRepo.save(any())).thenAnswer(inv -> {
             Pago p = inv.getArgument(0);
-            if (p.getId() == null) p.setId(pagoIdGen.getAndIncrement());
+            if (p.getId() == null) p.setId(UUID.randomUUID().toString());
             pagoStore.put(p.getId(), p);
             return p;
         });
-        when(pagoRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(pagoStore.get(inv.<Long>getArgument(0))));
-        when(pagoRepo.findByEquipoId(anyLong())).thenAnswer(inv -> {
-            Long eid = inv.getArgument(0);
-            return pagoStore.values().stream().filter(p -> p.getEquipo() != null && p.getEquipo().getId() == eid.intValue()).collect(Collectors.toList());
+        when(pagoRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(pagoStore.get(inv.<String>getArgument(0))));
+        when(pagoRepo.findByEquipoId(anyString())).thenAnswer(inv -> {
+            String eid = inv.getArgument(0);
+            return pagoStore.values().stream().filter(p -> p.getEquipo() != null && eid.equals(p.getEquipo().getId())).collect(Collectors.toList());
         });
         when(pagoRepo.findByEstado(any())).thenAnswer(inv -> {
             Pago.PagoEstado estado = inv.getArgument(0);
             return pagoStore.values().stream().filter(p -> p.getEstado() == estado).collect(Collectors.toList());
         });
-        when(pagoRepo.findByEquipoIdAndEstado(anyLong(), any())).thenAnswer(inv -> {
-            Long eid = inv.getArgument(0);
+        when(pagoRepo.findByEquipoIdAndEstado(anyString(), any())).thenAnswer(inv -> {
+            String eid = inv.getArgument(0);
             Pago.PagoEstado estado = inv.getArgument(1);
-            return pagoStore.values().stream().filter(p -> p.getEquipo() != null && p.getEquipo().getId() == eid.intValue() && p.getEstado() == estado).findFirst();
+            return pagoStore.values().stream().filter(p -> p.getEquipo() != null && eid.equals(p.getEquipo().getId()) && p.getEstado() == estado).findFirst();
         });
-        when(pagoRepo.existsByEquipoIdAndEstado(anyLong(), any())).thenAnswer(inv -> {
-            Long eid = inv.getArgument(0);
+        when(pagoRepo.existsByEquipoIdAndEstado(anyString(), any())).thenAnswer(inv -> {
+            String eid = inv.getArgument(0);
             Pago.PagoEstado estado = inv.getArgument(1);
-            return pagoStore.values().stream().anyMatch(p -> p.getEquipo() != null && p.getEquipo().getId() == eid.intValue() && p.getEstado() == estado);
+            return pagoStore.values().stream().anyMatch(p -> p.getEquipo() != null && eid.equals(p.getEquipo().getId()) && p.getEstado() == estado);
         });
 
         pagoService = new PagoServiceImpl(pagoRepo, equipoRepo);
@@ -124,30 +118,29 @@ class PagoPartidoControllerTest {
                 .standaloneSetup(new PagoController(pagoService, new PagoValidator()))
                 .setControllerAdvice(new ErrorHandler()).build();
 
-        Map<Long, Partido> partidoStore = new HashMap<>();
-        AtomicLong partidoIdGen = new AtomicLong(1);
+        Map<String, Partido> partidoStore = new HashMap<>();
         PartidoRepository partidoRepo = mock(PartidoRepository.class);
         when(partidoRepo.save(any())).thenAnswer(inv -> {
             Partido p = inv.getArgument(0);
-            if (p.getId() == null) p.setId(partidoIdGen.getAndIncrement());
+            if (p.getId() == null) p.setId(UUID.randomUUID().toString());
             partidoStore.put(p.getId(), p);
             return p;
         });
-        when(partidoRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(partidoStore.get(inv.<Long>getArgument(0))));
-        when(partidoRepo.findByTorneoId(anyLong())).thenAnswer(inv -> {
-            Long tid = inv.getArgument(0);
-            return partidoStore.values().stream().filter(p -> p.getTorneo() != null && p.getTorneo().getId() == tid.intValue()).collect(Collectors.toList());
+        when(partidoRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(partidoStore.get(inv.<String>getArgument(0))));
+        when(partidoRepo.findByTorneoId(anyString())).thenAnswer(inv -> {
+            String tid = inv.getArgument(0);
+            return partidoStore.values().stream().filter(p -> p.getTorneo() != null && tid.equals(p.getTorneo().getId())).collect(Collectors.toList());
         });
         when(partidoRepo.findByEstado(any())).thenAnswer(inv -> {
             Partido.PartidoEstado estado = inv.getArgument(0);
             return partidoStore.values().stream().filter(p -> p.getEstado() == estado).collect(Collectors.toList());
         });
-        when(partidoRepo.findByEquipoLocalIdOrEquipoVisitanteId(anyLong(), anyLong())).thenAnswer(inv -> {
-            Long lid = inv.getArgument(0);
-            Long vid = inv.getArgument(1);
+        when(partidoRepo.findByEquipoLocalIdOrEquipoVisitanteId(anyString(), anyString())).thenAnswer(inv -> {
+            String lid = inv.getArgument(0);
+            String vid = inv.getArgument(1);
             return partidoStore.values().stream().filter(p ->
-                    (p.getEquipoLocal() != null && p.getEquipoLocal().getId() == lid.intValue()) ||
-                            (p.getEquipoVisitante() != null && p.getEquipoVisitante().getId() == vid.intValue())
+                    (p.getEquipoLocal() != null && lid.equals(p.getEquipoLocal().getId())) ||
+                    (p.getEquipoVisitante() != null && vid.equals(p.getEquipoVisitante().getId()))
             ).collect(Collectors.toList());
         });
 
@@ -156,31 +149,29 @@ class PagoPartidoControllerTest {
                 .standaloneSetup(new PartidoController(partidoService, new PartidoValidator()))
                 .setControllerAdvice(new ErrorHandler()).build();
 
-        Map<Long, PerfilDeportivo> perfilStore = new HashMap<>();
-        AtomicLong perfilIdGen = new AtomicLong(1);
+        Map<String, PerfilDeportivo> perfilStore = new HashMap<>();
         PerfilDeportivoRepository perfilRepo = mock(PerfilDeportivoRepository.class);
         when(perfilRepo.save(any())).thenAnswer(inv -> {
             PerfilDeportivo pf = inv.getArgument(0);
-            if (pf.getId() == null) pf.setId(perfilIdGen.getAndIncrement());
+            if (pf.getId() == null) pf.setId(UUID.randomUUID().toString());
             perfilStore.put(pf.getId(), pf);
             return pf;
         });
-        when(perfilRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(perfilStore.get(inv.<Long>getArgument(0))));
-        when(perfilRepo.findByJugadorId(anyLong())).thenAnswer(inv -> {
-            Long jid = inv.getArgument(0);
+        when(perfilRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(perfilStore.get(inv.<String>getArgument(0))));
+        when(perfilRepo.findByJugadorId(anyString())).thenAnswer(inv -> {
+            String jid = inv.getArgument(0);
             return perfilStore.values().stream().filter(pf -> jid.equals(pf.getJugadorId())).findFirst();
         });
 
-        Map<Integer, Alineacion> alineacionStore = new HashMap<>();
-        AtomicInteger alineacionIdGen = new AtomicInteger(1);
+        Map<String, Alineacion> alineacionStore = new HashMap<>();
         AlineacionRepository alineacionRepo = mock(AlineacionRepository.class);
         when(alineacionRepo.save(any())).thenAnswer(inv -> {
             Alineacion a = inv.getArgument(0);
-            if (a.getId() == 0) a.setId(alineacionIdGen.getAndIncrement());
+            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
             alineacionStore.put(a.getId(), a);
             return a;
         });
-        when(alineacionRepo.findById(anyInt())).thenAnswer(inv -> Optional.ofNullable(alineacionStore.get(inv.<Integer>getArgument(0))));
+        when(alineacionRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(alineacionStore.get(inv.<String>getArgument(0))));
         when(alineacionRepo.findAll()).thenAnswer(inv -> new ArrayList<>(alineacionStore.values()));
 
         AlineacionService alineacionService = new AlineacionService(alineacionRepo);
@@ -190,16 +181,15 @@ class PagoPartidoControllerTest {
 
         JugadorService jugadorService = new JugadorService(jugadorRepo);
 
-        Map<Long, Arbitro> arbitroStore = new HashMap<>();
-        AtomicLong arbitroIdGen = new AtomicLong(1);
+        Map<String, Arbitro> arbitroStore = new HashMap<>();
         ArbitroRepository arbitroRepo = mock(ArbitroRepository.class);
         when(arbitroRepo.save(any())).thenAnswer(inv -> {
             Arbitro a = inv.getArgument(0);
-            if (a.getId() == null) a.setId(arbitroIdGen.getAndIncrement());
+            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
             arbitroStore.put(a.getId(), a);
             return a;
         });
-        when(arbitroRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(arbitroStore.get(inv.<Long>getArgument(0))));
+        when(arbitroRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(arbitroStore.get(inv.<String>getArgument(0))));
         when(arbitroRepo.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
             return arbitroStore.values().stream().filter(a -> email.equals(a.getEmail())).findFirst();
@@ -208,44 +198,41 @@ class PagoPartidoControllerTest {
 
         ArbitroService arbitroService = new ArbitroService(arbitroRepo);
 
-        Map<Long, Partido> partidoStoreArbitro = new HashMap<>();
-        AtomicLong partidoIdGenArbitro = new AtomicLong(1);
+        Map<String, Partido> partidoStoreArbitro = new HashMap<>();
         PartidoRepository partidoRepoArbitro = mock(PartidoRepository.class);
         when(partidoRepoArbitro.save(any())).thenAnswer(inv -> {
             Partido p = inv.getArgument(0);
-            if (p.getId() == null) p.setId(partidoIdGenArbitro.getAndIncrement());
+            if (p.getId() == null) p.setId(UUID.randomUUID().toString());
             partidoStoreArbitro.put(p.getId(), p);
             return p;
         });
-        when(partidoRepoArbitro.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(partidoStoreArbitro.get(inv.<Long>getArgument(0))));
-        when(partidoRepoArbitro.findByTorneoId(anyLong())).thenAnswer(inv -> new ArrayList<>());
+        when(partidoRepoArbitro.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(partidoStoreArbitro.get(inv.<String>getArgument(0))));
+        when(partidoRepoArbitro.findByTorneoId(anyString())).thenAnswer(inv -> new ArrayList<>());
         when(partidoRepoArbitro.findByEstado(any())).thenAnswer(inv -> new ArrayList<>());
-        when(partidoRepoArbitro.findByEquipoLocalIdOrEquipoVisitanteId(anyLong(), anyLong())).thenAnswer(inv -> new ArrayList<>());
+        when(partidoRepoArbitro.findByEquipoLocalIdOrEquipoVisitanteId(anyString(), anyString())).thenAnswer(inv -> new ArrayList<>());
 
-        Map<Long, Capitan> capitanStore = new HashMap<>();
-        AtomicLong capitanIdGen = new AtomicLong(1);
+        Map<String, Capitan> capitanStore = new HashMap<>();
         CapitanRepository capitanRepo = mock(CapitanRepository.class);
         when(capitanRepo.save(any())).thenAnswer(inv -> {
             Capitan c = inv.getArgument(0);
-            if (c.getId() == null) c.setId(capitanIdGen.getAndIncrement());
+            if (c.getId() == null) c.setId(UUID.randomUUID().toString());
             capitanStore.put(c.getId(), c);
             return c;
         });
-        when(capitanRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(capitanStore.get(inv.<Long>getArgument(0))));
+        when(capitanRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(capitanStore.get(inv.<String>getArgument(0))));
         when(capitanRepo.findAll()).thenAnswer(inv -> new ArrayList<>(capitanStore.values()));
 
         CapitanService capitanService = new CapitanService(capitanRepo, jugadorService);
 
-        Map<Long, Organizador> orgStore = new HashMap<>();
-        AtomicLong orgIdGen = new AtomicLong(1);
+        Map<String, Organizador> orgStore = new HashMap<>();
         OrganizadorRepository orgRepo = mock(OrganizadorRepository.class);
         when(orgRepo.save(any())).thenAnswer(inv -> {
             Organizador o = inv.getArgument(0);
-            if (o.getId() == null) o.setId(orgIdGen.getAndIncrement());
+            if (o.getId() == null) o.setId(UUID.randomUUID().toString());
             orgStore.put(o.getId(), o);
             return o;
         });
-        when(orgRepo.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(orgStore.get(inv.<Long>getArgument(0))));
+        when(orgRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(orgStore.get(inv.<String>getArgument(0))));
         when(orgRepo.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
             return orgStore.values().stream().filter(o -> email.equals(o.getEmail())).findFirst();
@@ -255,60 +242,58 @@ class PagoPartidoControllerTest {
         TorneoService torneoService = new TorneoService(torneoRepo);
         OrganizadorService organizadorService = new OrganizadorService(orgRepo, torneoService);
 
-        Map<Long, Pago> pagoStoreOrg = new HashMap<>();
-        AtomicLong pagoIdGenOrg = new AtomicLong(1);
+        Map<String, Pago> pagoStoreOrg = new HashMap<>();
         PagoRepository pagoRepoOrg = mock(PagoRepository.class);
         when(pagoRepoOrg.save(any())).thenAnswer(inv -> {
             Pago p = inv.getArgument(0);
-            if (p.getId() == null) p.setId(pagoIdGenOrg.getAndIncrement());
+            if (p.getId() == null) p.setId(UUID.randomUUID().toString());
             pagoStoreOrg.put(p.getId(), p);
             return p;
         });
-        when(pagoRepoOrg.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(pagoStoreOrg.get(inv.<Long>getArgument(0))));
-        when(pagoRepoOrg.findByEquipoId(anyLong())).thenAnswer(inv -> {
-            Long eid = inv.getArgument(0);
-            return pagoStoreOrg.values().stream().filter(p -> p.getEquipo() != null && p.getEquipo().getId() == eid.intValue()).collect(Collectors.toList());
+        when(pagoRepoOrg.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(pagoStoreOrg.get(inv.<String>getArgument(0))));
+        when(pagoRepoOrg.findByEquipoId(anyString())).thenAnswer(inv -> {
+            String eid = inv.getArgument(0);
+            return pagoStoreOrg.values().stream().filter(p -> p.getEquipo() != null && eid.equals(p.getEquipo().getId())).collect(Collectors.toList());
         });
         when(pagoRepoOrg.findByEstado(any())).thenAnswer(inv -> {
             Pago.PagoEstado estado = inv.getArgument(0);
             return pagoStoreOrg.values().stream().filter(p -> p.getEstado() == estado).collect(Collectors.toList());
         });
-        when(pagoRepoOrg.findByEquipoIdAndEstado(anyLong(), any())).thenAnswer(inv -> {
-            Long eid = inv.getArgument(0);
+        when(pagoRepoOrg.findByEquipoIdAndEstado(anyString(), any())).thenAnswer(inv -> {
+            String eid = inv.getArgument(0);
             Pago.PagoEstado estado = inv.getArgument(1);
-            return pagoStoreOrg.values().stream().filter(p -> p.getEquipo() != null && p.getEquipo().getId() == eid.intValue() && p.getEstado() == estado).findFirst();
+            return pagoStoreOrg.values().stream().filter(p -> p.getEquipo() != null && eid.equals(p.getEquipo().getId()) && p.getEstado() == estado).findFirst();
         });
-        when(pagoRepoOrg.existsByEquipoIdAndEstado(anyLong(), any())).thenAnswer(inv -> {
-            Long eid = inv.getArgument(0);
+        when(pagoRepoOrg.existsByEquipoIdAndEstado(anyString(), any())).thenAnswer(inv -> {
+            String eid = inv.getArgument(0);
             Pago.PagoEstado estado = inv.getArgument(1);
-            return pagoStoreOrg.values().stream().anyMatch(p -> p.getEquipo() != null && p.getEquipo().getId() == eid.intValue() && p.getEstado() == estado);
+            return pagoStoreOrg.values().stream().anyMatch(p -> p.getEquipo() != null && eid.equals(p.getEquipo().getId()) && p.getEstado() == estado);
         });
         PagoServiceImpl pagoServiceOrg = new PagoServiceImpl(pagoRepoOrg, equipoRepo);
 
-        Map<Long, Partido> partidoStoreUsuario = new HashMap<>();
-        AtomicLong partidoIdGenUsuario = new AtomicLong(1);
+        Map<String, Partido> partidoStoreUsuario = new HashMap<>();
         PartidoRepository partidoRepoUsuario = mock(PartidoRepository.class);
         when(partidoRepoUsuario.save(any())).thenAnswer(inv -> {
             Partido p = inv.getArgument(0);
-            if (p.getId() == null) p.setId(partidoIdGenUsuario.getAndIncrement());
+            if (p.getId() == null) p.setId(UUID.randomUUID().toString());
             partidoStoreUsuario.put(p.getId(), p);
             return p;
         });
-        when(partidoRepoUsuario.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(partidoStoreUsuario.get(inv.<Long>getArgument(0))));
-        when(partidoRepoUsuario.findByTorneoId(anyLong())).thenAnswer(inv -> {
-            Long tid = inv.getArgument(0);
-            return partidoStoreUsuario.values().stream().filter(p -> p.getTorneo() != null && p.getTorneo().getId() == tid.intValue()).collect(Collectors.toList());
+        when(partidoRepoUsuario.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(partidoStoreUsuario.get(inv.<String>getArgument(0))));
+        when(partidoRepoUsuario.findByTorneoId(anyString())).thenAnswer(inv -> {
+            String tid = inv.getArgument(0);
+            return partidoStoreUsuario.values().stream().filter(p -> p.getTorneo() != null && tid.equals(p.getTorneo().getId())).collect(Collectors.toList());
         });
         when(partidoRepoUsuario.findByEstado(any())).thenAnswer(inv -> {
             Partido.PartidoEstado estado = inv.getArgument(0);
             return partidoStoreUsuario.values().stream().filter(p -> p.getEstado() == estado).collect(Collectors.toList());
         });
-        when(partidoRepoUsuario.findByEquipoLocalIdOrEquipoVisitanteId(anyLong(), anyLong())).thenAnswer(inv -> {
-            Long lid = inv.getArgument(0);
-            Long vid = inv.getArgument(1);
+        when(partidoRepoUsuario.findByEquipoLocalIdOrEquipoVisitanteId(anyString(), anyString())).thenAnswer(inv -> {
+            String lid = inv.getArgument(0);
+            String vid = inv.getArgument(1);
             return partidoStoreUsuario.values().stream().filter(p ->
-                    (p.getEquipoLocal() != null && p.getEquipoLocal().getId() == lid.intValue()) ||
-                            (p.getEquipoVisitante() != null && p.getEquipoVisitante().getId() == vid.intValue())
+                    (p.getEquipoLocal() != null && lid.equals(p.getEquipoLocal().getId())) ||
+                    (p.getEquipoVisitante() != null && vid.equals(p.getEquipoVisitante().getId()))
             ).collect(Collectors.toList());
         });
 
@@ -347,7 +332,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyCap)))
                 .andReturn().getResponse().getContentAsString();
-        Long capId = mapper.readTree(respCap).get("id").asLong();
+        String capId = mapper.readTree(respCap).get("id").asText();
         usuarioMvc.perform(post("/api/users/captains/" + capId + "/receipt")
                         .param("comprobante", "pago.jpg"))
                 .andExpect(status().isOk());
@@ -379,7 +364,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyCap)))
                 .andReturn().getResponse().getContentAsString();
-        Long capId = mapper.readTree(respCap).get("id").asLong();
+        String capId = mapper.readTree(respCap).get("id").asText();
         usuarioMvc.perform(post("/api/users/captains/" + capId + "/receipt")
                         .param("comprobante", "pago.jpg"))
                 .andReturn().getResponse().getContentAsString();
@@ -391,10 +376,10 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
-        Long orgId = mapper.readTree(respOrg).get("id").asLong();
+        String orgId = mapper.readTree(respOrg).get("id").asText();
         List<Pago> pendientes = pagoService.consultarPagosPendientes();
         if (!pendientes.isEmpty()) {
-            Long pagoId = pendientes.get(0).getId();
+            String pagoId = pendientes.get(0).getId();
             usuarioMvc.perform(put("/api/users/organizers/" + orgId + "/payments/" + pagoId + "/approve"))
                     .andExpect(status().isOk());
         }
@@ -411,7 +396,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyCap)))
                 .andReturn().getResponse().getContentAsString();
-        Long capId = mapper.readTree(respCap).get("id").asLong();
+        String capId = mapper.readTree(respCap).get("id").asText();
         usuarioMvc.perform(post("/api/users/captains/" + capId + "/receipt")
                 .param("comprobante", "pago.jpg"));
         Map<String, Object> bodyOrg = Map.of(
@@ -422,10 +407,10 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
-        Long orgId = mapper.readTree(respOrg).get("id").asLong();
+        String orgId = mapper.readTree(respOrg).get("id").asText();
         List<Pago> pendientes = pagoService.consultarPagosPendientes();
         if (!pendientes.isEmpty()) {
-            Long pagoId = pendientes.get(0).getId();
+            String pagoId = pendientes.get(0).getId();
             usuarioMvc.perform(put("/api/users/organizers/" + orgId + "/payments/" + pagoId + "/reject"))
                     .andExpect(status().isOk());
         }
@@ -435,7 +420,7 @@ class PagoPartidoControllerTest {
 
     @Test
     void partido_crear_retorna200() throws Exception {
-        Equipo visitante2 = equipoRepo.save(new Equipo(0, "Visitante2", "", "azul", "negro", 2));
+        Equipo visitante2 = equipoRepo.save(new Equipo(null, "Visitante2", "", "azul", "negro", null));
         Map<String, Object> bodyOrg = Map.of(
                 "nombre", "OrgPart", "email", "orgpart@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
@@ -444,11 +429,11 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
-        Long orgId = mapper.readTree(respOrg).get("id").asLong();
+        String orgId = mapper.readTree(respOrg).get("id").asText();
         Map<String, Object> bodyPartido = Map.of(
-                "torneoId", (long) torneo.getId(),
-                "equipoLocalId", (long) equipo.getId(),
-                "equipoVisitanteId", (long) visitante2.getId(),
+                "torneoId", torneo.getId(),
+                "equipoLocalId", equipo.getId(),
+                "equipoVisitanteId", visitante2.getId(),
                 "fecha", "2025-09-01T10:00:00",
                 "cancha", "cancha 1"
         );
@@ -475,7 +460,7 @@ class PagoPartidoControllerTest {
 
     @Test
     void partido_flujoCompleto_retorna200() throws Exception {
-        Equipo visitante2 = equipoRepo.save(new Equipo(0, "Visitante2", "", "azul", "negro", 2));
+        Equipo visitante2 = equipoRepo.save(new Equipo(null, "Visitante2", "", "azul", "negro", null));
         Map<String, Object> bodyOrg = Map.of(
                 "nombre", "OrgFlujo", "email", "orgflujo@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
@@ -484,7 +469,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyOrg)))
                 .andReturn().getResponse().getContentAsString();
-        Long orgId = mapper.readTree(respOrg).get("id").asLong();
+        String orgId = mapper.readTree(respOrg).get("id").asText();
         Map<String, Object> bodyArbitro = Map.of(
                 "nombre", "RefFlujo", "email", "refflujo@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
@@ -493,7 +478,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyArbitro)))
                 .andReturn().getResponse().getContentAsString();
-        Long arbId = mapper.readTree(respArb).get("id").asLong();
+        String arbId = mapper.readTree(respArb).get("id").asText();
         Map<String, Object> bodyPartido = Map.of(
                 "torneoId", torneo.getId(),
                 "equipoLocalId", equipo.getId(),
@@ -505,7 +490,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyPartido)))
                 .andReturn().getResponse().getContentAsString();
-        Long pid = mapper.readTree(resp).get("id").asLong();
+        String pid = mapper.readTree(resp).get("id").asText();
         usuarioMvc.perform(put("/api/users/referees/" + arbId + "/matches/" + pid + "/start")).andExpect(status().isOk());
         usuarioMvc.perform(post("/api/users/referees/" + arbId + "/matches/" + pid + "/goals")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -553,7 +538,7 @@ class PagoPartidoControllerTest {
         alineacionMvc.perform(get("/api/lineups/rival")
                         .param("partidoId", "1")
                         .param("equipoId", "1"))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -590,14 +575,14 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
+        String id = mapper.readTree(resp).get("id").asText();
         usuarioMvc.perform(post("/api/users/referees/" + id + "/matches/999"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void arbitro_consultarPartidos_retorna200() throws Exception {
-        usuarioMvc.perform(get("/api/users/referees/1/matches")).andExpect(status().isOk());
+        usuarioMvc.perform(get("/api/users/referees/uuid-any/matches")).andExpect(status().isOk());
     }
 
 // ── Capitanes ──────────────────────────────────────────────────────────────
@@ -631,7 +616,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
+        String id = mapper.readTree(resp).get("id").asText();
         usuarioMvc.perform(post("/api/users/captains/" + id + "/team")
                         .param("nombreEquipo", "Los Bravos"))
                 .andExpect(status().isOk());
@@ -648,7 +633,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
+        String id = mapper.readTree(resp).get("id").asText();
         usuarioMvc.perform(post("/api/users/captains/" + id + "/invite/" + jugador.getId()))
                 .andExpect(status().isOk());
     }
@@ -664,7 +649,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
+        String id = mapper.readTree(resp).get("id").asText();
         usuarioMvc.perform(post("/api/users/captains/" + id + "/receipt")
                         .param("comprobante", "pago.pdf"))
                 .andExpect(status().isOk());
@@ -672,7 +657,7 @@ class PagoPartidoControllerTest {
 
     @Test
     void capitan_buscarJugadores_retorna200() throws Exception {
-        usuarioMvc.perform(get("/api/users/captains/1/search-players").param("posicion", "DELANTERO"))
+        usuarioMvc.perform(get("/api/users/captains/uuid-any/search-players").param("posicion", "DELANTERO"))
                 .andExpect(status().isOk());
     }
 
@@ -704,7 +689,7 @@ class PagoPartidoControllerTest {
 
     @Test
     void jugador_rechazarInvitacion_retorna200() throws Exception {
-        usuarioMvc.perform(patch("/api/users/players/1/reject-invitation"))
+        usuarioMvc.perform(patch("/api/users/players/" + jugador.getId() + "/reject-invitation"))
                 .andExpect(status().isOk());
     }
 
@@ -719,7 +704,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bodyJug)))
                 .andReturn().getResponse().getContentAsString();
-        Long jugId = mapper.readTree(resp).get("id").asLong();
+        String jugId = mapper.readTree(resp).get("id").asText();
         Map<String, Object> perfil = Map.of("nombre", "JugEditado", "numeroCamiseta", 11, "posicion", "PORTERO");
         usuarioMvc.perform(patch("/api/users/players/" + jugId + "/profile")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -757,8 +742,8 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
-        Torneo t = new Torneo(0, "Copa Nueva",
+        String id = mapper.readTree(resp).get("id").asText();
+        Torneo t = new Torneo(null, "Copa Nueva",
                 LocalDateTime.of(2025, 9, 1, 10, 0),
                 LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
         usuarioMvc.perform(post("/api/users/organizers/" + id + "/tournament")
@@ -777,7 +762,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
+        String id = mapper.readTree(resp).get("id").asText();
         usuarioMvc.perform(get("/api/users/organizers/" + id + "/payments/pending"))
                 .andExpect(status().isOk());
     }
@@ -792,7 +777,7 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
+        String id = mapper.readTree(resp).get("id").asText();
         usuarioMvc.perform(patch("/api/users/organizers/" + id + "/tournament/start"))
                 .andExpect(status().isConflict());
     }
@@ -807,8 +792,8 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
-        Torneo t = new Torneo(0, "Copa Config",
+        String id = mapper.readTree(resp).get("id").asText();
+        Torneo t = new Torneo(null, "Copa Config",
                 LocalDateTime.of(2025, 9, 1, 10, 0),
                 LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
         usuarioMvc.perform(post("/api/users/organizers/" + id + "/tournament")
@@ -832,8 +817,8 @@ class PagoPartidoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andReturn().getResponse().getContentAsString();
-        Long id = mapper.readTree(resp).get("id").asLong();
+        String id = mapper.readTree(resp).get("id").asText();
         usuarioMvc.perform(get("/api/users/captains/" + id + "/team/validate"))
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
     }
 }

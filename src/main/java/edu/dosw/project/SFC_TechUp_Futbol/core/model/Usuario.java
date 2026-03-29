@@ -6,7 +6,7 @@ public abstract class Usuario {
         ESTUDIANTE, GRADUADO, PROFESOR, PERSONAL_ADMIN, FAMILIAR
     }
 
-    private Long id;
+    private String id;
     private String name;
     private String email;
     private String password;
@@ -16,7 +16,7 @@ public abstract class Usuario {
 
     }
 
-    public Usuario(Long id, String name, String email, String password, TipoUsuario userType) {
+    public Usuario(String id, String name, String email, String password, TipoUsuario userType) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -24,11 +24,11 @@ public abstract class Usuario {
         this.userType = userType;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

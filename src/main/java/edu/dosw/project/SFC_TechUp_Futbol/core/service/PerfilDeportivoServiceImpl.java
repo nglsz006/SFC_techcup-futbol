@@ -27,7 +27,7 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
     }
 
     @Override
-    public PerfilDeportivo crearPerfil(Long jugadorId, List<Jugador.Posicion> posiciones, int dorsal,
+    public PerfilDeportivo crearPerfil(String jugadorId, List<Jugador.Posicion> posiciones, int dorsal,
                                        String foto, int edad, PerfilDeportivo.Genero genero,
                                        String identificacion, Integer semestre) {
         jugadorRepository.findById(jugadorId)
@@ -49,7 +49,7 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
     }
 
     @Override
-    public PerfilDeportivo editarPerfil(Long jugadorId, List<Jugador.Posicion> posiciones, int dorsal,
+    public PerfilDeportivo editarPerfil(String jugadorId, List<Jugador.Posicion> posiciones, int dorsal,
                                         String foto, int edad, PerfilDeportivo.Genero genero,
                                         String identificacion, Integer semestre) {
         PerfilDeportivo perfil = perfilRepository.findByJugadorId(jugadorId)
@@ -72,7 +72,7 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
     }
 
     @Override
-    public PerfilDeportivo consultarPerfil(Long jugadorId) {
+    public PerfilDeportivo consultarPerfil(String jugadorId) {
         return perfilRepository.findByJugadorId(jugadorId)
                 .orElseThrow(() -> new IllegalArgumentException("El jugador no tiene perfil deportivo registrado."));
     }

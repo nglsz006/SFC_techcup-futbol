@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface AlineacionRepository {
     Alineacion save(Alineacion alineacion);
-    Optional<Alineacion> findById(int id);
+    Optional<Alineacion> findById(String id);
     List<Alineacion> findAll();
 }
 

@@ -10,7 +10,7 @@ public class Torneo {
 
     public enum EstadoTorneo { CREADO, EN_CURSO, FINALIZADO }
 
-    private int id;
+    private String id;
     private String nombre;
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaFin;
@@ -29,7 +29,7 @@ public class Torneo {
         this.estadoObj = new TorneoCreado();
     }
 
-    public Torneo(int id, String nombre, LocalDateTime fechaInicio, LocalDateTime fechaFin,
+    public Torneo(String id, String nombre, LocalDateTime fechaInicio, LocalDateTime fechaFin,
                   int cantidadEquipos, double costo) {
         this.id = id;
         this.nombre = nombre;
@@ -49,8 +49,8 @@ public class Torneo {
         estadoObj = estadoObj.finalizar(this);
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }

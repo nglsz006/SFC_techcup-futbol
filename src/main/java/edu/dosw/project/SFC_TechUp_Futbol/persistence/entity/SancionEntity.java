@@ -8,8 +8,8 @@ import jakarta.persistence.*;
 public class SancionEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false, updatable = false)
+    private String id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -24,8 +24,8 @@ public class SancionEntity {
 
     public SancionEntity() {}
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public Sancion.TipoSancion getTipoSancion() { return tipoSancion; }
     public void setTipoSancion(Sancion.TipoSancion tipoSancion) { this.tipoSancion = tipoSancion; }

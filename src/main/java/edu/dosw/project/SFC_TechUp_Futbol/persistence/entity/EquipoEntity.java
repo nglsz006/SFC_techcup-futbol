@@ -9,8 +9,8 @@ import java.util.List;
 public class EquipoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false, updatable = false)
+    private String id;
 
     @Column(nullable = false)
     private String nombre;
@@ -25,20 +25,20 @@ public class EquipoEntity {
     private String colorSecundario;
 
     @Column(name = "capitan_id")
-    private Long capitanId;
+    private String capitanId;
 
     @ElementCollection
     @CollectionTable(name = "equipo_jugadores", joinColumns = @JoinColumn(name = "equipo_id"))
     @Column(name = "jugador_id")
-    private List<Integer> jugadores = new ArrayList<>();
+    private List<String> jugadores = new ArrayList<>();
 
     public EquipoEntity() {}
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -74,19 +74,19 @@ public class EquipoEntity {
         this.colorSecundario = colorSecundario;
     }
 
-    public Long getCapitanId() {
+    public String getCapitanId() {
         return capitanId;
     }
 
-    public void setCapitanId(Long capitanId) {
+    public void setCapitanId(String capitanId) {
         this.capitanId = capitanId;
     }
 
-    public List<Integer> getJugadores() {
+    public List<String> getJugadores() {
         return jugadores;
     }
 
-    public void setJugadores(List<Integer> jugadores) {
+    public void setJugadores(List<String> jugadores) {
         this.jugadores = jugadores;
     }
 }

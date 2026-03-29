@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import java.util.stream.Collectors;
 
 @Primary
@@ -17,19 +18,19 @@ public class AdministradorRepositoryJpaImpl implements AdministradorRepository {
     private final AdministradorJpaRepository jpaRepository;
     private final AdministradorMapper mapper;
 
-    public AdministradorRepositoryJpaImpl(AdministradorJpaRepository jpaRepository,
-                                          AdministradorMapper mapper) {
+    public AdministradorRepositoryJpaImpl(AdministradorJpaRepository jpaRepository, AdministradorMapper mapper) {
         this.jpaRepository = jpaRepository;
         this.mapper = mapper;
     }
 
     @Override
     public Administrador save(Administrador administrador) {
+        if (administrador.getId() == null) administrador.setId(IdGeneratorUtil.generarId());
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(administrador)));
     }
 
     @Override
-    public Optional<Administrador> findById(Long id) {
+    public Optional<Administrador> findById(String id) {
         return jpaRepository.findById(id).map(mapper::toDomain);
     }
 
@@ -40,8 +41,6 @@ public class AdministradorRepositoryJpaImpl implements AdministradorRepository {
 
     @Override
     public List<Administrador> findAll() {
-        return jpaRepository.findAll().stream()
-                .map(mapper::toDomain)
-                .collect(Collectors.toList());
+        return jpaRepository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 }

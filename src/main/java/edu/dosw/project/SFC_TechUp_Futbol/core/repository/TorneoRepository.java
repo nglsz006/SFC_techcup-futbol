@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface TorneoRepository {
     Torneo save(Torneo torneo);
-    Optional<Torneo> findById(int id);
+    Optional<Torneo> findById(String id);
     List<Torneo> findAll();
 }
 

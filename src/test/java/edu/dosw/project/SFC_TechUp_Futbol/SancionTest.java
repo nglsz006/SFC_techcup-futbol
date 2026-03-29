@@ -18,14 +18,14 @@ class SancionTest {
 
     @BeforeEach
     void setUp() {
-        jugador = new Jugador(1L, "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
+        jugador = new Jugador("uuid-jugador-1", "Juan", "juan@test.com", "pass", Usuario.TipoUsuario.ESTUDIANTE, 10, Jugador.Posicion.DELANTERO, true, "");
         sancionValidator = new SancionValidator();
     }
 
     @Test
     void crearSancion_datosValidos_creaCorrectamente() {
-        Sancion sancion = new Sancion(1L, Sancion.TipoSancion.TARJETA_AMARILLA, "Falta reiterada", jugador);
-        assertEquals(1L, sancion.getId());
+        Sancion sancion = new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_AMARILLA, "Falta reiterada", jugador);
+        assertEquals("uuid-1", sancion.getId());
         assertEquals(Sancion.TipoSancion.TARJETA_AMARILLA, sancion.getTipoSancion());
         assertEquals("Falta reiterada", sancion.getDescripcion());
         assertEquals(jugador, sancion.getJugador());
@@ -42,10 +42,10 @@ class SancionTest {
 
     @Test
     void crearSancion_todosLosTipos_sonValidos() {
-        assertDoesNotThrow(() -> new Sancion(1L, Sancion.TipoSancion.TARJETA_ROJA, "Juego brusco", jugador));
-        assertDoesNotThrow(() -> new Sancion(2L, Sancion.TipoSancion.TARJETA_AMARILLA, "Falta táctica", jugador));
-        assertDoesNotThrow(() -> new Sancion(3L, Sancion.TipoSancion.AGRESION_VERBAL, "Insultos al árbitro", jugador));
-        assertDoesNotThrow(() -> new Sancion(4L, Sancion.TipoSancion.AGRESION_FISICA, "Empujón a rival", jugador));
+        assertDoesNotThrow(() -> new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_ROJA, "Juego brusco", jugador));
+        assertDoesNotThrow(() -> new Sancion("uuid-2", Sancion.TipoSancion.TARJETA_AMARILLA, "Falta táctica", jugador));
+        assertDoesNotThrow(() -> new Sancion("uuid-3", Sancion.TipoSancion.AGRESION_VERBAL, "Insultos al árbitro", jugador));
+        assertDoesNotThrow(() -> new Sancion("uuid-4", Sancion.TipoSancion.AGRESION_FISICA, "Empujón a rival", jugador));
     }
 
     @Test
@@ -61,24 +61,24 @@ class SancionTest {
 
     @Test
     void agregarSancion_incrementaListaDelJugador() {
-        Sancion sancion = new Sancion(1L, Sancion.TipoSancion.TARJETA_AMARILLA, "Falta en minuto 20", jugador);
+        Sancion sancion = new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_AMARILLA, "Falta en minuto 20", jugador);
         jugador.agregarSancion(sancion);
         assertEquals(1, jugador.getSanciones().size());
     }
 
     @Test
     void agregarMultiplesSanciones_acumulaCorrectamente() {
-        jugador.agregarSancion(new Sancion(1L, Sancion.TipoSancion.TARJETA_AMARILLA, "Primera falta", jugador));
-        jugador.agregarSancion(new Sancion(2L, Sancion.TipoSancion.TARJETA_AMARILLA, "Segunda falta", jugador));
-        jugador.agregarSancion(new Sancion(3L, Sancion.TipoSancion.TARJETA_ROJA, "Juego brusco", jugador));
+        jugador.agregarSancion(new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_AMARILLA, "Primera falta", jugador));
+        jugador.agregarSancion(new Sancion("uuid-2", Sancion.TipoSancion.TARJETA_AMARILLA, "Segunda falta", jugador));
+        jugador.agregarSancion(new Sancion("uuid-3", Sancion.TipoSancion.TARJETA_ROJA, "Juego brusco", jugador));
         assertEquals(3, jugador.getSanciones().size());
     }
 
     @Test
     void getSancionesPorTipo_filtraCorrectamente() {
-        jugador.agregarSancion(new Sancion(1L, Sancion.TipoSancion.TARJETA_AMARILLA, "Falta 1", jugador));
-        jugador.agregarSancion(new Sancion(2L, Sancion.TipoSancion.TARJETA_ROJA, "Juego brusco", jugador));
-        jugador.agregarSancion(new Sancion(3L, Sancion.TipoSancion.TARJETA_AMARILLA, "Falta 2", jugador));
+        jugador.agregarSancion(new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_AMARILLA, "Falta 1", jugador));
+        jugador.agregarSancion(new Sancion("uuid-2", Sancion.TipoSancion.TARJETA_ROJA, "Juego brusco", jugador));
+        jugador.agregarSancion(new Sancion("uuid-3", Sancion.TipoSancion.TARJETA_AMARILLA, "Falta 2", jugador));
 
         List<Sancion> amarillas = jugador.getSancionesPorTipo(Sancion.TipoSancion.TARJETA_AMARILLA);
         List<Sancion> rojas = jugador.getSancionesPorTipo(Sancion.TipoSancion.TARJETA_ROJA);
@@ -91,7 +91,7 @@ class SancionTest {
 
     @Test
     void tieneSancion_retornaTrueOFalse() {
-        jugador.agregarSancion(new Sancion(1L, Sancion.TipoSancion.TARJETA_ROJA, "Expulsado", jugador));
+        jugador.agregarSancion(new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_ROJA, "Expulsado", jugador));
 
         assertTrue(jugador.tieneSancion(Sancion.TipoSancion.TARJETA_ROJA));
         assertFalse(jugador.tieneSancion(Sancion.TipoSancion.TARJETA_AMARILLA));
@@ -101,14 +101,14 @@ class SancionTest {
 
     @Test
     void multiplesSancionesDelMismoTipo_seAcumulan() {
-        jugador.agregarSancion(new Sancion(1L, Sancion.TipoSancion.AGRESION_VERBAL, "Insulto 1", jugador));
-        jugador.agregarSancion(new Sancion(2L, Sancion.TipoSancion.AGRESION_VERBAL, "Insulto 2", jugador));
+        jugador.agregarSancion(new Sancion("uuid-1", Sancion.TipoSancion.AGRESION_VERBAL, "Insulto 1", jugador));
+        jugador.agregarSancion(new Sancion("uuid-2", Sancion.TipoSancion.AGRESION_VERBAL, "Insulto 2", jugador));
         assertEquals(2, jugador.getSancionesPorTipo(Sancion.TipoSancion.AGRESION_VERBAL).size());
     }
 
     @Test
     void validarSancion_valida_noLanzaExcepcion() {
-        Sancion sancion = new Sancion(1L, Sancion.TipoSancion.TARJETA_AMARILLA, "Falta", jugador);
+        Sancion sancion = new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_AMARILLA, "Falta", jugador);
         assertDoesNotThrow(() -> sancionValidator.validarSancion(sancion));
     }
 
@@ -119,33 +119,33 @@ class SancionTest {
 
     @Test
     void validarSancion_tipoNulo_lanzaExcepcion() {
-        Sancion sancion = new Sancion(1L, null, "Falta", jugador);
+        Sancion sancion = new Sancion("uuid-1", null, "Falta", jugador);
         assertThrows(IllegalArgumentException.class, () -> sancionValidator.validarSancion(sancion));
     }
 
     @Test
     void validarSancion_descripcionVacia_lanzaExcepcion() {
-        Sancion sancion = new Sancion(1L, Sancion.TipoSancion.TARJETA_ROJA, "", jugador);
+        Sancion sancion = new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_ROJA, "", jugador);
         assertThrows(IllegalArgumentException.class, () -> sancionValidator.validarSancion(sancion));
     }
 
     @Test
     void validarSancion_descripcionNula_lanzaExcepcion() {
-        Sancion sancion = new Sancion(1L, Sancion.TipoSancion.AGRESION_FISICA, null, jugador);
+        Sancion sancion = new Sancion("uuid-1", Sancion.TipoSancion.AGRESION_FISICA, null, jugador);
         assertThrows(IllegalArgumentException.class, () -> sancionValidator.validarSancion(sancion));
     }
 
     @Test
     void esValida_sancionCompleta_retornaTrue() {
-        Sancion sancion = new Sancion(1L, Sancion.TipoSancion.TARJETA_AMARILLA, "Falta", jugador);
+        Sancion sancion = new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_AMARILLA, "Falta", jugador);
         assertTrue(sancionValidator.esValida(sancion));
     }
 
     @Test
     void esValida_sancionIncompleta_retornaFalse() {
         assertFalse(sancionValidator.esValida(null));
-        assertFalse(sancionValidator.esValida(new Sancion(1L, null, "Falta", jugador)));
-        assertFalse(sancionValidator.esValida(new Sancion(1L, Sancion.TipoSancion.TARJETA_ROJA, "", jugador)));
-        assertFalse(sancionValidator.esValida(new Sancion(1L, Sancion.TipoSancion.TARJETA_ROJA, null, jugador)));
+        assertFalse(sancionValidator.esValida(new Sancion("uuid-1", null, "Falta", jugador)));
+        assertFalse(sancionValidator.esValida(new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_ROJA, "", jugador)));
+        assertFalse(sancionValidator.esValida(new Sancion("uuid-1", Sancion.TipoSancion.TARJETA_ROJA, null, jugador)));
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import java.util.stream.Collectors;
 
 @Primary
@@ -25,12 +26,13 @@ public class AlineacionRepositoryJpaImpl implements AlineacionRepository {
 
     @Override
     public Alineacion save(Alineacion alineacion) {
+        if (alineacion.getId() == null) alineacion.setId(IdGeneratorUtil.generarId());
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(alineacion)));
     }
 
     @Override
-    public Optional<Alineacion> findById(int id) {
-        return jpaRepository.findById((long) id).map(mapper::toDomain);
+    public Optional<Alineacion> findById(String id) {
+        return jpaRepository.findById(id).map(mapper::toDomain);
     }
 
     @Override

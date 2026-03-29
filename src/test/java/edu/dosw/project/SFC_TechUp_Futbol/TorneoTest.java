@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TorneoTest {
 
     private Torneo crearTorneo() {
-        return new Torneo(1, "Copa DOSW", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50.0);
+        return new Torneo("uuid-torneo-1", "Copa DOSW", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50.0);
     }
 
     @Test

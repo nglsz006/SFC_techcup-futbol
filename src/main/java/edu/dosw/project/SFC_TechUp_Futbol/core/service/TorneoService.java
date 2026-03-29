@@ -25,7 +25,7 @@ public class TorneoService extends Subject {
         return saved;
     }
 
-    public Torneo obtener(int id) {
+    public Torneo obtener(String id) {
         return repository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Torneo no encontrado"));
     }
@@ -34,7 +34,7 @@ public class TorneoService extends Subject {
         return repository.findAll();
     }
 
-    public Torneo iniciar(int id) {
+    public Torneo iniciar(String id) {
         Torneo torneo = obtener(id);
         torneo.iniciar();
         log.info("Torneo iniciado");
@@ -42,7 +42,7 @@ public class TorneoService extends Subject {
         return torneo;
     }
 
-    public Torneo finalizar(int id) {
+    public Torneo finalizar(String id) {
         Torneo torneo = obtener(id);
         torneo.finalizar();
         log.info("Torneo finalizado");
@@ -50,7 +50,7 @@ public class TorneoService extends Subject {
         return torneo;
     }
 
-    public Torneo configurar(int id, String reglamento, String canchas, String horarios,
+    public Torneo configurar(String id, String reglamento, String canchas, String horarios,
                              String sanciones, java.time.LocalDateTime cierreInscripciones) {
         Torneo torneo = obtener(id);
 

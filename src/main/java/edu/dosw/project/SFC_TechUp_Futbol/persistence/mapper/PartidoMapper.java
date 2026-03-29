@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class PartidoMapper {
@@ -67,7 +68,7 @@ public class PartidoMapper {
         }
         for (Partido.Gol gol : goles) {
             GolEntity golEntity = new GolEntity();
-            golEntity.setId(gol.getId());
+            golEntity.setId(gol.getId() != null ? gol.getId() : UUID.randomUUID().toString());
             golEntity.setMinuto(gol.getMinuto());
             golEntity.setJugador(jugadorMapper.toEntity(gol.getJugador()));
             golEntity.setPartido(partidoEntity);
@@ -98,7 +99,7 @@ public class PartidoMapper {
         }
         for (Partido.Tarjeta tarjeta : tarjetas) {
             TarjetaEntity tarjetaEntity = new TarjetaEntity();
-            tarjetaEntity.setId(tarjeta.getId());
+            tarjetaEntity.setId(tarjeta.getId() != null ? tarjeta.getId() : UUID.randomUUID().toString());
             tarjetaEntity.setTipo(tarjeta.getTipo());
             tarjetaEntity.setMinuto(tarjeta.getMinuto());
             tarjetaEntity.setJugador(jugadorMapper.toEntity(tarjeta.getJugador()));

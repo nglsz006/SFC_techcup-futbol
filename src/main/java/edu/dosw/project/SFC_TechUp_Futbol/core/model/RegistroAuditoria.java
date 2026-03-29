@@ -4,17 +4,16 @@ import java.time.LocalDateTime;
 
 public class RegistroAuditoria {
 
-    private Long id;
-    private Long administradorId;
+    private String id;
+    private String administradorId;
     private String usuario;
     private TipoAccionAuditoria tipoAccion;
     private String descripcion;
     private LocalDateTime fecha;
 
-    public RegistroAuditoria() {
-    }
+    public RegistroAuditoria() {}
 
-    public RegistroAuditoria(Long id, Long administradorId, String usuario, TipoAccionAuditoria tipoAccion,
+    public RegistroAuditoria(String id, String administradorId, String usuario, TipoAccionAuditoria tipoAccion,
                              String descripcion, LocalDateTime fecha) {
         this.id = id;
         this.administradorId = administradorId;
@@ -24,51 +23,21 @@ public class RegistroAuditoria {
         this.fecha = fecha;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getAdministradorId() { return administradorId; }
+    public void setAdministradorId(String administradorId) { this.administradorId = administradorId; }
 
-    public Long getAdministradorId() {
-        return administradorId;
-    }
+    public String getUsuario() { return usuario; }
+    public void setUsuario(String usuario) { this.usuario = usuario; }
 
-    public void setAdministradorId(Long administradorId) {
-        this.administradorId = administradorId;
-    }
+    public TipoAccionAuditoria getTipoAccion() { return tipoAccion; }
+    public void setTipoAccion(TipoAccionAuditoria tipoAccion) { this.tipoAccion = tipoAccion; }
 
-    public String getUsuario() {
-        return usuario;
-    }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public TipoAccionAuditoria getTipoAccion() {
-        return tipoAccion;
-    }
-
-    public void setTipoAccion(TipoAccionAuditoria tipoAccion) {
-        this.tipoAccion = tipoAccion;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
+    public LocalDateTime getFecha() { return fecha; }
+    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
 }

@@ -22,7 +22,7 @@ public class JugadorEntity extends UsuarioEntity {
     private String photo;
 
     @Column(name = "equipo_id")
-    private Integer equipoId;
+    private String equipoId;
 
     public JugadorEntity() {}
 
@@ -58,11 +58,11 @@ public class JugadorEntity extends UsuarioEntity {
         this.photo = photo;
     }
 
-    public Integer getEquipoId() {
+    public String getEquipoId() {
         return equipoId;
     }
 
-    public void setEquipoId(Integer equipoId) {
+    public void setEquipoId(String equipoId) {
         this.equipoId = equipoId;
     }
 }

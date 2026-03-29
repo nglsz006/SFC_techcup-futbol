@@ -4,12 +4,10 @@ import java.util.List;
 
 public class PerfilDeportivo {
 
-    public enum Genero {
-        MASCULINO, FEMENINO, OTRO
-    }
+    public enum Genero { MASCULINO, FEMENINO, OTRO }
 
-    private Long id;
-    private Long jugadorId;
+    private String id;
+    private String jugadorId;
     private List<Jugador.Posicion> posiciones;
     private int dorsal;
     private String foto;
@@ -20,7 +18,7 @@ public class PerfilDeportivo {
 
     public PerfilDeportivo() {}
 
-    public PerfilDeportivo(Long id, Long jugadorId, List<Jugador.Posicion> posiciones,
+    public PerfilDeportivo(String id, String jugadorId, List<Jugador.Posicion> posiciones,
                            int dorsal, String foto, int edad, Genero genero,
                            String identificacion, Integer semestre) {
         this.id = id;
@@ -34,11 +32,11 @@ public class PerfilDeportivo {
         this.semestre = semestre;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public Long getJugadorId() { return jugadorId; }
-    public void setJugadorId(Long jugadorId) { this.jugadorId = jugadorId; }
+    public String getJugadorId() { return jugadorId; }
+    public void setJugadorId(String jugadorId) { this.jugadorId = jugadorId; }
 
     public List<Jugador.Posicion> getPosiciones() { return posiciones; }
     public void setPosiciones(List<Jugador.Posicion> posiciones) { this.posiciones = posiciones; }

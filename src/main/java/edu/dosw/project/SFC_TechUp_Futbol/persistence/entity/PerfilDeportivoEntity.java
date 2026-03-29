@@ -11,11 +11,11 @@ import java.util.List;
 public class PerfilDeportivoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false, updatable = false)
+    private String id;
 
     @Column(name = "jugador_id", nullable = false, unique = true)
-    private Long jugadorId;
+    private String jugadorId;
 
     @ElementCollection
     @CollectionTable(name = "perfil_posiciones", joinColumns = @JoinColumn(name = "perfil_id"))
@@ -44,19 +44,19 @@ public class PerfilDeportivoEntity {
 
     public PerfilDeportivoEntity() {}
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getJugadorId() {
+    public String getJugadorId() {
         return jugadorId;
     }
 
-    public void setJugadorId(Long jugadorId) {
+    public void setJugadorId(String jugadorId) {
         this.jugadorId = jugadorId;
     }
 

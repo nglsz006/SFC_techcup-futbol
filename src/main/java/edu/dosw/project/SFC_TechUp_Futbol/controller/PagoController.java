@@ -22,15 +22,15 @@ public class PagoController {
         this.pagoValidator = pagoValidator;
     }
 
-    @Operation(summary = "Get payment by ID", description = "Returns the status and detail of a specific payment.")
+    @Operation(summary = "Get payment by ID")
     @GetMapping("/{id}")
-    public Pago consultarPago(@PathVariable Long id) {
+    public Pago consultarPago(@PathVariable String id) {
         return pagoService.consultarPago(id);
     }
 
-    @Operation(summary = "Get payments by team", description = "Lists all payments registered for a team.")
+    @Operation(summary = "Get payments by team")
     @GetMapping("/team/{teamId}")
-    public List<Pago> consultarPagosPorEquipo(@PathVariable Long teamId) {
+    public List<Pago> consultarPagosPorEquipo(@PathVariable String teamId) {
         return pagoService.consultarPagosPorEquipo(teamId);
     }
 }

@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Equipo {
-    private int id;
+    private String id;
     private String nombre;
     private String escudo;
     private String colorPrincipal;
     private String colorSecundario;
-    private int capitanId;
-    private List<Integer> jugadores;
+    private String capitanId;
+    private List<String> jugadores;
 
     public Equipo() {
         this.jugadores = new ArrayList<>();
     }
 
-    public Equipo(int id, String nombre, String escudo, String colorPrincipal, 
-                  String colorSecundario, int capitanId) {
+    public Equipo(String id, String nombre, String escudo, String colorPrincipal,
+                  String colorSecundario, String capitanId) {
         this.id = id;
         this.nombre = nombre;
         this.escudo = escudo;
@@ -27,12 +27,12 @@ public class Equipo {
         this.jugadores = new ArrayList<>();
     }
 
-    public void agregarJugador(int jugadorId) {
+    public void agregarJugador(String jugadorId) {
         this.jugadores.add(jugadorId);
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -46,10 +46,10 @@ public class Equipo {
     public String getColorSecundario() { return colorSecundario; }
     public void setColorSecundario(String colorSecundario) { this.colorSecundario = colorSecundario; }
 
-    public int getCapitanId() { return capitanId; }
-    public void setCapitanId(int capitanId) { this.capitanId = capitanId; }
+    public String getCapitanId() { return capitanId; }
+    public void setCapitanId(String capitanId) { this.capitanId = capitanId; }
 
-    public List<Integer> getJugadores() { return jugadores; }
-    public void setJugadores(List<Integer> jugadores) { this.jugadores = jugadores; }
+    public List<String> getJugadores() { return jugadores; }
+    public void setJugadores(List<String> jugadores) { this.jugadores = jugadores; }
 }
 

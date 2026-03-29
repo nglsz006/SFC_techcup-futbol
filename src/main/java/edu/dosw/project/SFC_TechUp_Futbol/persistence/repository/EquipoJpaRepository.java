@@ -3,5 +3,5 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.repository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.EquipoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EquipoJpaRepository extends JpaRepository<EquipoEntity, Long> {
+public interface EquipoJpaRepository extends JpaRepository<EquipoEntity, String> {
 }
