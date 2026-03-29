@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 
-@Tag(name = "Auditoria", description = "Consulta de historial de acciones administrativas.")
+@Tag(name = "Audit", description = "Consultation of administrative action history.")
 @RestController
 @RequestMapping("/api/admin/audit")
 public class AuditoriaController {
