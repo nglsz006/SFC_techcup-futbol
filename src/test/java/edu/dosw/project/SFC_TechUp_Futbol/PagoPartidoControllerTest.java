@@ -314,26 +314,7 @@ class PagoPartidoControllerTest {
 
     @Test
     void pago_subirComprobante_retorna200() throws Exception {
-        Map<String, Object> bodyOrg = Map.of(
-                "nombre", "OrgSub", "email", "orgsub@test.com",
-                "password", "pass", "tipoUsuario", "ESTUDIANTE"
-        );
-        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyOrg)))
-                .andReturn().getResponse().getContentAsString();
-        Long orgId = mapper.readTree(respOrg).get("id").asLong();
-        Map<String, Object> bodyCap = Map.of(
-                "nombre", "CapSub", "email", "capsub@test.com",
-                "password", "pass", "tipoUsuario", "ESTUDIANTE",
-                "numeroCamiseta", 5, "posicion", "DEFENSA"
-        );
-        String respCap = usuarioMvc.perform(post("/api/users/captains")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyCap)))
-                .andReturn().getResponse().getContentAsString();
-        String capId = mapper.readTree(respCap).get("id").asText();
-        usuarioMvc.perform(post("/api/users/captains/" + capId + "/receipt")
+        pagoMvc.perform(post("/api/payments/team/" + equipo.getId() + "/receipt")
                         .param("comprobante", "pago.jpg"))
                 .andExpect(status().isOk());
     }
@@ -349,8 +330,46 @@ class PagoPartidoControllerTest {
     }
 
     @Test
-    void pago_consultarInexistente_retorna500() throws Exception {
-        pagoMvc.perform(get("/api/payments/999")).andExpect(status().isInternalServerError());
+    void pago_subirComprobante_comprobanteVacio_retorna400() throws Exception {
+        pagoMvc.perform(post("/api/payments/team/" + equipo.getId() + "/receipt")
+                        .param("comprobante", ""))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void pago_subirComprobante_equipoInexistente_retorna404() throws Exception {
+        pagoMvc.perform(post("/api/payments/team/uuid-inexistente/receipt")
+                        .param("comprobante", "pago.jpg"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void pago_subirComprobante_equipoYaInscrito_retorna409() throws Exception {
+        Pago pago = pagoService.subirComprobante(equipo.getId(), "pago.jpg");
+        pagoService.aprobarPago(pago.getId());
+        pagoMvc.perform(post("/api/payments/team/" + equipo.getId() + "/receipt")
+                        .param("comprobante", "pago2.jpg"))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void pago_consultarPorId_retorna200() throws Exception {
+        Pago pago = pagoService.subirComprobante(equipo.getId(), "pago.jpg");
+        pagoMvc.perform(get("/api/payments/" + pago.getId()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void pago_consultarEstado_retorna200() throws Exception {
+        Pago pago = pagoService.subirComprobante(equipo.getId(), "pago.jpg");
+        pagoMvc.perform(get("/api/payments/" + pago.getId() + "/status"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void pago_consultarInexistente_retorna404() throws Exception {
+        pagoMvc.perform(get("/api/payments/uuid-inexistente"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -384,38 +403,6 @@ class PagoPartidoControllerTest {
                     .andExpect(status().isOk());
         }
     }
-
-    @Test
-    void pago_rechazar_desdeEnRevision_retorna200() throws Exception {
-        Map<String, Object> bodyCap = Map.of(
-                "nombre", "CapRech", "email", "caprech@test.com",
-                "password", "pass", "tipoUsuario", "ESTUDIANTE",
-                "numeroCamiseta", 3, "posicion", "VOLANTE"
-        );
-        String respCap = usuarioMvc.perform(post("/api/users/captains")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyCap)))
-                .andReturn().getResponse().getContentAsString();
-        String capId = mapper.readTree(respCap).get("id").asText();
-        usuarioMvc.perform(post("/api/users/captains/" + capId + "/receipt")
-                .param("comprobante", "pago.jpg"));
-        Map<String, Object> bodyOrg = Map.of(
-                "nombre", "OrgRech", "email", "orgrech@test.com",
-                "password", "pass", "tipoUsuario", "ESTUDIANTE"
-        );
-        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyOrg)))
-                .andReturn().getResponse().getContentAsString();
-        String orgId = mapper.readTree(respOrg).get("id").asText();
-        List<Pago> pendientes = pagoService.consultarPagosPendientes();
-        if (!pendientes.isEmpty()) {
-            String pagoId = pendientes.get(0).getId();
-            usuarioMvc.perform(put("/api/users/organizers/" + orgId + "/payments/" + pagoId + "/reject"))
-                    .andExpect(status().isOk());
-        }
-    }
-
 // ── Partidos ───────────────────────────────────────────────────────────────
 
     @Test

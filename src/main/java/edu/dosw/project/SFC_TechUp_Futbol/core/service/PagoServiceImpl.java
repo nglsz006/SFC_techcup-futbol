@@ -1,5 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RecursoNoEncontradoException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ReglaNegocioException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.EquipoRepository;
@@ -25,10 +27,10 @@ public class PagoServiceImpl implements PagoService {
     @Override
     public Pago subirComprobante(String equipoId, String comprobante) {
         Equipo equipo = equipoRepository.findById(equipoId)
-                .orElseThrow(() -> new RuntimeException("Equipo no encontrado con id: " + equipoId));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Equipo no encontrado con id: " + equipoId));
 
         if (pagoRepository.existsByEquipoIdAndEstado(equipoId, Pago.PagoEstado.APROBADO))
-            throw new IllegalStateException("El equipo ya tiene un pago aprobado.");
+            throw new ReglaNegocioException("El equipo ya tiene un pago aprobado.");
 
         Pago pago = new Pago();
         pago.setComprobante(comprobante);
@@ -41,7 +43,8 @@ public class PagoServiceImpl implements PagoService {
     @Override
     public Pago aprobarPago(String pagoId) {
         Pago pago = getPagoOrThrow(pagoId);
-        if (pago.getEstado() == Pago.PagoEstado.PENDIENTE) pago.avanzar();
+        pago.avanzar();
+        pago.avanzar();
         log.info("Pago aprobado: " + pagoId);
         return pagoRepository.save(pago);
     }
@@ -71,6 +74,6 @@ public class PagoServiceImpl implements PagoService {
 
     private Pago getPagoOrThrow(String pagoId) {
         return pagoRepository.findById(pagoId)
-                .orElseThrow(() -> new RuntimeException("Pago no encontrado con id: " + pagoId));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Pago no encontrado con id: " + pagoId));
     }
 }

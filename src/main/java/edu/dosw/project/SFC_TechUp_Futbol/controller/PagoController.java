@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Payments", description = "Tournament payment query. To upload or verify receipts use the Users endpoints (captain or organizer).")
+@Tag(name = "Payments", description = "Tournament payment management.")
 @RestController
 @RequestMapping("/api/payments")
 public class PagoController {
@@ -22,10 +22,23 @@ public class PagoController {
         this.pagoValidator = pagoValidator;
     }
 
+    @Operation(summary = "Submit payment receipt")
+    @PostMapping("/team/{teamId}/receipt")
+    public Pago subirComprobante(@PathVariable String teamId, @RequestParam String comprobante) {
+        pagoValidator.validarSubirComprobante(teamId, comprobante);
+        return pagoService.subirComprobante(teamId, comprobante);
+    }
+
     @Operation(summary = "Get payment by ID")
     @GetMapping("/{id}")
     public Pago consultarPago(@PathVariable String id) {
         return pagoService.consultarPago(id);
+    }
+
+    @Operation(summary = "Get payment status by ID")
+    @GetMapping("/{id}/status")
+    public Pago.PagoEstado consultarEstadoPago(@PathVariable String id) {
+        return pagoService.consultarPago(id).getEstado();
     }
 
     @Operation(summary = "Get payments by team")
