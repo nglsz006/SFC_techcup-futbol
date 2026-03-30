@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Access", description = "Registration and login for all system actors.")
 @RestController
-@RequestMapping("/api/acceso")
+@RequestMapping("/api/access")
 public class OAuth2Controller {
 
     private final OAuth2Service oAuth2Service;

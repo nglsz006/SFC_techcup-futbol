@@ -140,7 +140,7 @@ class AdministradorControllerTest {
         Administrador admin = administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
         String token = loginAdmin("admin@escuelaing.edu.co", "password123");
 
-        mockMvc.perform(post("/api/admin/usuarios")
+        mockMvc.perform(post("/api/admin/users")
                         .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -155,7 +155,7 @@ class AdministradorControllerTest {
         Administrador admin = administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
         String token = loginAdmin("admin@escuelaing.edu.co", "password123");
 
-        mockMvc.perform(post("/api/admin/usuarios")
+        mockMvc.perform(post("/api/admin/users")
                         .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -168,7 +168,7 @@ class AdministradorControllerTest {
     void registrarUsuario_sinTokenValido_retorna401() throws Exception {
         Administrador admin = administradorService.registrarAdministrador(crearRequest("Admin", "admin@escuelaing.edu.co", "ORGANIZADOR"));
 
-        mockMvc.perform(post("/api/admin/usuarios")
+        mockMvc.perform(post("/api/admin/users")
                         .header("X-Administrador-Id", admin.getId())
                         .header("X-Administrador-Token", "token-invalido")
                         .contentType(MediaType.APPLICATION_JSON)

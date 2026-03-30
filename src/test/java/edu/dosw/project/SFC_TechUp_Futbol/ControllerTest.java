@@ -251,7 +251,7 @@ class ControllerTest {
                 "nombre", "Ana", "email", "ana@escuelaing.edu.co",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        accesoMvc.perform(post("/api/acceso/registro")
+        accesoMvc.perform(post("/api/access/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andExpect(status().isOk())
@@ -264,7 +264,7 @@ class ControllerTest {
                 "nombre", "Ana", "email", "correo-invalido",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        accesoMvc.perform(post("/api/acceso/registro")
+        accesoMvc.perform(post("/api/access/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(body)))
                 .andExpect(status().isBadRequest());
@@ -276,11 +276,11 @@ class ControllerTest {
                 "nombre", "Pedro", "email", "pedro@escuelaing.edu.co",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        accesoMvc.perform(post("/api/acceso/registro")
+        accesoMvc.perform(post("/api/access/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(reg)));
         Map<String, String> login = Map.of("email", "pedro@escuelaing.edu.co", "password", "12345678");
-        accesoMvc.perform(post("/api/acceso/login")
+        accesoMvc.perform(post("/api/access/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(login)))
                 .andExpect(status().isOk())
@@ -293,11 +293,11 @@ class ControllerTest {
                 "nombre", "Luis", "email", "luis@escuelaing.edu.co",
                 "password", "12345678", "tipoUsuario", "ESTUDIANTE"
         );
-        accesoMvc.perform(post("/api/acceso/registro")
+        accesoMvc.perform(post("/api/access/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(reg)));
         Map<String, String> login = Map.of("email", "luis@escuelaing.edu.co", "password", "wrongpass");
-        accesoMvc.perform(post("/api/acceso/login")
+        accesoMvc.perform(post("/api/access/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(login)))
                 .andExpect(status().isBadRequest());

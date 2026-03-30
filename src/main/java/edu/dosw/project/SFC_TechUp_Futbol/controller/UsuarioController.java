@@ -78,7 +78,7 @@ public class UsuarioController {
         ));
 
         acciones.put("arbitro", List.of(
-                "POST   /api/admin/usuarios                                        - Registrar arbitro (solo administrador)",
+                "POST   /api/admin/users                                        - Registrar arbitro (solo administrador)",
                 "GET    /api/usuarios/arbitros                                    - Listar arbitros",
                 "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}          - Asignar arbitro a partido",
                 "GET    /api/usuarios/arbitros/{id}/partidos                      - Consultar partidos asignados",
@@ -89,7 +89,7 @@ public class UsuarioController {
                 "POST   /api/usuarios/arbitros/{id}/partidos/{partidoId}/sanciones  - Registrar sanción"
         ));
         acciones.put("organizador", List.of(
-                "POST   /api/admin/usuarios                                                - Registrar organizador (solo administrador)",
+                "POST   /api/admin/users                                                - Registrar organizador (solo administrador)",
                 "GET    /api/usuarios/organizadores                                        - Listar organizadores",
                 "POST   /api/usuarios/organizadores/{id}/torneo                            - Crear torneo",
                 "PATCH  /api/usuarios/organizadores/{id}/torneo/iniciar                    - Iniciar torneo",
