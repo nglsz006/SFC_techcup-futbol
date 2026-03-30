@@ -14,7 +14,7 @@ public class Partido {
 
     public enum PartidoEstado { PROGRAMADO, EN_CURSO, FINALIZADO }
 
-    private Long id;
+    private String id;
     private LocalDateTime fecha;
     private String cancha;
     private int marcadorLocal = 0;
@@ -37,8 +37,8 @@ public class Partido {
     public void registrarResultado(int golesLocal, int golesVisitante) { state.registrarResultado(this, golesLocal, golesVisitante); }
     public void finalizar() { state.finalizar(this); }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public LocalDateTime getFecha() { return fecha; }
     public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
@@ -75,12 +75,12 @@ public class Partido {
 
 
     public static class Gol {
-        private Long id;
+        private String id;
         private int minuto;
         private Jugador jugador;
 
-        public Long getId() { return id; }
-        public void setId(Long id) { this.id = id; }
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
 
         public int getMinuto() { return minuto; }
         public void setMinuto(int minuto) { this.minuto = minuto; }
@@ -92,13 +92,13 @@ public class Partido {
     public static class Tarjeta {
         public enum TipoTarjeta { AMARILLA, ROJA }
 
-        private Long id;
+        private String id;
         private TipoTarjeta tipo;
         private int minuto;
         private Jugador jugador;
 
-        public Long getId() { return id; }
-        public void setId(Long id) { this.id = id; }
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
 
         public TipoTarjeta getTipo() { return tipo; }
         public void setTipo(TipoTarjeta tipo) { this.tipo = tipo; }

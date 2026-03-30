@@ -9,11 +9,11 @@ import java.time.LocalDateTime;
 public class RegistroAuditoriaEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false, updatable = false)
+    private String id;
 
     @Column(name = "administrador_id", nullable = false)
-    private Long administradorId;
+    private String administradorId;
 
     @Column(nullable = false)
     private String usuario;
@@ -30,51 +30,21 @@ public class RegistroAuditoriaEntity {
 
     public RegistroAuditoriaEntity() {}
 
-    public Long getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getAdministradorId() { return administradorId; }
+    public void setAdministradorId(String administradorId) { this.administradorId = administradorId; }
 
-    public Long getAdministradorId() {
-        return administradorId;
-    }
+    public String getUsuario() { return usuario; }
+    public void setUsuario(String usuario) { this.usuario = usuario; }
 
-    public void setAdministradorId(Long administradorId) {
-        this.administradorId = administradorId;
-    }
+    public TipoAccionAuditoria getTipoAccion() { return tipoAccion; }
+    public void setTipoAccion(TipoAccionAuditoria tipoAccion) { this.tipoAccion = tipoAccion; }
 
-    public String getUsuario() {
-        return usuario;
-    }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public TipoAccionAuditoria getTipoAccion() {
-        return tipoAccion;
-    }
-
-    public void setTipoAccion(TipoAccionAuditoria tipoAccion) {
-        this.tipoAccion = tipoAccion;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
+    public LocalDateTime getFecha() { return fecha; }
+    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
 }

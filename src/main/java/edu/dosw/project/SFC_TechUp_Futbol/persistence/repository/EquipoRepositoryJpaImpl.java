@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import java.util.stream.Collectors;
 
 @Primary
@@ -25,12 +26,13 @@ public class EquipoRepositoryJpaImpl implements EquipoRepository {
 
     @Override
     public Equipo save(Equipo equipo) {
+        if (equipo.getId() == null) equipo.setId(IdGeneratorUtil.generarId());
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(equipo)));
     }
 
     @Override
-    public Optional<Equipo> findById(int id) {
-        return jpaRepository.findById((long) id).map(mapper::toDomain);
+    public Optional<Equipo> findById(String id) {
+        return jpaRepository.findById(id).map(mapper::toDomain);
     }
 
     @Override

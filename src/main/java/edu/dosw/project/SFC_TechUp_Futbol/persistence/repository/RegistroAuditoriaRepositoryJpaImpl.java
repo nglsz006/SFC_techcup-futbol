@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import java.util.stream.Collectors;
 
 @Primary
@@ -24,6 +25,7 @@ public class RegistroAuditoriaRepositoryJpaImpl implements RegistroAuditoriaRepo
 
     @Override
     public RegistroAuditoria save(RegistroAuditoria registro) {
+        if (registro.getId() == null) registro.setId(IdGeneratorUtil.generarId());
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(registro)));
     }
 

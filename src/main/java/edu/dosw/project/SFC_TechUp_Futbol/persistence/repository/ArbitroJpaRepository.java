@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ArbitroJpaRepository extends JpaRepository<ArbitroEntity, Long> {
+public interface ArbitroJpaRepository extends JpaRepository<ArbitroEntity, String> {
     Optional<ArbitroEntity> findByEmail(String email);
 }

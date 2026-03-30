@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import java.util.stream.Collectors;
 
 @Primary
@@ -25,16 +26,17 @@ public class PagoRepositoryJpaImpl implements PagoRepository {
 
     @Override
     public Pago save(Pago pago) {
+        if (pago.getId() == null) pago.setId(IdGeneratorUtil.generarId());
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(pago)));
     }
 
     @Override
-    public Optional<Pago> findById(Long id) {
+    public Optional<Pago> findById(String id) {
         return jpaRepository.findById(id).map(mapper::toDomain);
     }
 
     @Override
-    public List<Pago> findByEquipoId(Long equipoId) {
+    public List<Pago> findByEquipoId(String equipoId) {
         return jpaRepository.findByEquipoId(equipoId).stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -48,12 +50,12 @@ public class PagoRepositoryJpaImpl implements PagoRepository {
     }
 
     @Override
-    public Optional<Pago> findByEquipoIdAndEstado(Long equipoId, Pago.PagoEstado estado) {
+    public Optional<Pago> findByEquipoIdAndEstado(String equipoId, Pago.PagoEstado estado) {
         return jpaRepository.findByEquipoIdAndEstado(equipoId, estado).map(mapper::toDomain);
     }
 
     @Override
-    public boolean existsByEquipoIdAndEstado(Long equipoId, Pago.PagoEstado estado) {
+    public boolean existsByEquipoIdAndEstado(String equipoId, Pago.PagoEstado estado) {
         return jpaRepository.existsByEquipoIdAndEstado(equipoId, estado);
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 
 @Service
 public class JugadorService {
@@ -21,7 +21,7 @@ public class JugadorService {
         this.jugadorRepository = jugadorRepository;
     }
 
-    public Jugador editarPerfil(Long jugadorId, String nombre, int numeroCamiseta, Jugador.Posicion posicion, String foto) {
+    public Jugador editarPerfil(String jugadorId, String nombre, int numeroCamiseta, Jugador.Posicion posicion, String foto) {
         Jugador jugador = getOrThrow(jugadorId);
         if (nombre != null && !nombre.isBlank()) jugador.setName(nombre);
         if (numeroCamiseta > 0) jugador.setJerseyNumber(numeroCamiseta);
@@ -30,19 +30,19 @@ public class JugadorService {
         return jugadorRepository.save(jugador);
     }
 
-    public void aceptarInvitacion(Long jugadorId) {
+    public void aceptarInvitacion(String jugadorId) {
         Jugador jugador = getOrThrow(jugadorId);
         jugador.setAvailable(false);
         jugadorRepository.save(jugador);
     }
 
-    public void rechazarInvitacion(Long jugadorId) {
+    public void rechazarInvitacion(String jugadorId) {
         Jugador jugador = getOrThrow(jugadorId);
         jugador.setAvailable(true);
         jugadorRepository.save(jugador);
     }
 
-    public void marcarDisponible(Long jugadorId) {
+    public void marcarDisponible(String jugadorId) {
         Jugador jugador = getOrThrow(jugadorId);
         if (!jugadorValidator.jugadorDisponibleParaEquipo(jugador))
             throw new IllegalStateException("ese jugador ya pertenece a un equipo.");
@@ -50,7 +50,7 @@ public class JugadorService {
         jugadorRepository.save(jugador);
     }
 
-    public Jugador buscarJugadorPorId(Long id) {
+    public Jugador buscarJugadorPorId(String id) {
         return jugadorRepository.findById(id).orElse(null);
     }
 
@@ -58,41 +58,24 @@ public class JugadorService {
         return jugadorRepository.findAll();
     }
 
-    private Jugador getOrThrow(Long id) {
+    private Jugador getOrThrow(String id) {
         return jugadorRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado con id: " + id));
     }
 
-    public String subirFoto(Long jugadorId, MultipartFile file) {
+    public String subirFoto(String jugadorId, MultipartFile file) {
         Jugador jugador = getOrThrow(jugadorId);
-
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("El archivo está vacío");
-        }
-
+        if (file.isEmpty()) throw new IllegalArgumentException("El archivo está vacío");
         try {
-            // carpeta donde guardar
             String carpeta = "uploads/";
             File directorio = new File(carpeta);
-            if (!directorio.exists()) {
-                directorio.mkdirs();
-            }
-
-            // generar nombre único
-            String nombreArchivo = UUID.randomUUID() + "_" + file.getOriginalFilename();
-
-            // ruta completa
+            if (!directorio.exists()) directorio.mkdirs();
+            String nombreArchivo = IdGeneratorUtil.generarId() + "_" + file.getOriginalFilename();
             String ruta = carpeta + nombreArchivo;
-
-            // guardar archivo
             file.transferTo(new File(ruta));
-
-            // guardar ruta en el jugador
             jugador.setPhoto(ruta);
             jugadorRepository.save(jugador);
-
             return "Imagen subida correctamente: " + ruta;
-
         } catch (IOException e) {
             throw new RuntimeException("Error al guardar la imagen");
         }

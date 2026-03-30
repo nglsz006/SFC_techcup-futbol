@@ -12,12 +12,12 @@ public class Jugador extends Usuario {
     private Posicion position;
     private boolean available;
     private String photo;
-    private Integer equipoId;
+    private String equipoId;
     private ArrayList<Sancion> sanciones = new ArrayList<>();
 
     public Jugador() {}
 
-    public Jugador(Long id, String name, String email, String password, TipoUsuario userType, int jerseyNumber, Posicion position, boolean available, String photo) {
+    public Jugador(String id, String name, String email, String password, TipoUsuario userType, int jerseyNumber, Posicion position, boolean available, String photo) {
         super(id, name, email, password, userType);
         this.jerseyNumber = jerseyNumber;
         this.position = position;
@@ -54,8 +54,8 @@ public void setAvailable(boolean available) {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
-    public Integer getEquipo() { return equipoId; }
-    public void setEquipo(Integer equipoId) { this.equipoId = equipoId; }
+    public String getEquipo() { return equipoId; }
+    public void setEquipo(String equipoId) { this.equipoId = equipoId; }
 
     public ArrayList<Sancion> getSanciones() {
         return sanciones;

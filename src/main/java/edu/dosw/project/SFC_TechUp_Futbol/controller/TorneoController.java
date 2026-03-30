@@ -31,7 +31,7 @@ public class TorneoController {
 
     @Operation(summary = "Get tournament by ID", description = "Returns the information of a specific tournament. Accessible by all actors.")
     @GetMapping("/{id}")
-    public Torneo obtenerTorneo(@PathVariable int id) {
+    public Torneo obtenerTorneo(@PathVariable String id) {
         return service.obtener(id);
     }
 
@@ -43,14 +43,14 @@ public class TorneoController {
 
     @Operation(summary = "Standings table", description = "Calculates and returns the tournament standings based on finished matches.")
     @GetMapping("/{id}/positions")
-    public List<Map<String, Object>> tablaPosiciones(@PathVariable int id) {
-        List<Partido> partidos = partidoService.consultarPartidosPorTorneo((long) id);
-        Map<Integer, Map<String, Object>> tabla = new LinkedHashMap<>();
+    public List<Map<String, Object>> tablaPosiciones(@PathVariable String id) {
+        List<Partido> partidos = partidoService.consultarPartidosPorTorneo(id);
+        Map<String, Map<String, Object>> tabla = new LinkedHashMap<>();
 
         for (Partido p : partidos) {
             if (p.getEstado() != Partido.PartidoEstado.FINALIZADO) continue;
-            int localId = p.getEquipoLocal().getId();
-            int visitanteId = p.getEquipoVisitante().getId();
+            String localId = p.getEquipoLocal().getId();
+            String visitanteId = p.getEquipoVisitante().getId();
             tabla.putIfAbsent(localId, crearFila(p.getEquipoLocal().getNombre()));
             tabla.putIfAbsent(visitanteId, crearFila(p.getEquipoVisitante().getNombre()));
 
@@ -72,8 +72,8 @@ public class TorneoController {
 
     @Operation(summary = "Elimination bracket", description = "Returns all tournament matches with their status, score and date to display the bracket.")
     @GetMapping("/{id}/bracket")
-    public List<Map<String, Object>> llaveEliminatoria(@PathVariable int id) {
-        List<Partido> partidos = partidoService.consultarPartidosPorTorneo((long) id);
+    public List<Map<String, Object>> llaveEliminatoria(@PathVariable String id) {
+        List<Partido> partidos = partidoService.consultarPartidosPorTorneo(id);
         return partidos.stream().map(p -> {
             Map<String, Object> entry = new LinkedHashMap<>();
             entry.put("partidoId", p.getId());
@@ -88,8 +88,8 @@ public class TorneoController {
 
     @Operation(summary = "Tournament statistics", description = "Returns general metrics: total matches, goals, averages and match statuses.")
     @GetMapping("/{id}/statistics")
-    public Map<String, Object> estadisticas(@PathVariable int id) {
-        List<Partido> partidos = partidoService.consultarPartidosPorTorneo((long) id);
+    public Map<String, Object> estadisticas(@PathVariable String id) {
+        List<Partido> partidos = partidoService.consultarPartidosPorTorneo(id);
         int totalGoles = partidos.stream().mapToInt(p -> p.getMarcadorLocal() + p.getMarcadorVisitante()).sum();
         long finalizados = partidos.stream().filter(p -> p.getEstado() == Partido.PartidoEstado.FINALIZADO).count();
         long enCurso = partidos.stream().filter(p -> p.getEstado() == Partido.PartidoEstado.EN_CURSO).count();

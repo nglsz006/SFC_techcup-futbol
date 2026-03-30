@@ -12,9 +12,9 @@ public class AlineacionMapper {
             return null;
         }
         AlineacionEntity entity = new AlineacionEntity();
-        entity.setId((long) alineacion.getId());
-        entity.setEquipoId((long) alineacion.getEquipoId());
-        entity.setPartidoId((long) alineacion.getPartidoId());
+        entity.setId(alineacion.getId());
+        entity.setEquipoId(alineacion.getEquipoId());
+        entity.setPartidoId(alineacion.getPartidoId());
         entity.setFormacion(alineacion.getFormacion());
         entity.setTitulares(alineacion.getTitulares());
         entity.setReservas(alineacion.getReservas());
@@ -26,9 +26,9 @@ public class AlineacionMapper {
             return null;
         }
         Alineacion alineacion = new Alineacion();
-        alineacion.setId(entity.getId().intValue());
-        alineacion.setEquipoId(entity.getEquipoId().intValue());
-        alineacion.setPartidoId(entity.getPartidoId().intValue());
+        alineacion.setId(entity.getId());
+        alineacion.setEquipoId(entity.getEquipoId());
+        alineacion.setPartidoId(entity.getPartidoId());
         alineacion.setFormacion(entity.getFormacion());
         alineacion.setTitulares(entity.getTitulares());
         alineacion.setReservas(entity.getReservas());

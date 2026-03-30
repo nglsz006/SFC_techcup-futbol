@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,11 +24,10 @@ class AuditoriaServiceTest {
     @BeforeEach
     void setUp() {
         List<RegistroAuditoria> store = new ArrayList<>();
-        AtomicLong idGen = new AtomicLong(1);
         RegistroAuditoriaRepository repo = mock(RegistroAuditoriaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> {
             RegistroAuditoria r = inv.getArgument(0);
-            if (r.getId() == null) r.setId(idGen.getAndIncrement());
+            if (r.getId() == null) r.setId(UUID.randomUUID().toString());
             store.add(r);
             return r;
         });
@@ -38,9 +37,9 @@ class AuditoriaServiceTest {
 
     @Test
     void consultarHistorial_conFiltros_validos_retornaOrdenadoDeMasRecienteAMasAntiguo() throws InterruptedException {
-        auditoriaService.registrarEvento(1L, "org1@escuelaing.edu.co", TipoAccionAuditoria.REGISTRO_ORGANIZADOR, "Registro 1");
+        auditoriaService.registrarEvento("uuid-admin-1", "org1@escuelaing.edu.co", TipoAccionAuditoria.REGISTRO_ORGANIZADOR, "Registro 1");
         Thread.sleep(5);
-        auditoriaService.registrarEvento(1L, "arb1@escuelaing.edu.co", TipoAccionAuditoria.REGISTRO_ARBITRO, "Registro 2");
+        auditoriaService.registrarEvento("uuid-admin-1", "arb1@escuelaing.edu.co", TipoAccionAuditoria.REGISTRO_ARBITRO, "Registro 2");
 
         ConsultaAuditoriaRequest request = new ConsultaAuditoriaRequest();
         request.setFechaDesde(LocalDate.now().minusDays(1));
@@ -54,7 +53,7 @@ class AuditoriaServiceTest {
 
     @Test
     void consultarHistorial_cuandoNoHayCoincidencias_retornaListaVacia() {
-        auditoriaService.registrarEvento(1L, "org1@escuelaing.edu.co", TipoAccionAuditoria.REGISTRO_ORGANIZADOR, "Registro 1");
+        auditoriaService.registrarEvento("uuid-admin-1", "org1@escuelaing.edu.co", TipoAccionAuditoria.REGISTRO_ORGANIZADOR, "Registro 1");
 
         ConsultaAuditoriaRequest request = new ConsultaAuditoriaRequest();
         request.setUsuario("sin-coincidencias");

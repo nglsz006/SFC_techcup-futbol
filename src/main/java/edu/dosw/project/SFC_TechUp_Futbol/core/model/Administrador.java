@@ -8,7 +8,7 @@ public class Administrador extends Usuario {
         this.activo = true;
     }
 
-    public Administrador(Long id, String name, String email, String password, TipoUsuario userType, boolean activo) {
+    public Administrador(String id, String name, String email, String password, TipoUsuario userType, boolean activo) {
         super(id, name, email, password, userType);
         this.activo = activo;
     }

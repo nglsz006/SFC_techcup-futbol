@@ -8,15 +8,15 @@ import jakarta.persistence.*;
 public class CapitanEntity extends JugadorEntity {
 
     @Column(name = "team_id")
-    private Long teamId;
+    private String teamId;
 
     public CapitanEntity() {}
 
-    public Long getTeamId() {
+    public String getTeamId() {
         return teamId;
     }
 
-    public void setTeamId(Long teamId) {
+    public void setTeamId(String teamId) {
         this.teamId = teamId;
     }
 }

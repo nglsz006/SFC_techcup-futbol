@@ -26,13 +26,13 @@ public class CapitanService {
         return capitanRepository.save(capitan);
     }
 
-    public String crearEquipo(Long capitanId, String nombreEquipo) {
+    public String crearEquipo(String capitanId, String nombreEquipo) {
         Capitan capitan = getOrThrow(capitanId);
         if (!usuarioValidator.nombreValido(nombreEquipo)) throw new IllegalArgumentException("nombre de equipo no valido");
         return "equipo " + nombreEquipo + " creado por " + capitan.getName();
     }
 
-    public String invitarJugador(Long capitanId, Long jugadorId) {
+    public String invitarJugador(String capitanId, String jugadorId) {
         Capitan capitan = getOrThrow(capitanId);
         Jugador jugador = jugadorService.buscarJugadorPorId(jugadorId);
         if (jugador == null) throw new IllegalArgumentException("jugador no encontrado");
@@ -40,13 +40,13 @@ public class CapitanService {
         return capitan.getName() + " invito a " + jugador.getName();
     }
 
-    public String definirAlineacion(Long capitanId, List<Jugador> titulares) {
+    public String definirAlineacion(String capitanId, List<Jugador> titulares) {
         getOrThrow(capitanId);
         if (titulares == null || titulares.size() < 7) throw new IllegalArgumentException("se necesitan minimo 7 titulares");
         return "alineacion lista con " + titulares.size() + " titulares";
     }
 
-    public String subirComprobantePago(Long capitanId, String comprobante) {
+    public String subirComprobantePago(String capitanId, String comprobante) {
         getOrThrow(capitanId);
         if (comprobante == null || comprobante.isBlank()) throw new IllegalArgumentException("el comprobante no puede estar vacio");
         return "comprobante subido por " + getOrThrow(capitanId).getName();
@@ -63,7 +63,7 @@ public class CapitanService {
         return capitanRepository.findAll();
     }
 
-    private Capitan getOrThrow(Long id) {
+    private Capitan getOrThrow(String id) {
         return capitanRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("capitan no encontrado"));
     }

@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AutenticacionAdministradorService {
 
     private final AdministradorRepository administradorRepository;
-    private final Map<String, Long> sesiones = new ConcurrentHashMap<>();
+    private final Map<String, String> sesiones = new ConcurrentHashMap<>();
 
     public AutenticacionAdministradorService(AdministradorRepository administradorRepository) {
         this.administradorRepository = administradorRepository;
@@ -33,12 +33,12 @@ public class AutenticacionAdministradorService {
         return token;
     }
 
-    public void validarSesion(Long administradorId, String token) {
+    public void validarSesion(String administradorId, String token) {
         if (administradorId == null || token == null || token.isBlank()) {
             throw new AutenticacionAdminException("La autenticacion del administrador es obligatoria.");
         }
 
-        Long administradorAutenticado = sesiones.get(token);
+        String administradorAutenticado = sesiones.get(token);
         if (administradorAutenticado == null || !administradorAutenticado.equals(administradorId)) {
             throw new AutenticacionAdminException("La sesion del administrador no es valida.");
         }

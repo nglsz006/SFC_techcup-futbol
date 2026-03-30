@@ -20,11 +20,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -39,12 +35,11 @@ class OAuth2AuthTest {
     @BeforeEach
     void setUp() {
         jwtService = new JwtService();
-        Map<Long, UsuarioRegistrado> store = new HashMap<>();
-        AtomicLong idGen = new AtomicLong(1);
+        Map<String, UsuarioRegistrado> store = new HashMap<>();
         repo = mock(UsuarioRegistradoRepository.class);
         when(repo.save(any())).thenAnswer(inv -> {
             UsuarioRegistrado u = inv.getArgument(0);
-            if (u.getId() == null) u.setId(idGen.getAndIncrement());
+            if (u.getId() == null) u.setId(UUID.randomUUID().toString());
             store.put(u.getId(), u);
             return u;
         });
@@ -65,8 +60,6 @@ class OAuth2AuthTest {
         return new OAuth2AuthenticationToken(user, new ArrayList<>(), "google");
     }
 
-    // ── OAuth2 ────────────────────────────────────────────────────────────────
-
     @Test
     void oauth2_usuarioNuevo_seRegistraYRetornaToken() {
         OAuth2AuthenticationToken token = crearToken("nuevo@gmail.com", "Nuevo");
@@ -78,7 +71,7 @@ class OAuth2AuthTest {
 
     @Test
     void oauth2_usuarioExistente_seAutenticaSinRegistrar() {
-        UsuarioRegistrado existente = new UsuarioRegistrado(1L, "Existente", "existente@gmail.com", "hash", Usuario.TipoUsuario.FAMILIAR);
+        UsuarioRegistrado existente = new UsuarioRegistrado("uuid-1", "Existente", "existente@gmail.com", "hash", Usuario.TipoUsuario.FAMILIAR);
         when(repo.findByEmail("existente@gmail.com")).thenReturn(Optional.of(existente));
         OAuth2AuthenticationToken token = crearToken("existente@gmail.com", "Existente");
         LoginResponse response = oAuth2Service.procesarCallback(token);
@@ -99,8 +92,6 @@ class OAuth2AuthTest {
         assertTrue(jwtService.esValido(response.getToken()));
         assertEquals("valido@gmail.com", jwtService.extraerEmail(response.getToken()));
     }
-
-    // ── JWT Filter ────────────────────────────────────────────────────────────
 
     @Test
     void jwtFilter_sinToken_continuaSinAutenticar() throws Exception {
@@ -141,7 +132,6 @@ class OAuth2AuthTest {
 
     @Test
     void jwtFilter_tokenExpirado_retorna401() throws Exception {
-        // Generamos un token con TTL negativo simulando expiración
         String tokenExpirado = io.jsonwebtoken.Jwts.builder()
                 .setSubject("expirado@escuelaing.edu.co")
                 .claim("rol", "ESTUDIANTE")

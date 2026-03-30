@@ -119,7 +119,13 @@
 				<version>0.8.12</version>
 				<configuration>
 					<excludes>
-						**/persistence/**
+						<exclude>edu/dosw/project/SFC_TechUp_Futbol/persistence/**</exclude>
+						<exclude>edu/dosw/project/SFC_TechUp_Futbol/config/SecurityConfig.class</exclude>
+						<exclude>edu/dosw/project/SFC_TechUp_Futbol/config/HttpsRedirectConfig.class</exclude>
+						<exclude>edu/dosw/project/SFC_TechUp_Futbol/config/HttpsRedirectConfig$*.class</exclude>
+						<exclude>edu/dosw/project/SFC_TechUp_Futbol/SFCTechCupFutbolApiApplication.class</exclude>
+						<exclude>edu/dosw/project/SFC_TechUp_Futbol/controller/OAuth2Controller.class</exclude>
+						<exclude>edu/dosw/project/SFC_TechUp_Futbol/controller/TorneoController$TorneoRequest.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>

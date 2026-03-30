@@ -18,7 +18,7 @@ public class OrganizadorMapper {
         entity.setPassword(organizador.getPassword());
         entity.setUserType(organizador.getUserType());
         if (organizador.getCurrentTournament() != null) {
-            entity.setTorneoId((long) organizador.getCurrentTournament().getId());
+            entity.setTorneoId(organizador.getCurrentTournament().getId());
         }
         return entity;
     }

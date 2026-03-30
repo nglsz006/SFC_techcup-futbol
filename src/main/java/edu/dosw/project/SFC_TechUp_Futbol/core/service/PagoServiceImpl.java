@@ -23,8 +23,8 @@ public class PagoServiceImpl implements PagoService {
     }
 
     @Override
-    public Pago subirComprobante(Long equipoId, String comprobante) {
-        Equipo equipo = equipoRepository.findById(equipoId.intValue())
+    public Pago subirComprobante(String equipoId, String comprobante) {
+        Equipo equipo = equipoRepository.findById(equipoId)
                 .orElseThrow(() -> new RuntimeException("Equipo no encontrado con id: " + equipoId));
 
         if (pagoRepository.existsByEquipoIdAndEstado(equipoId, Pago.PagoEstado.APROBADO))
@@ -39,7 +39,7 @@ public class PagoServiceImpl implements PagoService {
     }
 
     @Override
-    public Pago aprobarPago(Long pagoId) {
+    public Pago aprobarPago(String pagoId) {
         Pago pago = getPagoOrThrow(pagoId);
         if (pago.getEstado() == Pago.PagoEstado.PENDIENTE) pago.avanzar();
         log.info("Pago aprobado: " + pagoId);
@@ -47,7 +47,7 @@ public class PagoServiceImpl implements PagoService {
     }
 
     @Override
-    public Pago rechazarPago(Long pagoId) {
+    public Pago rechazarPago(String pagoId) {
         Pago pago = getPagoOrThrow(pagoId);
         pago.rechazar();
         log.info("Pago rechazado: " + pagoId);
@@ -55,12 +55,12 @@ public class PagoServiceImpl implements PagoService {
     }
 
     @Override
-    public Pago consultarPago(Long pagoId) {
+    public Pago consultarPago(String pagoId) {
         return getPagoOrThrow(pagoId);
     }
 
     @Override
-    public List<Pago> consultarPagosPorEquipo(Long equipoId) {
+    public List<Pago> consultarPagosPorEquipo(String equipoId) {
         return pagoRepository.findByEquipoId(equipoId);
     }
 
@@ -69,7 +69,7 @@ public class PagoServiceImpl implements PagoService {
         return pagoRepository.findByEstado(Pago.PagoEstado.PENDIENTE);
     }
 
-    private Pago getPagoOrThrow(Long pagoId) {
+    private Pago getPagoOrThrow(String pagoId) {
         return pagoRepository.findById(pagoId)
                 .orElseThrow(() -> new RuntimeException("Pago no encontrado con id: " + pagoId));
     }

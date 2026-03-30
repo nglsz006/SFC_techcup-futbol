@@ -8,15 +8,15 @@ import jakarta.persistence.*;
 public class OrganizadorEntity extends UsuarioEntity {
 
     @Column(name = "torneo_id")
-    private Long torneoId;
+    private String torneoId;
 
     public OrganizadorEntity() {}
 
-    public Long getTorneoId() {
+    public String getTorneoId() {
         return torneoId;
     }
 
-    public void setTorneoId(Long torneoId) {
+    public void setTorneoId(String torneoId) {
         this.torneoId = torneoId;
     }
 }

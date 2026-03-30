@@ -3,28 +3,25 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 public class Sancion {
 
     public enum TipoSancion {
-        TARJETA_ROJA,
-        TARJETA_AMARILLA,
-        AGRESION_VERBAL,
-        AGRESION_FISICA
+        TARJETA_ROJA, TARJETA_AMARILLA, AGRESION_VERBAL, AGRESION_FISICA
     }
 
-    private Long id;
+    private String id;
     private TipoSancion tipoSancion;
     private String descripcion;
     private Jugador jugador;
 
     public Sancion() {}
 
-    public Sancion(Long id, TipoSancion tipoSancion, String descripcion, Jugador jugador) {
+    public Sancion(String id, TipoSancion tipoSancion, String descripcion, Jugador jugador) {
         this.id = id;
         this.tipoSancion = tipoSancion;
         this.descripcion = descripcion;
         this.jugador = jugador;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public TipoSancion getTipoSancion() { return tipoSancion; }
     public void setTipoSancion(TipoSancion tipoSancion) { this.tipoSancion = tipoSancion; }

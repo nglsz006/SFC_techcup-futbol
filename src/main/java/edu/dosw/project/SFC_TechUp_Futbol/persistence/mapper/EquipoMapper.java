@@ -12,12 +12,12 @@ public class EquipoMapper {
             return null;
         }
         EquipoEntity entity = new EquipoEntity();
-        entity.setId((long) equipo.getId());
+        entity.setId(equipo.getId());
         entity.setNombre(equipo.getNombre());
         entity.setEscudo(equipo.getEscudo());
         entity.setColorPrincipal(equipo.getColorPrincipal());
         entity.setColorSecundario(equipo.getColorSecundario());
-        entity.setCapitanId((long) equipo.getCapitanId());
+        entity.setCapitanId(equipo.getCapitanId());
         entity.setJugadores(equipo.getJugadores());
         return entity;
     }
@@ -27,12 +27,12 @@ public class EquipoMapper {
             return null;
         }
         Equipo equipo = new Equipo();
-        equipo.setId(entity.getId().intValue());
+        equipo.setId(entity.getId());
         equipo.setNombre(entity.getNombre());
         equipo.setEscudo(entity.getEscudo());
         equipo.setColorPrincipal(entity.getColorPrincipal());
         equipo.setColorSecundario(entity.getColorSecundario());
-        equipo.setCapitanId(entity.getCapitanId() != null ? entity.getCapitanId().intValue() : 0);
+        equipo.setCapitanId(entity.getCapitanId());
         equipo.setJugadores(entity.getJugadores());
         return equipo;
     }

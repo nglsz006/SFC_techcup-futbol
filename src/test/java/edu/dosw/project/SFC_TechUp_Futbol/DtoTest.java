@@ -43,8 +43,8 @@ class DtoTest {
 
     @Test
     void usuarioResponse_getters() {
-        UsuarioResponse resp = new UsuarioResponse(1L, "Carlos", "carlos@test.com", Usuario.TipoUsuario.ESTUDIANTE);
-        assertEquals(1L, resp.getId());
+        UsuarioResponse resp = new UsuarioResponse("uuid-1", "Carlos", "carlos@test.com", Usuario.TipoUsuario.ESTUDIANTE);
+        assertEquals("uuid-1", resp.getId());
         assertEquals("Carlos", resp.getNombre());
         assertEquals("carlos@test.com", resp.getEmail());
         assertEquals(Usuario.TipoUsuario.ESTUDIANTE, resp.getTipoUsuario());

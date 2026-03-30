@@ -15,7 +15,7 @@ public class TorneoMapper {
             return null;
         }
         TorneoEntity entity = new TorneoEntity();
-        entity.setId((long) torneo.getId());
+        entity.setId(torneo.getId());
         entity.setNombre(torneo.getNombre());
         entity.setFechaInicio(torneo.getFechaInicio());
         entity.setFechaFin(torneo.getFechaFin());
@@ -35,7 +35,7 @@ public class TorneoMapper {
             return null;
         }
         Torneo torneo = new Torneo();
-        torneo.setId(entity.getId().intValue());
+        torneo.setId(entity.getId());
         torneo.setNombre(entity.getNombre());
         torneo.setFechaInicio(entity.getFechaInicio());
         torneo.setFechaFin(entity.getFechaFin());

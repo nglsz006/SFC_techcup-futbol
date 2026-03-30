@@ -35,7 +35,7 @@ public class AdministradorController {
         this.auditoriaService = auditoriaService;
     }
 
-    @Operation(summary = "Admin login", description = "Authenticates an administrator and returns a session token.")
+    @Operation(summary = "Admin login")
     @PostMapping("/login")
     public AdministradorLoginResponse login(@RequestBody LoginRequest request) {
         administradorValidator.validarCredenciales(request);
@@ -55,10 +55,10 @@ public class AdministradorController {
         );
     }
 
-    @Operation(summary = "Register organizer or referee", description = "Protected endpoint that only accepts roles ORGANIZADOR and ARBITRO.")
+    @Operation(summary = "Register organizer or referee")
     @PostMapping("/users")
     public RegistroAdministrativoResponse registrarUsuario(
-            @RequestHeader("X-Administrador-Id") Long administradorId,
+            @RequestHeader("X-Administrador-Id") String administradorId,
             @RequestHeader("X-Administrador-Token") String token,
             @RequestBody RegistroAdministrativoRequest request) {
         administradorValidator.validarAdministradorId(administradorId);

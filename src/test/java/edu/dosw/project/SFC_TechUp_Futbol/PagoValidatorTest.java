@@ -10,7 +10,7 @@ class PagoValidatorTest {
 
     @Test
     void validar_datosCorrectos_noLanzaExcepcion() {
-        assertDoesNotThrow(() -> validator.validarSubirComprobante(1L, "comprobante.jpg"));
+        assertDoesNotThrow(() -> validator.validarSubirComprobante("uuid-equipo-1", "comprobante.jpg"));
     }
 
     @Test
@@ -20,11 +20,11 @@ class PagoValidatorTest {
 
     @Test
     void validar_comprobanteVacio_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> validator.validarSubirComprobante(1L, ""));
+        assertThrows(IllegalArgumentException.class, () -> validator.validarSubirComprobante("uuid-equipo-1", ""));
     }
 
     @Test
     void validar_comprobanteMuyLargo_lanzaExcepcion() {
-        assertThrows(IllegalArgumentException.class, () -> validator.validarSubirComprobante(1L, "x".repeat(501)));
+        assertThrows(IllegalArgumentException.class, () -> validator.validarSubirComprobante("uuid-equipo-1", "x".repeat(501)));
     }
 }

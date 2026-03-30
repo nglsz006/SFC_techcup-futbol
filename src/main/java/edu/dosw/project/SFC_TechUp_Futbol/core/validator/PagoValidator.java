@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class PagoValidator {
 
-    public void validarSubirComprobante(Long equipoId, String comprobante) {
-        if (equipoId == null) {
+    public void validarSubirComprobante(String equipoId, String comprobante) {
+        if (equipoId == null || equipoId.isBlank()) {
             throw new IllegalArgumentException("El id del equipo es obligatorio.");
         }
         if (comprobante == null || comprobante.isBlank()) {
@@ -17,4 +17,3 @@ public class PagoValidator {
         }
     }
 }
-

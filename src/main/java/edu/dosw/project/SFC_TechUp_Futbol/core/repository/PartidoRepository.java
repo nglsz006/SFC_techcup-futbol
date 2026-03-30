@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface PartidoRepository {
     Partido save(Partido partido);
-    Optional<Partido> findById(Long id);
-    List<Partido> findByTorneoId(Long torneoId);
+    Optional<Partido> findById(String id);
+    List<Partido> findByTorneoId(String torneoId);
     List<Partido> findByEstado(Partido.PartidoEstado estado);
-    List<Partido> findByEquipoLocalIdOrEquipoVisitanteId(Long equipoLocalId, Long equipoVisitanteId);
+    List<Partido> findByEquipoLocalIdOrEquipoVisitanteId(String equipoLocalId, String equipoVisitanteId);
 }

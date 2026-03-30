@@ -21,7 +21,7 @@ public class AlineacionController {
 
     @Operation(summary = "Get lineup by ID", description = "Returns the lineup registered for a specific match.")
     @GetMapping("/{id}")
-    public Alineacion obtenerAlineacion(@PathVariable int id) {
+    public Alineacion obtenerAlineacion(@PathVariable String id) {
         return service.obtener(id);
     }
 

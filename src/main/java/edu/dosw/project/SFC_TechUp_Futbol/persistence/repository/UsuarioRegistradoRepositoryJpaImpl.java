@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import java.util.stream.Collectors;
 
 @Primary
@@ -25,6 +26,7 @@ public class UsuarioRegistradoRepositoryJpaImpl implements UsuarioRegistradoRepo
 
     @Override
     public UsuarioRegistrado save(UsuarioRegistrado usuario) {
+        if (usuario.getId() == null) usuario.setId(IdGeneratorUtil.generarId());
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(usuario)));
     }
 

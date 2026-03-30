@@ -15,11 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,28 +31,26 @@ class AuditoriaControllerTest {
 
     @BeforeEach
     void setUp() {
-        Map<Long, Administrador> adminStore = new HashMap<>();
-        AtomicLong adminIdGen = new AtomicLong(1);
+        Map<String, Administrador> adminStore = new HashMap<>();
         AdministradorRepository administradorRepository = mock(AdministradorRepository.class);
         when(administradorRepository.save(any())).thenAnswer(inv -> {
             Administrador a = inv.getArgument(0);
-            if (a.getId() == null) a.setId(adminIdGen.getAndIncrement());
+            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
             adminStore.put(a.getId(), a);
             return a;
         });
-        when(administradorRepository.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(adminStore.get(inv.<Long>getArgument(0))));
+        when(administradorRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(adminStore.get(inv.<String>getArgument(0))));
         when(administradorRepository.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
             return adminStore.values().stream().filter(a -> email.equals(a.getEmail())).findFirst();
         });
         when(administradorRepository.findAll()).thenAnswer(inv -> new ArrayList<>(adminStore.values()));
 
-        Map<Long, Organizador> orgStore = new HashMap<>();
-        AtomicLong orgIdGen = new AtomicLong(1);
+        Map<String, Organizador> orgStore = new HashMap<>();
         OrganizadorRepository organizadorRepository = mock(OrganizadorRepository.class);
         when(organizadorRepository.save(any())).thenAnswer(inv -> {
             Organizador o = inv.getArgument(0);
-            if (o.getId() == null) o.setId(orgIdGen.getAndIncrement());
+            if (o.getId() == null) o.setId(UUID.randomUUID().toString());
             orgStore.put(o.getId(), o);
             return o;
         });
@@ -66,12 +60,11 @@ class AuditoriaControllerTest {
         });
         when(organizadorRepository.findAll()).thenAnswer(inv -> new ArrayList<>(orgStore.values()));
 
-        Map<Long, Arbitro> arbitroStore = new HashMap<>();
-        AtomicLong arbitroIdGen = new AtomicLong(1);
+        Map<String, Arbitro> arbitroStore = new HashMap<>();
         ArbitroRepository arbitroRepository = mock(ArbitroRepository.class);
         when(arbitroRepository.save(any())).thenAnswer(inv -> {
             Arbitro a = inv.getArgument(0);
-            if (a.getId() == null) a.setId(arbitroIdGen.getAndIncrement());
+            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
             arbitroStore.put(a.getId(), a);
             return a;
         });
@@ -85,12 +78,11 @@ class AuditoriaControllerTest {
         when(usuarioRegistradoRepository.findByEmail(anyString())).thenReturn(Optional.empty());
         when(usuarioRegistradoRepository.findAll()).thenReturn(new ArrayList<>());
 
-        java.util.List<RegistroAuditoria> auditoriaList = new ArrayList<>();
-        AtomicLong auditoriaIdGen = new AtomicLong(1);
+        List<RegistroAuditoria> auditoriaList = new ArrayList<>();
         RegistroAuditoriaRepository registroAuditoriaRepository = mock(RegistroAuditoriaRepository.class);
         when(registroAuditoriaRepository.save(any())).thenAnswer(inv -> {
             RegistroAuditoria r = inv.getArgument(0);
-            if (r.getId() == null) r.setId(auditoriaIdGen.getAndIncrement());
+            if (r.getId() == null) r.setId(UUID.randomUUID().toString());
             auditoriaList.add(r);
             return r;
         });
@@ -98,29 +90,17 @@ class AuditoriaControllerTest {
 
         auditoriaService = new AuditoriaService(registroAuditoriaRepository);
         administradorService = new AdministradorService(
-                administradorRepository,
-                organizadorRepository,
-                arbitroRepository,
-                usuarioRegistradoRepository,
-                auditoriaService
-        );
+                administradorRepository, organizadorRepository, arbitroRepository,
+                usuarioRegistradoRepository, auditoriaService);
         autenticacionAdministradorService = new AutenticacionAdministradorService(administradorRepository);
         AdministradorValidator administradorValidator = new AdministradorValidator(
-                administradorRepository,
-                organizadorRepository,
-                arbitroRepository,
-                usuarioRegistradoRepository
-        );
+                administradorRepository, organizadorRepository, arbitroRepository, usuarioRegistradoRepository);
 
         mockMvc = MockMvcBuilders
                 .standaloneSetup(new AuditoriaController(
-                        auditoriaService,
-                        new AuditoriaValidator(),
-                        administradorValidator,
-                        autenticacionAdministradorService
-                ))
-                .setControllerAdvice(new ErrorHandler())
-                .build();
+                        auditoriaService, new AuditoriaValidator(),
+                        administradorValidator, autenticacionAdministradorService))
+                .setControllerAdvice(new ErrorHandler()).build();
     }
 
     @Test

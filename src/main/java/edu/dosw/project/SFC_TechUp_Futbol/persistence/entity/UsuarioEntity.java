@@ -10,8 +10,8 @@ import jakarta.persistence.*;
 public abstract class UsuarioEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false, updatable = false)
+    private String id;
 
     @Column(nullable = false)
     private String name;
@@ -28,11 +28,11 @@ public abstract class UsuarioEntity {
 
     public UsuarioEntity() {}
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

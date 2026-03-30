@@ -30,15 +30,15 @@ class PerfilDeportivoTest {
         @DisplayName("Crea perfil con todos los atributos correctamente")
         void creacion_perfilCompleto_atributosCorrectos() {
             PerfilDeportivo perfil = new PerfilDeportivo(
-                    1L, 10L,
+                    "uuid-perfil-1", "uuid-jugador-10",
                     List.of(Jugador.Posicion.PORTERO, Jugador.Posicion.DEFENSA),
                     7, "foto.jpg", 22,
                     PerfilDeportivo.Genero.MASCULINO,
                     "1234567890", 5
             );
 
-            assertThat(perfil.getId()).isEqualTo(1L);
-            assertThat(perfil.getJugadorId()).isEqualTo(10L);
+            assertThat(perfil.getId()).isEqualTo("uuid-perfil-1");
+            assertThat(perfil.getJugadorId()).isEqualTo("uuid-jugador-10");
             assertThat(perfil.getPosiciones()).containsExactly(Jugador.Posicion.PORTERO, Jugador.Posicion.DEFENSA);
             assertThat(perfil.getDorsal()).isEqualTo(7);
             assertThat(perfil.getFoto()).isEqualTo("foto.jpg");
@@ -52,7 +52,7 @@ class PerfilDeportivoTest {
         @DisplayName("Crea perfil sin foto y sin semestre — ambos opcionales")
         void creacion_sinFotoNiSemestre_esValido() {
             PerfilDeportivo perfil = new PerfilDeportivo(
-                    1L, 10L,
+                    "uuid-perfil-1", "uuid-jugador-10",
                     List.of(Jugador.Posicion.DELANTERO),
                     9, null, 30,
                     PerfilDeportivo.Genero.FEMENINO,

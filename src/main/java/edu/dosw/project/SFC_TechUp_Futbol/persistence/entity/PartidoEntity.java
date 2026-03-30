@@ -11,8 +11,8 @@ import java.util.List;
 public class PartidoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false, updatable = false)
+    private String id;
 
     @Column
     private LocalDateTime fecha;
@@ -52,11 +52,11 @@ public class PartidoEntity {
         this.estado = Partido.PartidoEstado.PROGRAMADO;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

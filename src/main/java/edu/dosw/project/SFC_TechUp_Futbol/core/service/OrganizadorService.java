@@ -25,7 +25,7 @@ public class OrganizadorService {
         return organizadorRepository.save(organizador);
     }
 
-    public Torneo crearTorneo(Long organizadorId, Torneo torneo) {
+    public Torneo crearTorneo(String organizadorId, Torneo torneo) {
         Organizador organizador = getOrThrow(organizadorId);
         if (!usuarioValidator.nombreValido(torneo.getNombre())) throw new IllegalArgumentException("nombre de torneo no valido");
         Torneo creado = torneoService.crear(torneo, Map.of());
@@ -34,13 +34,13 @@ public class OrganizadorService {
         return creado;
     }
 
-    public Torneo iniciarTorneo(Long organizadorId) {
+    public Torneo iniciarTorneo(String organizadorId) {
         Organizador organizador = getOrThrow(organizadorId);
         if (organizador.getCurrentTournament() == null) throw new IllegalStateException("no tiene torneo activo");
         return torneoService.iniciar(organizador.getCurrentTournament().getId());
     }
 
-    public Torneo finalizarTorneo(Long organizadorId) {
+    public Torneo finalizarTorneo(String organizadorId) {
         Organizador organizador = getOrThrow(organizadorId);
         if (organizador.getCurrentTournament() == null) throw new IllegalStateException("no tiene torneo activo");
         return torneoService.finalizar(organizador.getCurrentTournament().getId());
@@ -50,7 +50,7 @@ public class OrganizadorService {
         return organizadorRepository.findAll();
     }
 
-    private Organizador getOrThrow(Long id) {
+    private Organizador getOrThrow(String id) {
         return organizadorRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("organizador no encontrado"));
     }

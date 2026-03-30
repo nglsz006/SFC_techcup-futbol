@@ -23,7 +23,7 @@ public class CapitanMapper {
         entity.setPhoto(capitan.getPhoto());
         entity.setEquipoId(capitan.getEquipo());
         if (capitan.getTeam() != null) {
-            entity.setTeamId((long) capitan.getTeam().getId());
+            entity.setTeamId(capitan.getTeam().getId());
         }
         return entity;
     }

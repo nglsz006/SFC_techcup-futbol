@@ -25,7 +25,7 @@ public class EquipoService extends Subject {
         return saved;
     }
 
-    public Equipo obtener(int id) {
+    public Equipo obtener(String id) {
         return repository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Equipo no encontrado"));
     }
@@ -34,7 +34,7 @@ public class EquipoService extends Subject {
         return repository.findAll();
     }
 
-    public Equipo agregarJugador(int equipoId, int jugadorId) {
+    public Equipo agregarJugador(String equipoId, String jugadorId) {
         Equipo equipo = obtener(equipoId);
         equipo.agregarJugador(jugadorId);
         log.info("Jugador agregado al equipo");
@@ -42,7 +42,7 @@ public class EquipoService extends Subject {
         return equipo;
     }
 
-    public Map<String, Object> validarComposicion(int equipoId) {
+    public Map<String, Object> validarComposicion(String equipoId) {
         Equipo equipo = obtener(equipoId);
         int total = equipo.getJugadores().size();
         boolean valido = total >= 7 && total <= 12;
