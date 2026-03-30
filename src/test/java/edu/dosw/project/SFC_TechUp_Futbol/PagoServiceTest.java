@@ -1,5 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol;
 
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RecursoNoEncontradoException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ReglaNegocioException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.EquipoRepository;
@@ -76,22 +78,39 @@ class PagoServiceTest {
 
     @Test
     void subirComprobante_equipoInexistente_lanzaExcepcion() {
-        assertThrows(RuntimeException.class, () -> service.subirComprobante("uuid-inexistente", "comprobante.jpg"));
+        assertThrows(RecursoNoEncontradoException.class, () -> service.subirComprobante("uuid-inexistente", "comprobante.jpg"));
     }
 
     @Test
-    void aprobarPago_pendiente_cambaEstado() {
-        Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
-        Pago aprobado = service.aprobarPago(pago.getId());
-        assertNotEquals(Pago.PagoEstado.PENDIENTE, aprobado.getEstado());
-    }
-
-    @Test
-    void rechazarPago_pendiente_cambaArechazado() {
+    void subirComprobante_equipoYaInscrito_lanzaExcepcion() {
         Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
         service.aprobarPago(pago.getId());
+        assertThrows(ReglaNegocioException.class, () -> service.subirComprobante(equipo.getId(), "comprobante2.jpg"));
+    }
+
+    @Test
+    void aprobarPago_pendiente_cambiaAAprobado() {
+        Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
+        Pago aprobado = service.aprobarPago(pago.getId());
+        assertEquals(Pago.PagoEstado.APROBADO, aprobado.getEstado());
+    }
+
+    @Test
+    void aprobarPago_inexistente_lanzaExcepcion() {
+        assertThrows(RecursoNoEncontradoException.class, () -> service.aprobarPago("uuid-inexistente"));
+    }
+
+    @Test
+    void rechazarPago_desdeEnRevision_cambiaArechazado() {
+        Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
+        pago.avanzar();
         Pago rechazado = service.rechazarPago(pago.getId());
         assertEquals(Pago.PagoEstado.RECHAZADO, rechazado.getEstado());
+    }
+
+    @Test
+    void rechazarPago_inexistente_lanzaExcepcion() {
+        assertThrows(RecursoNoEncontradoException.class, () -> service.rechazarPago("uuid-inexistente"));
     }
 
     @Test
@@ -102,7 +121,7 @@ class PagoServiceTest {
 
     @Test
     void consultarPago_inexistente_lanzaExcepcion() {
-        assertThrows(RuntimeException.class, () -> service.consultarPago("uuid-inexistente"));
+        assertThrows(RecursoNoEncontradoException.class, () -> service.consultarPago("uuid-inexistente"));
     }
 
     @Test
