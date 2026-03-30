@@ -19,6 +19,11 @@ class PagoValidatorTest {
     }
 
     @Test
+    void validar_equipoIdBlank_lanzaExcepcion() {
+        assertThrows(IllegalArgumentException.class, () -> validator.validarSubirComprobante("   ", "comprobante.jpg"));
+    }
+
+    @Test
     void validar_comprobanteVacio_lanzaExcepcion() {
         assertThrows(IllegalArgumentException.class, () -> validator.validarSubirComprobante("uuid-equipo-1", ""));
     }
