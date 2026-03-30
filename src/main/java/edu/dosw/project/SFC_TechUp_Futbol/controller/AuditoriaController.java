@@ -10,6 +10,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AdministradorValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AuditoriaValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,6 +40,7 @@ public class AuditoriaController {
         this.autenticacionAdministradorService = autenticacionAdministradorService;
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Operation(summary = "Consultar auditoria", description = "Permite consultar el historial completo con filtros opcionales.")
     @GetMapping
     public ConsultaAuditoriaResponse consultarHistorial(

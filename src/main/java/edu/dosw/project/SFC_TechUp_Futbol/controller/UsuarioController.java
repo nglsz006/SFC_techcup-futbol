@@ -7,6 +7,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,6 +55,7 @@ public class UsuarioController {
     }
 
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get actions by actor", description = "Returns the available actions for a system actor. Valid actors: jugador, capitan, arbitro, organizador.")
     @GetMapping("/{actor}")
     public Map<String, Object> accionesPorActor(@PathVariable String actor) {
@@ -115,6 +117,7 @@ public class UsuarioController {
         return respuesta;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create player", description = "Registers a new Player in the system with their sports profile (position, jersey number).")
     @PostMapping("/jugadores")
     public Jugador crearJugador(@RequestBody Map<String, Object> body) {
@@ -133,12 +136,14 @@ public class UsuarioController {
         return jugadorRepository.save(jugador);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List players", description = "Returns all registered players. Useful for the Captain when looking for team members.")
     @GetMapping("/jugadores")
     public List<Jugador> listarJugadores() {
         return jugadorService.getJugadores();
     }
 
+    @PreAuthorize("hasRole('JUGADOR')")
     @Operation(summary = "Edit sports profile", description = "The Player updates their position, jersey number, name or photo.")
     @PatchMapping("/jugadores/{id}/perfil")
     public Jugador editarPerfil(@PathVariable Long id, @RequestBody Map<String, Object> body) {
@@ -149,6 +154,7 @@ public class UsuarioController {
         return jugadorService.editarPerfil(id, nombre, numeroCamiseta, posicion, foto);
     }
 
+    @PreAuthorize("hasRole('JUGADOR')")
     @Operation(summary = "Create sports profile", description = "The Player creates their sports profile with positions, jersey number, age, gender and ID.")
     @PostMapping("/jugadores/{id}/perfil")
     public PerfilDeportivo crearPerfilDeportivo(@PathVariable Long id,
@@ -165,12 +171,14 @@ public class UsuarioController {
         return perfilDeportivoService.crearPerfil(id, posiciones, dorsal, foto, edad, genero, identificacion, semestre);
     }
 
+    @PreAuthorize("hasRole('JUGADOR')")
     @Operation(summary = "Get sports profile", description = "Returns the sports profile of a player.")
     @GetMapping("/jugadores/{id}/perfil")
     public PerfilDeportivo consultarPerfilDeportivo(@PathVariable Long id) {
         return perfilDeportivoService.consultarPerfil(id);
     }
 
+    @PreAuthorize("hasRole('JUGADOR')")
     @Operation(summary = "Accept invitation", description = "The Player accepts the invitation sent by a Captain to join their team.")
     @PatchMapping("/jugadores/{id}/aceptarInvitacion")
     public String aceptarInvitacion(@PathVariable Long id) {
@@ -178,6 +186,7 @@ public class UsuarioController {
         return "Invitacion aceptada correctamente";
     }
 
+    @PreAuthorize("hasRole('JUGADOR')")
     @Operation(summary = "Reject invitation", description = "The Player rejects the invitation from a Captain.")
     @PatchMapping("/jugadores/{id}/rechazarInvitacion")
     public String rechazarInvitacion(@PathVariable Long id) {
@@ -185,6 +194,7 @@ public class UsuarioController {
         return "Invitacion rechazada correctamente";
     }
 
+    @PreAuthorize("hasRole('JUGADOR')")
     @Operation(summary = "Mark availability", description = "The Player indicates they are available to be recruited by a team.")
     @PatchMapping("/jugadores/{id}/disponibilidad")
     public String marcarDisponible(@PathVariable Long id) {
@@ -192,7 +202,14 @@ public class UsuarioController {
         return "Jugador marcado como disponible";
     }
 
+    @PreAuthorize("hasRole('JUGADOR')")
+    @PostMapping("/jugadores/{id}/foto")
+    public String subirFotoJugador(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        return jugadorService.subirFoto(id, file);
+    }
 
+
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create captain", description = "Registers a new Captain. The Captain is a Player with permissions to manage a team.")
     @PostMapping("/capitanes")
     public Capitan crearCapitan(@RequestBody Map<String, Object> body) {
@@ -219,6 +236,7 @@ public class UsuarioController {
         return capitanService.save(capitan);
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Validate team composition", description = "The Captain verifies if their team meets the rules: minimum 7 and maximum 12 players.")
     @GetMapping("/capitanes/{id}/equipo/validar")
     public Map<String, Object> validarEquipo(@PathVariable Long id) {
@@ -233,12 +251,14 @@ public class UsuarioController {
         return equipoService.validarComposicion(equipo.getId());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List captains", description = "Returns all captains registered in the system.")
     @GetMapping("/capitanes")
     public List<Capitan> listarCapitanes() {
         return capitanService.getCapitanes();
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Create team", description = "The Captain creates their team to register in the tournament.")
     @PostMapping("/capitanes/{id}/equipo")
     public String crearEquipo(@PathVariable Long id, @RequestParam String nombreEquipo) {
@@ -246,6 +266,7 @@ public class UsuarioController {
         return "Equipo creado correctamente";
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Invite player", description = "The Captain sends an invitation to an available Player to join their team.")
     @PostMapping("/capitanes/{id}/invitar/{jugadorId}")
     public String invitarJugador(@PathVariable Long id, @PathVariable Long jugadorId) {
@@ -253,24 +274,28 @@ public class UsuarioController {
         return "Invitacion enviada correctamente";
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Define lineup", description = "The Captain defines the starting players for the next match.")
     @PostMapping("/capitanes/{id}/alineacion")
     public String definirAlineacion(@PathVariable Long id, @RequestBody List<Jugador> titulares) {
         return capitanService.definirAlineacion(id, titulares);
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Upload payment receipt", description = "The Captain uploads the registration payment receipt for their team.")
     @PostMapping("/capitanes/{id}/comprobante")
     public String subirComprobante(@PathVariable Long id, @RequestParam String comprobante) {
         return capitanService.subirComprobantePago(id, comprobante);
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Search players by position", description = "The Captain searches for available players filtering by position (PORTERO, DEFENSA, MEDIOCAMPISTA, DELANTERO).")
     @GetMapping("/capitanes/{id}/buscarJugadores")
     public List<Jugador> buscarJugadores(@PathVariable Long id, @RequestParam String posicion) {
         return capitanService.buscarJugadores(posicion);
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Operation(summary = "Create referee", description = "Registers a new Referee in the system.")
     @PostMapping("/arbitros")
     public Arbitro crearArbitro(@RequestBody Map<String, Object> body) {
@@ -284,12 +309,14 @@ public class UsuarioController {
         return arbitroService.save(arbitro);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List referees", description = "Returns all available referees in the system.")
     @GetMapping("/arbitros")
     public List<Arbitro> listarArbitros() {
         return arbitroService.getArbitros();
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Assign referee to match", description = "The Organizer assigns a Referee to a scheduled match.")
     @PostMapping("/arbitros/{id}/partidos/{partidoId}")
     public String asignarPartido(@PathVariable Long id, @PathVariable Long partidoId) {
@@ -304,18 +331,21 @@ public class UsuarioController {
         return "Arbitro asignado al partido correctamente";
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Get referee matches", description = "The Referee queries the matches they have been assigned to referee.")
     @GetMapping("/arbitros/{id}/partidos")
     public List<Partido> consultarPartidosAsignados(@PathVariable Long id) {
         return arbitroService.consultarPartidosAsignados(id);
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Start match", description = "The Referee changes the match status to EN_CURSO.")
     @PutMapping("/arbitros/{id}/partidos/{partidoId}/iniciar")
     public Partido iniciarPartido(@PathVariable Long id, @PathVariable Long partidoId) {
         return partidoService.iniciarPartido(partidoId);
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Register result", description = "The Referee registers the match score.")
     @PutMapping("/arbitros/{id}/partidos/{partidoId}/resultado")
     public Partido registrarResultado(@PathVariable Long id, @PathVariable Long partidoId,
@@ -324,12 +354,14 @@ public class UsuarioController {
         return partidoService.registrarResultado(partidoId, body.get("golesLocal"), body.get("golesVisitante"));
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "End match", description = "The Referee closes the match and marks it as FINALIZADO.")
     @PutMapping("/arbitros/{id}/partidos/{partidoId}/finalizar")
     public Partido finalizarPartido(@PathVariable Long id, @PathVariable Long partidoId) {
         return partidoService.finalizarPartido(partidoId);
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Register goal scorer", description = "The Referee registers a goal indicating the player and the minute.")
     @PostMapping("/arbitros/{id}/partidos/{partidoId}/goles")
     public Partido registrarGoleador(@PathVariable Long id, @PathVariable Long partidoId,
@@ -340,6 +372,7 @@ public class UsuarioController {
         return partidoService.registrarGoleador(partidoId, jugadorId, minuto);
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Register sanction", description = "Registers a sanction for a player with type and description.")
     @PostMapping("/arbitros/{id}/partidos/{partidoId}/sanciones")
     public Partido registrarSancion(@PathVariable Long id, @PathVariable Long partidoId,
@@ -360,6 +393,7 @@ public class UsuarioController {
 
     // ── Organizadores ──────────────────────────────────────────────────────────
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Operation(summary = "Create organizer", description = "Registers a new Organizer in the system.")
     @PostMapping("/organizadores")
     public Organizador crearOrganizador(@RequestBody Map<String, Object> body) {
@@ -374,42 +408,49 @@ public class UsuarioController {
         return organizadorService.save(organizador);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List organizers", description = "Returns all organizers registered in the system.")
     @GetMapping("/organizadores")
     public List<Organizador> listarOrganizadores() {
         return organizadorService.getOrganizadores();
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Create tournament", description = "The Organizer creates a new tournament with name, dates, number of teams and registration cost.")
     @PostMapping("/organizadores/{id}/torneo")
     public Torneo crearTorneo(@PathVariable Long id, @RequestBody Torneo torneo) {
         return organizadorService.crearTorneo(id, torneo);
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Start tournament", description = "The Organizer changes the tournament status to EN_CURSO, enabling match registration.")
     @PatchMapping("/organizadores/{id}/torneo/iniciar")
     public Torneo iniciarTorneo(@PathVariable Long id) {
         return organizadorService.iniciarTorneo(id);
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "End tournament", description = "The Organizer closes the tournament and marks it as FINALIZADO.")
     @PatchMapping("/organizadores/{id}/torneo/finalizar")
     public Torneo finalizarTorneo(@PathVariable Long id) {
         return organizadorService.finalizarTorneo(id);
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "View pending payments", description = "The Organizer queries all payment receipts that have not yet been verified.")
     @GetMapping("/organizadores/{id}/pagos/pendientes")
     public List<Pago> pagosPendientes(@PathVariable Long id) {
         return pagoService.consultarPagosPendientes();
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Approve payment", description = "The Organizer approves a team's payment receipt, confirming their registration.")
     @PutMapping("/organizadores/{id}/pagos/{pagoId}/aprobar")
     public Pago aprobarPago(@PathVariable Long id, @PathVariable Long pagoId) {
         return pagoService.aprobarPago(pagoId);
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Configure tournament", description = "The Organizer defines the regulations, courts, schedules, sanctions and registration closing date.")
     @PatchMapping("/organizadores/{id}/torneo/configurar")
     public Torneo configurarTorneo(@PathVariable Long id, @RequestBody Map<String, Object> body) {
@@ -431,12 +472,14 @@ public class UsuarioController {
         );
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Reject payment", description = "The Organizer rejects a team's payment receipt for being invalid or incomplete.")
     @PutMapping("/organizadores/{id}/pagos/{pagoId}/rechazar")
     public Pago rechazarPago(@PathVariable Long id, @PathVariable Long pagoId) {
         return pagoService.rechazarPago(pagoId);
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Create match", description = "The Organizer schedules a match between two teams within a tournament.")
     @PostMapping("/organizadores/{id}/partidos")
     public Partido crearPartido(@PathVariable Long id, @RequestBody Map<String, Object> body) {
@@ -447,10 +490,5 @@ public class UsuarioController {
         String cancha = body.get("cancha").toString();
         partidoValidator.validarCrearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
         return partidoService.crearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
-    }
-
-    @PostMapping("/jugadores/{id}/foto")
-    public String subirFotoJugador(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
-        return jugadorService.subirFoto(id, file);
     }
 }

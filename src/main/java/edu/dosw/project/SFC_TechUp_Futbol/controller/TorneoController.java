@@ -8,6 +8,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.service.TorneoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -29,18 +30,21 @@ public class TorneoController {
 
     record TorneoRequest(String nombre, String fechaInicio, String fechaFin, int cantidadEquipos, double costo) {}
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get tournament by ID", description = "Returns the information of a specific tournament. Accessible by all actors.")
     @GetMapping("/{id}")
     public Torneo obtenerTorneo(@PathVariable int id) {
         return service.obtener(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List tournaments", description = "Returns all tournaments registered in the system.")
     @GetMapping
     public List<Torneo> listarTorneos() {
         return service.listar();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Standings table", description = "Calculates and returns the tournament standings based on finished matches.")
     @GetMapping("/{id}/posiciones")
     public List<Map<String, Object>> tablaPosiciones(@PathVariable int id) {
@@ -70,6 +74,7 @@ public class TorneoController {
                 .collect(Collectors.toList());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Elimination bracket", description = "Returns all tournament matches with their status, score and date to display the bracket.")
     @GetMapping("/{id}/llave")
     public List<Map<String, Object>> llaveEliminatoria(@PathVariable int id) {
@@ -86,6 +91,7 @@ public class TorneoController {
         }).collect(Collectors.toList());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Tournament statistics", description = "Returns general metrics: total matches, goals, averages and match statuses.")
     @GetMapping("/{id}/estadisticas")
     public Map<String, Object> estadisticas(@PathVariable int id) {

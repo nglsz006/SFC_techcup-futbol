@@ -13,6 +13,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.service.AutenticacionAdministrado
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AdministradorValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Admin", description = "Administrative registration of organizers and referees.")
@@ -55,6 +56,7 @@ public class AdministradorController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Operation(summary = "Register organizer or referee", description = "Protected endpoint that only accepts roles ORGANIZADOR and ARBITRO.")
     @PostMapping("/users")
     public RegistroAdministrativoResponse registrarUsuario(
