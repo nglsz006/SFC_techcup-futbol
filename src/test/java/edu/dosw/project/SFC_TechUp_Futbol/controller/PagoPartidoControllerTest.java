@@ -41,6 +41,9 @@ class PagoPartidoControllerTest {
     private EquipoRepository equipoRepo;
     private TorneoRepository torneoRepo;
     private JugadorRepository jugadorRepo;
+    private CapitanRepository capitanRepoRef;
+    private OrganizadorRepository orgRepoRef;
+    private ArbitroRepository arbitroRepoRef;
     private Equipo equipo;
     private Torneo torneo;
     private Jugador jugador;
@@ -183,6 +186,7 @@ class PagoPartidoControllerTest {
 
         Map<String, Arbitro> arbitroStore = new HashMap<>();
         ArbitroRepository arbitroRepo = mock(ArbitroRepository.class);
+        arbitroRepoRef = arbitroRepo;
         when(arbitroRepo.save(any())).thenAnswer(inv -> {
             Arbitro a = inv.getArgument(0);
             if (a.getId() == null) a.setId(UUID.randomUUID().toString());
@@ -213,6 +217,7 @@ class PagoPartidoControllerTest {
 
         Map<String, Capitan> capitanStore = new HashMap<>();
         CapitanRepository capitanRepo = mock(CapitanRepository.class);
+        capitanRepoRef = capitanRepo;
         when(capitanRepo.save(any())).thenAnswer(inv -> {
             Capitan c = inv.getArgument(0);
             if (c.getId() == null) c.setId(UUID.randomUUID().toString());
@@ -226,6 +231,7 @@ class PagoPartidoControllerTest {
 
         Map<String, Organizador> orgStore = new HashMap<>();
         OrganizadorRepository orgRepo = mock(OrganizadorRepository.class);
+        orgRepoRef = orgRepo;
         when(orgRepo.save(any())).thenAnswer(inv -> {
             Organizador o = inv.getArgument(0);
             if (o.getId() == null) o.setId(UUID.randomUUID().toString());
@@ -379,23 +385,22 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 4, "posicion", "PORTERO"
         );
-        String respCap = usuarioMvc.perform(post("/api/users/captains")
+        usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyCap)))
-                .andReturn().getResponse().getContentAsString();
-        String capId = mapper.readTree(respCap).get("id").asText();
+                        .content(mapper.writeValueAsString(bodyCap)));
+        String capId = capitanRepoRef.findAll().stream()
+                .filter(c -> "capapr@test.com".equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(post("/api/users/captains/" + capId + "/receipt")
-                        .param("comprobante", "pago.jpg"))
-                .andReturn().getResponse().getContentAsString();
+                        .param("comprobante", "pago.jpg"));
         Map<String, Object> bodyOrg = Map.of(
                 "nombre", "OrgPago", "email", "orgpago@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
+        usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyOrg)))
-                .andReturn().getResponse().getContentAsString();
-        String orgId = mapper.readTree(respOrg).get("id").asText();
+                        .content(mapper.writeValueAsString(bodyOrg)));
+        String orgId = orgRepoRef.findAll().stream()
+                .filter(o -> "orgpago@test.com".equals(o.getEmail())).findFirst().get().getId();
         List<Pago> pendientes = pagoService.consultarPagosPendientes();
         if (!pendientes.isEmpty()) {
             String pagoId = pendientes.get(0).getId();
@@ -412,11 +417,11 @@ class PagoPartidoControllerTest {
                 "nombre", "OrgPart", "email", "orgpart@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
+        usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyOrg)))
-                .andReturn().getResponse().getContentAsString();
-        String orgId = mapper.readTree(respOrg).get("id").asText();
+                        .content(mapper.writeValueAsString(bodyOrg)));
+        String orgId = orgRepoRef.findAll().stream()
+                .filter(o -> "orgpart@test.com".equals(o.getEmail())).findFirst().get().getId();
         Map<String, Object> bodyPartido = Map.of(
                 "torneoId", torneo.getId(),
                 "equipoLocalId", equipo.getId(),
@@ -452,20 +457,20 @@ class PagoPartidoControllerTest {
                 "nombre", "OrgFlujo", "email", "orgflujo@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String respOrg = usuarioMvc.perform(post("/api/users/organizers")
+        usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyOrg)))
-                .andReturn().getResponse().getContentAsString();
-        String orgId = mapper.readTree(respOrg).get("id").asText();
+                        .content(mapper.writeValueAsString(bodyOrg)));
+        String orgId = orgRepoRef.findAll().stream()
+                .filter(o -> "orgflujo@test.com".equals(o.getEmail())).findFirst().get().getId();
         Map<String, Object> bodyArbitro = Map.of(
                 "nombre", "RefFlujo", "email", "refflujo@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String respArb = usuarioMvc.perform(post("/api/users/referees")
+        usuarioMvc.perform(post("/api/users/referees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyArbitro)))
-                .andReturn().getResponse().getContentAsString();
-        String arbId = mapper.readTree(respArb).get("id").asText();
+                        .content(mapper.writeValueAsString(bodyArbitro)));
+        String arbId = arbitroRepoRef.findAll().stream()
+                .filter(a -> "refflujo@test.com".equals(a.getEmail())).findFirst().get().getId();
         Map<String, Object> bodyPartido = Map.of(
                 "torneoId", torneo.getId(),
                 "equipoLocalId", equipo.getId(),
@@ -504,11 +509,11 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 2, "posicion", "DEFENSA"
         );
-        String respCap = usuarioMvc.perform(post("/api/users/captains")
+        usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyCap)))
-                .andReturn().getResponse().getContentAsString();
-        Long capId = mapper.readTree(respCap).get("id").asLong();
+                        .content(mapper.writeValueAsString(bodyCap)));
+        String capId = capitanRepoRef.findAll().stream()
+                .filter(c -> "capalin@test.com".equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(post("/api/users/captains/" + capId + "/lineup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(java.util.List.of())))
@@ -558,11 +563,11 @@ class PagoPartidoControllerTest {
                 "nombre", "Ref2", "email", "ref2@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String resp = usuarioMvc.perform(post("/api/users/referees")
+        usuarioMvc.perform(post("/api/users/referees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        String id = mapper.readTree(resp).get("id").asText();
+                        .content(mapper.writeValueAsString(body)));
+        String id = arbitroRepoRef.findAll().stream()
+                .filter(a -> "ref2@test.com".equals(a.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(post("/api/users/referees/" + id + "/matches/999"))
                 .andExpect(status().isBadRequest());
     }
@@ -599,11 +604,11 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 7, "posicion", "VOLANTE"
         );
-        String resp = usuarioMvc.perform(post("/api/users/captains")
+        usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        String id = mapper.readTree(resp).get("id").asText();
+                        .content(mapper.writeValueAsString(body)));
+        String id = capitanRepoRef.findAll().stream()
+                .filter(c -> "cap2@test.com".equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(post("/api/users/captains/" + id + "/team")
                         .param("nombreEquipo", "Los Bravos"))
                 .andExpect(status().isOk());
@@ -616,11 +621,11 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 8, "posicion", "DEFENSA"
         );
-        String resp = usuarioMvc.perform(post("/api/users/captains")
+        usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        String id = mapper.readTree(resp).get("id").asText();
+                        .content(mapper.writeValueAsString(body)));
+        String id = capitanRepoRef.findAll().stream()
+                .filter(c -> "cap3@test.com".equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(post("/api/users/captains/" + id + "/invite/" + jugador.getId()))
                 .andExpect(status().isOk());
     }
@@ -632,11 +637,11 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 6, "posicion", "PORTERO"
         );
-        String resp = usuarioMvc.perform(post("/api/users/captains")
+        usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        String id = mapper.readTree(resp).get("id").asText();
+                        .content(mapper.writeValueAsString(body)));
+        String id = capitanRepoRef.findAll().stream()
+                .filter(c -> "cap4@test.com".equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(post("/api/users/captains/" + id + "/receipt")
                         .param("comprobante", "pago.pdf"))
                 .andExpect(status().isOk());
@@ -687,17 +692,17 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 5, "posicion", "DEFENSA"
         );
-        String resp = usuarioMvc.perform(post("/api/users/players")
+        usuarioMvc.perform(post("/api/users/players")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(bodyJug)))
-                .andReturn().getResponse().getContentAsString();
-        String jugId = mapper.readTree(resp).get("id").asText();
+                        .content(mapper.writeValueAsString(bodyJug)));
+        String jugId = jugadorRepo.findAll().stream()
+                .filter(j -> "jugedit@test.com".equals(j.getEmail())).findFirst().get().getId();
         Map<String, Object> perfil = Map.of("nombre", "JugEditado", "numeroCamiseta", 11, "posicion", "PORTERO");
         usuarioMvc.perform(patch("/api/users/players/" + jugId + "/profile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(perfil)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.jerseyNumber").value(11));
+                .andExpect(jsonPath("$.numeroCamiseta").value(11));
     }
 
 // ── Organizadores ──────────────────────────────────────────────────────────
@@ -725,11 +730,11 @@ class PagoPartidoControllerTest {
                 "nombre", "OrgT", "email", "orgt@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String resp = usuarioMvc.perform(post("/api/users/organizers")
+        usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        String id = mapper.readTree(resp).get("id").asText();
+                        .content(mapper.writeValueAsString(body)));
+        String id = orgRepoRef.findAll().stream()
+                .filter(o -> "orgt@test.com".equals(o.getEmail())).findFirst().get().getId();
         Torneo t = new Torneo(null, "Copa Nueva",
                 LocalDateTime.of(2025, 9, 1, 10, 0),
                 LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
@@ -745,11 +750,11 @@ class PagoPartidoControllerTest {
                 "nombre", "OrgPend", "email", "orgpend@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String resp = usuarioMvc.perform(post("/api/users/organizers")
+        usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        String id = mapper.readTree(resp).get("id").asText();
+                        .content(mapper.writeValueAsString(body)));
+        String id = orgRepoRef.findAll().stream()
+                .filter(o -> "orgpend@test.com".equals(o.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(get("/api/users/organizers/" + id + "/payments/pending"))
                 .andExpect(status().isOk());
     }
@@ -760,11 +765,11 @@ class PagoPartidoControllerTest {
                 "nombre", "Org2", "email", "org2@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String resp = usuarioMvc.perform(post("/api/users/organizers")
+        usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        String id = mapper.readTree(resp).get("id").asText();
+                        .content(mapper.writeValueAsString(body)));
+        String id = orgRepoRef.findAll().stream()
+                .filter(o -> "org2@test.com".equals(o.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(patch("/api/users/organizers/" + id + "/tournament/start"))
                 .andExpect(status().isConflict());
     }
@@ -775,11 +780,11 @@ class PagoPartidoControllerTest {
                 "nombre", "OrgConf", "email", "orgconf@test.com",
                 "password", "pass", "tipoUsuario", "ESTUDIANTE"
         );
-        String resp = usuarioMvc.perform(post("/api/users/organizers")
+        usuarioMvc.perform(post("/api/users/organizers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        String id = mapper.readTree(resp).get("id").asText();
+                        .content(mapper.writeValueAsString(body)));
+        String id = orgRepoRef.findAll().stream()
+                .filter(o -> "orgconf@test.com".equals(o.getEmail())).findFirst().get().getId();
         Torneo t = new Torneo(null, "Copa Config",
                 LocalDateTime.of(2025, 9, 1, 10, 0),
                 LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
@@ -800,11 +805,11 @@ class PagoPartidoControllerTest {
                 "password", "pass", "tipoUsuario", "ESTUDIANTE",
                 "numeroCamiseta", 3, "posicion", "VOLANTE"
         );
-        String resp = usuarioMvc.perform(post("/api/users/captains")
+        usuarioMvc.perform(post("/api/users/captains")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(body)))
-                .andReturn().getResponse().getContentAsString();
-        String id = mapper.readTree(resp).get("id").asText();
+                        .content(mapper.writeValueAsString(body)));
+        String id = capitanRepoRef.findAll().stream()
+                .filter(c -> "capval@test.com".equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(get("/api/users/captains/" + id + "/team/validate"))
                 .andExpect(status().isBadRequest());
     }
