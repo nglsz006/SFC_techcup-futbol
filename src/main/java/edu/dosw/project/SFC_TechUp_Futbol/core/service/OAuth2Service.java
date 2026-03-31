@@ -4,6 +4,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.RolFuncional;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.AccesoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
@@ -46,7 +47,7 @@ public class OAuth2Service {
             return usuarioRepository.save(nuevo);
         });
 
-        String token = jwtService.generarToken(usuario.getEmail(), usuario.getUserType());
+        String token = jwtService.generarToken(usuario.getEmail(), RolFuncional.JUGADOR);
         log.info("Login OAuth2 exitoso: " + email);
         return AccesoMapper.toLoginResponse(usuario, token);
     }

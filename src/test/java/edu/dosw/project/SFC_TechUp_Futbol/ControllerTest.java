@@ -52,7 +52,14 @@ class ControllerTest {
         });
         when(usuarioRepo.findAll()).thenAnswer(inv -> new ArrayList<>(usuarioStore.values()));
 
-        AccesoServiceImpl accesoService = new AccesoServiceImpl(usuarioRepo, new edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService());
+        var orgRepo2 = mock(EquipoRepository.class); // placeholder reuse
+        var orgRepoAcceso = mock(edu.dosw.project.SFC_TechUp_Futbol.core.repository.OrganizadorRepository.class);
+        when(orgRepoAcceso.findByEmail(anyString())).thenReturn(Optional.empty());
+        var arbRepoAcceso = mock(edu.dosw.project.SFC_TechUp_Futbol.core.repository.ArbitroRepository.class);
+        when(arbRepoAcceso.findByEmail(anyString())).thenReturn(Optional.empty());
+        var capRepoAcceso = mock(edu.dosw.project.SFC_TechUp_Futbol.core.repository.CapitanRepository.class);
+        when(capRepoAcceso.findByEmail(anyString())).thenReturn(Optional.empty());
+        AccesoServiceImpl accesoService = new AccesoServiceImpl(usuarioRepo, orgRepoAcceso, arbRepoAcceso, capRepoAcceso, new edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService());
         accesoMvc = MockMvcBuilders
                 .standaloneSetup(new AccesoController(accesoService, new AccesoValidator()))
                 .setControllerAdvice(new ErrorHandler()).build();

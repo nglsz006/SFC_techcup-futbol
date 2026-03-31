@@ -41,7 +41,13 @@ class AccesoServiceTest {
             return store.values().stream().filter(u -> email.equals(u.getEmail())).findFirst();
         });
         when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store.values()));
-        accesoService = new AccesoServiceImpl(repo, new JwtService());
+        var orgRepo = mock(edu.dosw.project.SFC_TechUp_Futbol.core.repository.OrganizadorRepository.class);
+        when(orgRepo.findByEmail(anyString())).thenReturn(java.util.Optional.empty());
+        var arbRepo = mock(edu.dosw.project.SFC_TechUp_Futbol.core.repository.ArbitroRepository.class);
+        when(arbRepo.findByEmail(anyString())).thenReturn(java.util.Optional.empty());
+        var capRepo = mock(edu.dosw.project.SFC_TechUp_Futbol.core.repository.CapitanRepository.class);
+        when(capRepo.findByEmail(anyString())).thenReturn(java.util.Optional.empty());
+        accesoService = new AccesoServiceImpl(repo, orgRepo, arbRepo, capRepo, new JwtService());
     }
 
     private RegistroRequest registroValido() {

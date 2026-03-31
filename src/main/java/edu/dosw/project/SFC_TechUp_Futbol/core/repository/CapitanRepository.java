@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface CapitanRepository {
     Capitan save(Capitan capitan);
     Optional<Capitan> findById(String id);
+    Optional<Capitan> findByEmail(String email);
     List<Capitan> findAll();
 }

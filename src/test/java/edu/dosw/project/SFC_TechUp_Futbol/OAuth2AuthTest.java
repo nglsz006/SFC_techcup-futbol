@@ -105,7 +105,7 @@ class OAuth2AuthTest {
 
     @Test
     void jwtFilter_tokenValido_continuaAutenticado() throws Exception {
-        String token = jwtService.generarToken("test@escuelaing.edu.co", Usuario.TipoUsuario.ESTUDIANTE);
+        String token = jwtService.generarToken("test@escuelaing.edu.co", edu.dosw.project.SFC_TechUp_Futbol.core.model.RolFuncional.JUGADOR);
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer " + token);
         MockHttpServletResponse response = new MockHttpServletResponse();
