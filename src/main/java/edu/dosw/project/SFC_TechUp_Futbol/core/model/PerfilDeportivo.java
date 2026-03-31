@@ -11,6 +11,7 @@ public class PerfilDeportivo {
     private String jugadorId;
     private List<Jugador.Posicion> posiciones;
     private int dorsal;
+    @JsonIgnore
     private String foto;
     private int edad;
     private Genero genero;

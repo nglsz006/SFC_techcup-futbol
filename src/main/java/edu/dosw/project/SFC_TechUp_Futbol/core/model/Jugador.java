@@ -11,6 +11,7 @@ public class Jugador extends Usuario {
     private int jerseyNumber;
     private Posicion position;
     private boolean available;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String photo;
     private String equipoId;
     private ArrayList<Sancion> sanciones = new ArrayList<>();

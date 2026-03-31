@@ -80,7 +80,9 @@ public class Partido {
     public static class Gol {
         private String id;
         private int minuto;
+        @JsonIgnore
         private Jugador jugador;
+        private String jugadorNombre;
 
         public String getId() { return id; }
         public void setId(String id) { this.id = id; }
@@ -89,7 +91,12 @@ public class Partido {
         public void setMinuto(int minuto) { this.minuto = minuto; }
 
         public Jugador getJugador() { return jugador; }
-        public void setJugador(Jugador jugador) { this.jugador = jugador; }
+        public void setJugador(Jugador jugador) {
+            this.jugador = jugador;
+            this.jugadorNombre = jugador != null ? jugador.getName() : null;
+        }
+
+        public String getJugadorNombre() { return jugadorNombre; }
     }
 
     public static class Tarjeta {

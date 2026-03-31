@@ -20,6 +20,10 @@ public class OAuth2Service {
 
     private static final Logger log = Logger.getLogger(OAuth2Service.class.getName());
 
+    private static String sanitize(String input) {
+        return input == null ? "null" : input.replaceAll("[\r\n\t]", "_");
+    }
+
     private final UsuarioRegistradoRepository usuarioRepository;
     private final JwtService jwtService;
 
@@ -38,7 +42,7 @@ public class OAuth2Service {
         }
 
         UsuarioRegistrado usuario = usuarioRepository.findByEmail(email).orElseGet(() -> {
-            log.info("Usuario OAuth2 nuevo, registrando: " + email);
+            log.info("Usuario OAuth2 nuevo, registrando: " + sanitize(email));
             UsuarioRegistrado nuevo = new UsuarioRegistrado(
                     null, nombre, email,
                     PasswordUtil.cifrar(UUID.randomUUID().toString()),
@@ -48,7 +52,7 @@ public class OAuth2Service {
         });
 
         String token = jwtService.generarToken(usuario.getEmail(), RolFuncional.JUGADOR);
-        log.info("Login OAuth2 exitoso: " + email);
+        log.info("Login OAuth2 exitoso: " + sanitize(email));
         return AccesoMapper.toLoginResponse(usuario, token);
     }
 }

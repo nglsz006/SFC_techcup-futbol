@@ -76,7 +76,8 @@ public class ErrorHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntime(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(armarError(500, "INTERNAL_ERROR", ex.getMessage(),
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(armarError(500, "INTERNAL_ERROR",
+                "Error interno del servidor.",
                 "Ocurrio un error inesperado en el servidor. Si el problema persiste, contacta al equipo de soporte."));
     }
 

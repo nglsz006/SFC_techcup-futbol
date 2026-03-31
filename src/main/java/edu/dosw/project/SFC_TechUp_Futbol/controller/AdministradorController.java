@@ -2,11 +2,8 @@ package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdministrativoRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
-import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.AdministradorLoginResponse;
-import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.RegistroAdministrativoResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Administrador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AdministradorService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AutenticacionAdministradorService;
@@ -15,6 +12,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Tag(name = "Admin", description = "Administrative registration of organizers and referees.")
 @RestController
@@ -36,9 +35,9 @@ public class AdministradorController {
         this.auditoriaService = auditoriaService;
     }
 
-    @Operation(summary = "Admin login", description = "Authenticates an administrator and returns a session token.")
+    @Operation(summary = "Admin login")
     @PostMapping("/login")
-    public AdministradorLoginResponse login(@RequestBody LoginRequest request) {
+    public Map<String, String> login(@RequestBody LoginRequest request) {
         administradorValidator.validarCredenciales(request);
         String token = autenticacionAdministradorService.login(request.getEmail(), request.getPassword());
         Administrador administrador = administradorService.obtenerAdministradorPorEmail(request.getEmail());
@@ -48,32 +47,20 @@ public class AdministradorController {
                 TipoAccionAuditoria.LOGIN_ADMIN,
                 "Inicio de sesion del administrador."
         );
-        return new AdministradorLoginResponse(
-                administrador.getId(),
-                administrador.getName(),
-                administrador.getEmail(),
-                token
-        );
+        return Map.of("token", token);
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Operation(summary = "Register organizer or referee")
     @PostMapping("/users")
-    public RegistroAdministrativoResponse registrarUsuario(
+    public Map<String, String> registrarUsuario(
             @RequestHeader("X-Administrador-Id") String administradorId,
             @RequestHeader("X-Administrador-Token") String token,
             @RequestBody RegistroAdministrativoRequest request) {
         administradorValidator.validarAdministradorId(administradorId);
         autenticacionAdministradorService.validarSesion(administradorId, token);
         administradorValidator.validarRegistro(request);
-        Usuario usuario = administradorService.registrarUsuarioAdministrativo(administradorId, request);
-        return new RegistroAdministrativoResponse(
-                usuario.getId(),
-                usuario.getName(),
-                usuario.getEmail(),
-                usuario.getUserType(),
-                request.getRol().toUpperCase(),
-                administradorId
-        );
+        administradorService.registrarUsuarioAdministrativo(administradorId, request);
+        return Map.of("mensaje", "Usuario registrado correctamente.");
     }
 }

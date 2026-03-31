@@ -15,6 +15,10 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
 
     private static final Logger log = Logger.getLogger(PerfilDeportivoServiceImpl.class.getName());
 
+    private static String sanitize(String input) {
+        return input == null ? "null" : input.replaceAll("[\r\n\t]", "_");
+    }
+
     private final PerfilDeportivoRepository perfilRepository;
     private final JugadorRepository jugadorRepository;
     private final PerfilDeportivoValidator validator;
@@ -31,7 +35,7 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
                                        String foto, int edad, PerfilDeportivo.Genero genero,
                                        String identificacion, Integer semestre) {
         jugadorRepository.findById(jugadorId)
-                .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado con id: " + jugadorId));
+                .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado."));
 
         if (perfilRepository.findByJugadorId(jugadorId).isPresent()) {
             throw new IllegalStateException("El jugador ya tiene un perfil deportivo creado.");
@@ -44,7 +48,7 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
                 foto, edad, genero, identificacion, semestre);
 
         PerfilDeportivo guardado = perfilRepository.save(perfil);
-        log.info("Perfil deportivo creado para jugador: " + jugadorId);
+        log.info("Perfil deportivo creado para jugador: " + sanitize(jugadorId));
         return guardado;
     }
 
@@ -67,7 +71,7 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
         perfil.setSemestre(semestre);
 
         PerfilDeportivo actualizado = perfilRepository.save(perfil);
-        log.info("Perfil deportivo actualizado para jugador: " + jugadorId);
+        log.info("Perfil deportivo actualizado para jugador: " + sanitize(jugadorId));
         return actualizado;
     }
 

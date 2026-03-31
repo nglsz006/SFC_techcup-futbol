@@ -4,11 +4,11 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AccesoValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest;
-import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
-import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Tag(name = "Access", description = "Registration and login for all system actors.")
 @RestController
@@ -23,17 +23,18 @@ public class AccesoController {
         this.authValidator = authValidator;
     }
 
-    @Operation(summary = "Register user", description = "Creates a new account in the system. Available for Players and Captains.")
+    @Operation(summary = "Register user")
     @PostMapping("/register")
-    public UsuarioResponse registrar(@RequestBody RegistroRequest request) {
+    public Map<String, String> registrar(@RequestBody RegistroRequest request) {
         authValidator.validarRegistro(request);
-        return authService.registrar(request);
+        authService.registrar(request);
+        return Map.of("mensaje", "Usuario registrado correctamente.");
     }
 
-    @Operation(summary = "Login", description = "Authenticates the user and returns their session data.")
+    @Operation(summary = "Login")
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
+    public Map<String, String> login(@RequestBody LoginRequest request) {
         authValidator.validarLogin(request);
-        return authService.login(request);
+        return Map.of("token", authService.login(request).getToken());
     }
 }

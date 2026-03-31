@@ -16,6 +16,10 @@ public class PagoServiceImpl implements PagoService {
 
     private static final Logger log = Logger.getLogger(PagoServiceImpl.class.getName());
 
+    private static String sanitize(String input) {
+        return input == null ? "null" : input.replaceAll("[\r\n\t]", "_");
+    }
+
     private final PagoRepository pagoRepository;
     private final EquipoRepository equipoRepository;
 
@@ -27,7 +31,7 @@ public class PagoServiceImpl implements PagoService {
     @Override
     public Pago subirComprobante(String equipoId, String comprobante) {
         Equipo equipo = equipoRepository.findById(equipoId)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Equipo no encontrado con id: " + equipoId));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Equipo no encontrado."));
 
         if (pagoRepository.existsByEquipoIdAndEstado(equipoId, Pago.PagoEstado.APROBADO))
             throw new ReglaNegocioException("El equipo ya tiene un pago aprobado.");
@@ -36,7 +40,7 @@ public class PagoServiceImpl implements PagoService {
         pago.setComprobante(comprobante);
         pago.setEquipo(equipo);
         Pago saved = pagoRepository.save(pago);
-        log.info("Comprobante subido para equipo: " + equipoId);
+        log.info("Comprobante subido para equipo: " + sanitize(equipoId));
         return saved;
     }
 
@@ -45,7 +49,7 @@ public class PagoServiceImpl implements PagoService {
         Pago pago = getPagoOrThrow(pagoId);
         pago.avanzar();
         pago.avanzar();
-        log.info("Pago aprobado: " + pagoId);
+        log.info("Pago aprobado: " + sanitize(pagoId));
         return pagoRepository.save(pago);
     }
 
@@ -53,7 +57,7 @@ public class PagoServiceImpl implements PagoService {
     public Pago rechazarPago(String pagoId) {
         Pago pago = getPagoOrThrow(pagoId);
         pago.rechazar();
-        log.info("Pago rechazado: " + pagoId);
+        log.info("Pago rechazado: " + sanitize(pagoId));
         return pagoRepository.save(pago);
     }
 
@@ -74,6 +78,6 @@ public class PagoServiceImpl implements PagoService {
 
     private Pago getPagoOrThrow(String pagoId) {
         return pagoRepository.findById(pagoId)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Pago no encontrado con id: " + pagoId));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Pago no encontrado."));
     }
 }
