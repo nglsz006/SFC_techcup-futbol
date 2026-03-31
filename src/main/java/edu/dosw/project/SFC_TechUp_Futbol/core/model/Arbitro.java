@@ -1,10 +1,12 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Arbitro extends Usuario {
 
+    @JsonIgnore
     private List<Partido> assignedMatches;
 
     public Arbitro() {

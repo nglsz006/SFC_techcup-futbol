@@ -1,5 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.*;
 import java.time.LocalDate;
@@ -10,10 +11,13 @@ public class Pago {
     public enum PagoEstado { PENDIENTE, EN_REVISION, APROBADO, RECHAZADO }
 
     private String id;
+    @JsonIgnore
     private String comprobante;
     private LocalDate fechaSubida;
     private PagoEstado estado;
+    @JsonIgnore
     private Equipo equipo;
+    private String equipoNombre;
     private PagoState state;
 
     public Pago() {
@@ -38,7 +42,12 @@ public class Pago {
     public void setEstado(PagoEstado estado) { this.estado = estado; }
 
     public Equipo getEquipo() { return equipo; }
-    public void setEquipo(Equipo equipo) { this.equipo = equipo; }
+    public void setEquipo(Equipo equipo) {
+        this.equipo = equipo;
+        this.equipoNombre = equipo != null ? equipo.getNombre() : null;
+    }
+
+    public String getEquipoNombre() { return equipoNombre; }
 
     public PagoState getState() { return state; }
     public void setState(PagoState state) { this.state = state; }

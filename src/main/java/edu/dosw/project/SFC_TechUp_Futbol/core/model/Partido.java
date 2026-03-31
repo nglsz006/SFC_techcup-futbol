@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.PartidoState;
@@ -20,10 +21,12 @@ public class Partido {
     private int marcadorLocal = 0;
     private int marcadorVisitante = 0;
     private PartidoEstado estado;
+    @JsonIgnore
     private Torneo torneo;
     private Equipo equipoLocal;
     private Equipo equipoVisitante;
     private List<Gol> goles = new ArrayList<>();
+    @JsonIgnore
     private List<Sancion> sanciones = new ArrayList<>();
 
     private PartidoState state;
@@ -77,7 +80,9 @@ public class Partido {
     public static class Gol {
         private String id;
         private int minuto;
+        @JsonIgnore
         private Jugador jugador;
+        private String jugadorNombre;
 
         public String getId() { return id; }
         public void setId(String id) { this.id = id; }
@@ -86,7 +91,12 @@ public class Partido {
         public void setMinuto(int minuto) { this.minuto = minuto; }
 
         public Jugador getJugador() { return jugador; }
-        public void setJugador(Jugador jugador) { this.jugador = jugador; }
+        public void setJugador(Jugador jugador) {
+            this.jugador = jugador;
+            this.jugadorNombre = jugador != null ? jugador.getName() : null;
+        }
+
+        public String getJugadorNombre() { return jugadorNombre; }
     }
 
     public static class Tarjeta {

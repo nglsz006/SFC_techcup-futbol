@@ -12,6 +12,10 @@ public class EquipoService extends Subject {
 
     private static final Logger log = Logger.getLogger(EquipoService.class.getName());
 
+    private static String sanitize(String input) {
+        return input == null ? "null" : input.replaceAll("[\r\n\t]", "_");
+    }
+
     private final EquipoRepository repository;
 
     public EquipoService(EquipoRepository repository) {
@@ -20,7 +24,7 @@ public class EquipoService extends Subject {
 
     public Equipo crear(Equipo equipo, Map<String, Object> datos) {
         Equipo saved = repository.save(equipo);
-        log.info("Equipo creado con id: " + saved.getId());
+        log.info("Equipo creado con id: " + sanitize(saved.getId()));
         notificar("EQUIPO_CREADO", Map.of("id", saved.getId(), "nombre", saved.getNombre()));
         return saved;
     }

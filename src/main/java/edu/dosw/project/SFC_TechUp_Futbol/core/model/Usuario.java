@@ -1,5 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class Usuario {
 
     public enum TipoUsuario {
@@ -9,6 +11,8 @@ public abstract class Usuario {
     private String id;
     private String name;
     private String email;
+
+    @JsonIgnore
     private String password;
     private TipoUsuario userType;
 

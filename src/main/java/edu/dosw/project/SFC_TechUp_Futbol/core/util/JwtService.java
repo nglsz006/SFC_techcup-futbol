@@ -1,6 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.util;
 
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.RolFuncional;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -17,7 +17,7 @@ public class JwtService {
     private static final long TTL_MS = 3600_000; // 1 hora
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public String generarToken(String email, Usuario.TipoUsuario rol) {
+    public String generarToken(String email, RolFuncional rol) {
         return Jwts.builder()
                 .setSubject(email)
                 .claim("rol", rol.name())

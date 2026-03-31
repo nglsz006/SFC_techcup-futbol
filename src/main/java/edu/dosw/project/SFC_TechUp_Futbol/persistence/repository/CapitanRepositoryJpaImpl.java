@@ -35,6 +35,11 @@ public class CapitanRepositoryJpaImpl implements CapitanRepository {
     }
 
     @Override
+    public Optional<Capitan> findByEmail(String email) {
+        return jpaRepository.findByEmail(email).map(mapper::toDomain);
+    }
+
+    @Override
     public List<Capitan> findAll() {
         return jpaRepository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
     }

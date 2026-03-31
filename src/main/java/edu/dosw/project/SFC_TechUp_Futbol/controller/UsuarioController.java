@@ -1,5 +1,9 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.ArbitroResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.CapitanResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.JugadorResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.OrganizadorResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.JugadorRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.PartidoRepository;
@@ -12,14 +16,22 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Tag(name = "Users", description = "Management of system actors: Players, Captains, Referees and Organizers.")
 @RestController
 @RequestMapping("/api/users")
 public class UsuarioController {
+
+    private static final Logger log = Logger.getLogger(UsuarioController.class.getName());
+
+    private static String sanitize(String input) {
+        return input == null ? "null" : input.replaceAll("[\r\n\t]", "_");
+    }
 
     private final JugadorService jugadorService;
     private final JugadorRepository jugadorRepository;
@@ -62,11 +74,12 @@ public class UsuarioController {
         acciones.put("captain", List.of("POST /api/users/captains", "GET /api/users/captains"));
         acciones.put("referee", List.of("POST /api/users/referees", "GET /api/users/referees"));
         acciones.put("organizer", List.of("POST /api/users/organizers", "GET /api/users/organizers"));
-        String actorNormalizado = actor.toLowerCase();
+        String actorNormalizado = actor.toLowerCase(Locale.ROOT);
         if (!acciones.containsKey(actorNormalizado)) {
             Map<String, Object> error = new LinkedHashMap<>();
-            error.put("error", "Actor '" + actor + "' not valid");
+            error.put("error", "Actor not valid");
             error.put("availableActors", List.of("player", "captain", "referee", "organizer"));
+            log.warning("Actor inválido recibido: " + sanitize(actor));
             return error;
         }
         Map<String, Object> respuesta = new LinkedHashMap<>();
@@ -79,7 +92,7 @@ public class UsuarioController {
 
     @Operation(summary = "Create player")
     @PostMapping("/players")
-    public Jugador crearJugador(@RequestBody Map<String, Object> body) {
+    public Map<String, String> crearJugador(@RequestBody Map<String, Object> body) {
         Jugador jugador = new Jugador(
                 null,
                 body.get("nombre").toString(),
@@ -89,15 +102,16 @@ public class UsuarioController {
                 Integer.parseInt(body.get("numeroCamiseta").toString()),
                 Jugador.Posicion.valueOf(body.get("posicion").toString()),
                 true,
-                body.getOrDefault("foto", "").toString()
+                ""
         );
-        return jugadorRepository.save(jugador);
+        jugadorRepository.save(jugador);
+        return Map.of("mensaje", "Jugador registrado correctamente.");
     }
 
     @Operation(summary = "List players")
     @GetMapping("/players")
-    public List<Jugador> listarJugadores() {
-        return jugadorService.getJugadores();
+    public List<JugadorResponse> listarJugadores() {
+        return jugadorService.getJugadores().stream().map(JugadorResponse::new).toList();
     }
 
     @Operation(summary = "Create sports profile")
@@ -122,12 +136,12 @@ public class UsuarioController {
 
     @Operation(summary = "Edit sports profile")
     @PatchMapping("/players/{id}/profile")
-    public Jugador editarPerfil(@PathVariable String id, @RequestBody Map<String, Object> body) {
+    public JugadorResponse editarPerfil(@PathVariable String id, @RequestBody Map<String, Object> body) {
         String nombre = body.getOrDefault("nombre", "").toString();
         int numeroCamiseta = body.containsKey("numeroCamiseta") ? Integer.parseInt(body.get("numeroCamiseta").toString()) : 0;
         Jugador.Posicion posicion = body.containsKey("posicion") ? Jugador.Posicion.valueOf(body.get("posicion").toString()) : null;
         String foto = body.getOrDefault("foto", "").toString();
-        return jugadorService.editarPerfil(id, nombre, numeroCamiseta, posicion, foto);
+        return new JugadorResponse(jugadorService.editarPerfil(id, nombre, numeroCamiseta, posicion, foto));
     }
 
     @Operation(summary = "Accept invitation")
@@ -160,7 +174,7 @@ public class UsuarioController {
 
     @Operation(summary = "Create captain")
     @PostMapping("/captains")
-    public Capitan crearCapitan(@RequestBody Map<String, Object> body) {
+    public Map<String, String> crearCapitan(@RequestBody Map<String, Object> body) {
         Capitan capitan = new Capitan(
                 null,
                 body.get("nombre").toString(),
@@ -170,16 +184,17 @@ public class UsuarioController {
                 Integer.parseInt(body.get("numeroCamiseta").toString()),
                 Jugador.Posicion.valueOf(body.get("posicion").toString()),
                 true,
-                body.getOrDefault("foto", "").toString(),
+                "",
                 null
         );
-        return capitanService.save(capitan);
+        capitanService.save(capitan);
+        return Map.of("mensaje", "Capitán registrado correctamente.");
     }
 
     @Operation(summary = "List captains")
     @GetMapping("/captains")
-    public List<Capitan> listarCapitanes() {
-        return capitanService.getCapitanes();
+    public List<CapitanResponse> listarCapitanes() {
+        return capitanService.getCapitanes().stream().map(CapitanResponse::new).toList();
     }
 
     @Operation(summary = "Create team")
@@ -224,15 +239,15 @@ public class UsuarioController {
 
     @Operation(summary = "Search players by position")
     @GetMapping("/captains/{id}/search-players")
-    public List<Jugador> buscarJugadores(@PathVariable String id, @RequestParam String posicion) {
-        return capitanService.buscarJugadores(posicion);
+    public List<JugadorResponse> buscarJugadores(@PathVariable String id, @RequestParam String posicion) {
+        return capitanService.buscarJugadores(posicion).stream().map(JugadorResponse::new).toList();
     }
 
     // ── Referees ─────────────────────────────────────────────────────────────
 
     @Operation(summary = "Create referee")
     @PostMapping("/referees")
-    public Arbitro crearArbitro(@RequestBody Map<String, Object> body) {
+    public Map<String, String> crearArbitro(@RequestBody Map<String, Object> body) {
         Arbitro arbitro = new Arbitro(
                 null,
                 body.get("nombre").toString(),
@@ -240,13 +255,14 @@ public class UsuarioController {
                 body.get("password").toString(),
                 Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString())
         );
-        return arbitroService.save(arbitro);
+        arbitroService.save(arbitro);
+        return Map.of("mensaje", "Árbitro registrado correctamente.");
     }
 
     @Operation(summary = "List referees")
     @GetMapping("/referees")
-    public List<Arbitro> listarArbitros() {
-        return arbitroService.getArbitros();
+    public List<ArbitroResponse> listarArbitros() {
+        return arbitroService.getArbitros().stream().map(ArbitroResponse::new).toList();
     }
 
     @Operation(summary = "Assign referee to match")
@@ -304,7 +320,7 @@ public class UsuarioController {
                                     @RequestBody Map<String, Object> body) {
         String jugadorId = body.get("jugadorId").toString();
         Sancion.TipoSancion tipoSancion = Sancion.TipoSancion.valueOf(body.get("tipoSancion").toString());
-        String descripcion = body.get("descripcion").toString();
+        String descripcion = sanitize(body.get("descripcion").toString());
         Jugador jugador = jugadorRepository.findById(jugadorId)
                 .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado"));
         Sancion sancion = new Sancion();
@@ -320,7 +336,7 @@ public class UsuarioController {
 
     @Operation(summary = "Create organizer")
     @PostMapping("/organizers")
-    public Organizador crearOrganizador(@RequestBody Map<String, Object> body) {
+    public Map<String, String> crearOrganizador(@RequestBody Map<String, Object> body) {
         Organizador organizador = new Organizador(
                 null,
                 body.get("nombre").toString(),
@@ -329,13 +345,14 @@ public class UsuarioController {
                 Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString()),
                 null
         );
-        return organizadorService.save(organizador);
+        organizadorService.save(organizador);
+        return Map.of("mensaje", "Organizador registrado correctamente.");
     }
 
     @Operation(summary = "List organizers")
     @GetMapping("/organizers")
-    public List<Organizador> listarOrganizadores() {
-        return organizadorService.getOrganizadores();
+    public List<OrganizadorResponse> listarOrganizadores() {
+        return organizadorService.getOrganizadores().stream().map(OrganizadorResponse::new).toList();
     }
 
     @Operation(summary = "Create tournament")

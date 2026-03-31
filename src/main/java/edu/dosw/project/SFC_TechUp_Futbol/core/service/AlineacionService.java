@@ -15,6 +15,10 @@ public class AlineacionService extends Subject {
 
     private static final Logger log = Logger.getLogger(AlineacionService.class.getName());
 
+    private static String sanitize(String input) {
+        return input == null ? "null" : input.replaceAll("[\r\n\t]", "_");
+    }
+
     private final AlineacionRepository repository;
     private final Validacion validador;
 
@@ -26,7 +30,7 @@ public class AlineacionService extends Subject {
     public Alineacion crear(Alineacion alineacion, Map<String, Object> datos) {
         validador.validar(datos);
         Alineacion saved = repository.save(alineacion);
-        log.info("Alineacion creada para equipo: " + saved.getEquipoId());
+        log.info("Alineacion creada para equipo: " + sanitize(saved.getEquipoId()));
         notificar("ALINEACION_CREADA", Map.of("id", saved.getId(), "equipoId", saved.getEquipoId()));
         return saved;
     }

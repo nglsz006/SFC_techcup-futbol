@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 
@@ -60,22 +62,29 @@ public class JugadorService {
 
     private Jugador getOrThrow(String id) {
         return jugadorRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado con id: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado."));
     }
 
     public String subirFoto(String jugadorId, MultipartFile file) {
         Jugador jugador = getOrThrow(jugadorId);
         if (file.isEmpty()) throw new IllegalArgumentException("El archivo está vacío");
         try {
-            String carpeta = "uploads/";
-            File directorio = new File(carpeta);
-            if (!directorio.exists()) directorio.mkdirs();
-            String nombreArchivo = IdGeneratorUtil.generarId() + "_" + file.getOriginalFilename();
-            String ruta = carpeta + nombreArchivo;
-            file.transferTo(new File(ruta));
-            jugador.setPhoto(ruta);
+            Path base = Paths.get("uploads").toAbsolutePath().normalize();
+            File directorio = base.toFile();
+            if (!directorio.exists() && !directorio.mkdirs())
+                throw new RuntimeException("No se pudo crear el directorio de uploads");
+            String nombreOriginal = file.getOriginalFilename();
+            if (nombreOriginal == null || nombreOriginal.isBlank())
+                throw new IllegalArgumentException("Nombre de archivo inválido");
+            String nombreSeguro = IdGeneratorUtil.generarId() + "_"
+                    + Paths.get(nombreOriginal).getFileName().toString();
+            Path destino = base.resolve(nombreSeguro).normalize();
+            if (!destino.startsWith(base))
+                throw new IllegalArgumentException("Ruta de archivo no permitida");
+            file.transferTo(destino.toFile());
+            jugador.setPhoto(destino.toString());
             jugadorRepository.save(jugador);
-            return "Imagen subida correctamente: " + ruta;
+            return "Imagen subida correctamente";
         } catch (IOException e) {
             throw new RuntimeException("Error al guardar la imagen");
         }

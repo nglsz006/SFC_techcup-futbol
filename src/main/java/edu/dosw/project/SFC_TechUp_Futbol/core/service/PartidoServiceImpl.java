@@ -32,11 +32,11 @@ public class PartidoServiceImpl implements PartidoService {
     public Partido crearPartido(String torneoId, String equipoLocalId, String equipoVisitanteId,
                                 LocalDateTime fecha, String cancha) {
         Torneo torneo = torneoRepository.findById(torneoId)
-                .orElseThrow(() -> new RuntimeException("Torneo no encontrado con id: " + torneoId));
+                .orElseThrow(() -> new RuntimeException("Torneo no encontrado."));
         Equipo local = equipoRepository.findById(equipoLocalId)
-                .orElseThrow(() -> new RuntimeException("Equipo local no encontrado con id: " + equipoLocalId));
+                .orElseThrow(() -> new RuntimeException("Equipo local no encontrado."));
         Equipo visitante = equipoRepository.findById(equipoVisitanteId)
-                .orElseThrow(() -> new RuntimeException("Equipo visitante no encontrado con id: " + equipoVisitanteId));
+                .orElseThrow(() -> new RuntimeException("Equipo visitante no encontrado."));
 
         if (local.getId().equals(visitante.getId()))
             throw new IllegalArgumentException("El equipo local y visitante no pueden ser el mismo.");
@@ -82,7 +82,7 @@ public class PartidoServiceImpl implements PartidoService {
         validarPartidoEnCurso(partido);
 
         Jugador jugador = jugadorRepository.findById(jugadorId)
-                .orElseThrow(() -> new RuntimeException("Jugador no encontrado con id: " + jugadorId));
+                .orElseThrow(() -> new RuntimeException("Jugador no encontrado."));
 
         Partido.Gol gol = new Partido.Gol();
         gol.setId(IdGeneratorUtil.generarId());
@@ -106,7 +106,7 @@ public class PartidoServiceImpl implements PartidoService {
         validarPartidoEnCurso(partido);
 
         Jugador jugador = jugadorRepository.findById(jugadorId)
-                .orElseThrow(() -> new RuntimeException("Jugador no encontrado con id: " + jugadorId));
+                .orElseThrow(() -> new RuntimeException("Jugador no encontrado."));
 
         Sancion sancion = new Sancion();
         sancion.setId(IdGeneratorUtil.generarId());
@@ -142,6 +142,6 @@ public class PartidoServiceImpl implements PartidoService {
 
     private Partido getPartidoOrThrow(String id) {
         return partidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Partido no encontrado con id: " + id));
+                .orElseThrow(() -> new RuntimeException("Partido no encontrado."));
     }
 }
