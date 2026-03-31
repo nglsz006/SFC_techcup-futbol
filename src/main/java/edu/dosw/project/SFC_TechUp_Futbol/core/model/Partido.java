@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.PartidoState;
@@ -20,10 +21,12 @@ public class Partido {
     private int marcadorLocal = 0;
     private int marcadorVisitante = 0;
     private PartidoEstado estado;
+    @JsonIgnore
     private Torneo torneo;
     private Equipo equipoLocal;
     private Equipo equipoVisitante;
     private List<Gol> goles = new ArrayList<>();
+    @JsonIgnore
     private List<Sancion> sanciones = new ArrayList<>();
 
     private PartidoState state;

@@ -1,5 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 public class PerfilDeportivo {
@@ -13,6 +14,7 @@ public class PerfilDeportivo {
     private String foto;
     private int edad;
     private Genero genero;
+    @JsonIgnore
     private String identificacion;
     private Integer semestre;
 

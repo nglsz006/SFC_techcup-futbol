@@ -1,7 +1,10 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Organizador extends Usuario {
 
+    @JsonIgnore
     private Torneo currentTournament;
 
     public Organizador() {}
