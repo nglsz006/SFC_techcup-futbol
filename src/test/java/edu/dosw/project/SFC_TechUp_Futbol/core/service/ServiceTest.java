@@ -1,11 +1,9 @@
-package edu.dosw.project.SFC_TechUp_Futbol;
+package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.EquipoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.TorneoRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.service.EquipoService;
-import edu.dosw.project.SFC_TechUp_Futbol.core.service.TorneoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

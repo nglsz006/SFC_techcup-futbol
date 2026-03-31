@@ -1,4 +1,4 @@
-package edu.dosw.project.SFC_TechUp_Futbol;
+package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
