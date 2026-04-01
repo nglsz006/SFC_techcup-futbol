@@ -8,23 +8,23 @@ El `AutenticacionAdministradorService` maneja la sesión del administrador con u
 
 ```mermaid
 graph TD
-    subgraph Controllers["🎮 Controllers"]
+    subgraph Controllers["Controllers"]
         ADC[AdministradorController]
         AUC[AuditoriaController]
     end
 
-    subgraph Services["⚙️ Services"]
+    subgraph Services["Services"]
         ADS[AdministradorService]
         AUS[AuditoriaService]
         AUTS[AutenticacionAdministradorService]
     end
 
-    subgraph Validators["✅ Validators"]
+    subgraph Validators["Validators"]
         ADV[AdministradorValidator]
         AUV[AuditoriaValidator]
     end
 
-    subgraph Repos["🗄️ Repositorios"]
+    subgraph Repos["Repositorios"]
         ADR[AdministradorRepository]
         AUR[RegistroAuditoriaRepository]
         OR[OrganizadorRepository]

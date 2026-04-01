@@ -8,14 +8,14 @@ El capitán puede crear su equipo, invitar jugadores y subir el comprobante de p
 
 ```mermaid
 graph TD
-    subgraph Controllers["🎮 Controllers"]
+    subgraph Controllers["Controllers"]
         UC[UsuarioController]
         EC[EquipoController]
         PAC[PagoController]
         ALC[AlineacionController]
     end
 
-    subgraph Services["⚙️ Services"]
+    subgraph Services["Services"]
         JS[JugadorService]
         CS[CapitanService]
         ARS[ArbitroService]
@@ -25,7 +25,7 @@ graph TD
         PDS[PerfilDeportivoServiceImpl]
     end
 
-    subgraph Validators["✅ Validators"]
+    subgraph Validators["Validators"]
         JV[JugadorValidator]
         PAV[PagoValidator]
         ALV[ValidacionAlineacion]
@@ -33,12 +33,12 @@ graph TD
         PDV[PerfilDeportivoValidator]
     end
 
-    subgraph Patterns["🔄 Patrones"]
+    subgraph Patterns["Patrones"]
         SP[State - Pago]
         SA[Subject - Alineacion]
     end
 
-    subgraph Repos["🗄️ Repositorios"]
+    subgraph Repos["Repositorios"]
         JR[JugadorRepository]
         CR[CapitanRepository]
         ARR[ArbitroRepository]
