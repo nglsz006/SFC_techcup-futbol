@@ -102,15 +102,15 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 
 ### Diagrama de contexto del sistema
 
-[DiagramaContexto(2).png](docs/uml/DiagramaContexto%282%29.png)
+[Ver diagrama de contexto](docs/uml/diagrama-contexto.md)
 
 ### Diagrama de clases
 
-[Ver diagrama de clases](docs/uml/diagramas-clases.md)
+[Ver diagrama de clases](docs/uml/diagrama-clases.md)
 
-### Diagramas de componentes
+### Diagrama de componentes
 
-[Ver diagramas de componentes](docs/uml/diagramas-componentes.md)
+[Ver diagrama de componentes](docs/uml/diagrama-componentes.md)
 
 ### Diagrama de Entidad-Relacion
 
@@ -119,7 +119,7 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 ### Diagramas de secuencia
 
 - [01 - Registro de usuario](docs/uml/diagramas-secuencia/01-registro-usuario.md)
-- [02 - Login](docs/uml/diagramas-secuencia/02-login.md)
+- [02 - Login y JWT](docs/uml/diagramas-secuencia/02-login.md)
 - [03 - Torneos](docs/uml/diagramas-secuencia/03-torneos.md)
 - [04 - Equipos](docs/uml/diagramas-secuencia/04-equipos.md)
 - [05 - Jugadores](docs/uml/diagramas-secuencia/05-jugadores.md)
@@ -129,9 +129,20 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 - [09 - Organizadores](docs/uml/diagramas-secuencia/09-organizadores.md)
 - [10 - Árbitros](docs/uml/diagramas-secuencia/10-arbitros.md)
 - [11 - Alineaciones](docs/uml/diagramas-secuencia/11-alineaciones.md)
+- [12 - OAuth2 y Administrador](docs/uml/diagramas-secuencia/12-oauth2-admin.md)
 
 ---
 
 ## Pruebas
 
 [Ver reporte de pruebas](docs/planing/pruebas.md)
+
+---
+
+## Sprint 4 — Videos de pruebas técnicas
+
+| Prueba | Enlace |
+|---|---|
+| Demo persistencia | [Ver video](https://youtu.be/eJXH36PVICs) |
+| Demo JWT | [Ver video](https://youtu.be/PX0B0lXNhfQ) |
+| Demo OAuth2 Google | [Ver video](https://youtu.be/ZZAPFg6h4mE) |

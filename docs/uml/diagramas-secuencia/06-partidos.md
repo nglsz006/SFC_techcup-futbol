@@ -3,7 +3,7 @@
 ```mermaid
 sequenceDiagram
     actor Cliente
-    participant PartidoController
+    participant UsuarioController
     participant PartidoValidator
     participant PartidoServiceImpl
     participant PartidoRepository
@@ -12,79 +12,67 @@ sequenceDiagram
     participant JugadorRepository
 
     %% Crear partido
-    Cliente->>PartidoController: POST /api/partidos {torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha}
-    PartidoController->>PartidoValidator: validarCrearPartido(torneoId, localId, visitanteId, fecha, cancha)
-    alt validacion falla
-        PartidoValidator-->>PartidoController: IllegalArgumentException
-        PartidoController-->>Cliente: 400 Bad Request
-    end
-    PartidoController->>PartidoServiceImpl: crearPartido(torneoId, localId, visitanteId, fecha, cancha)
+    Cliente->>UsuarioController: POST /api/users/organizers/{id}/matches {torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha}
+    UsuarioController->>PartidoServiceImpl: crearPartido(torneoId, localId, visitanteId, fecha, cancha)
     PartidoServiceImpl->>TorneoRepository: findById(torneoId)
     PartidoServiceImpl->>EquipoRepository: findById(equipoLocalId)
     PartidoServiceImpl->>EquipoRepository: findById(equipoVisitanteId)
-    PartidoServiceImpl->>PartidoServiceImpl: validar que local != visitante
-    PartidoServiceImpl->>PartidoRepository: save(partido)
+    PartidoServiceImpl->>PartidoServiceImpl: validar local != visitante
+    PartidoServiceImpl->>PartidoRepository: save(partido) → UUID generado
     PartidoRepository-->>PartidoServiceImpl: Partido guardado
-    PartidoServiceImpl-->>PartidoController: Partido
-    PartidoController-->>Cliente: 200 OK Partido
+    PartidoServiceImpl-->>UsuarioController: Partido
+    UsuarioController-->>Cliente: 200 OK Partido
 
     %% Iniciar partido
-    Cliente->>PartidoController: PUT /api/partidos/{id}/iniciar
-    PartidoController->>PartidoServiceImpl: iniciarPartido(id)
-    PartidoServiceImpl->>PartidoRepository: findById(id)
+    Cliente->>UsuarioController: PUT /api/users/referees/{id}/matches/{matchId}/start
+    UsuarioController->>PartidoServiceImpl: iniciarPartido(matchId)
+    PartidoServiceImpl->>PartidoRepository: findById(matchId)
     PartidoRepository-->>PartidoServiceImpl: Partido
-    PartidoServiceImpl->>PartidoServiceImpl: partido.iniciar() → estado EN_CURSO
+    PartidoServiceImpl->>PartidoServiceImpl: partido.iniciar() → EN_CURSO
     PartidoServiceImpl->>PartidoRepository: save(partido)
-    PartidoServiceImpl-->>PartidoController: Partido
-    PartidoController-->>Cliente: 200 OK Partido
-
-    %% Registrar resultado
-    Cliente->>PartidoController: PUT /api/partidos/{id}/resultado {golesLocal, golesVisitante}
-    PartidoController->>PartidoValidator: validarResultado(golesLocal, golesVisitante)
-    PartidoController->>PartidoServiceImpl: registrarResultado(id, golesLocal, golesVisitante)
-    PartidoServiceImpl->>PartidoRepository: findById(id)
-    PartidoRepository-->>PartidoServiceImpl: Partido
-    PartidoServiceImpl->>PartidoServiceImpl: partido.registrarResultado(golesLocal, golesVisitante)
-    PartidoServiceImpl->>PartidoRepository: save(partido)
-    PartidoServiceImpl-->>PartidoController: Partido
-    PartidoController-->>Cliente: 200 OK Partido
+    PartidoServiceImpl-->>UsuarioController: Partido
+    UsuarioController-->>Cliente: 200 OK Partido
 
     %% Registrar goleador
-    Cliente->>PartidoController: POST /api/partidos/{id}/goles {jugadorId, minuto}
-    PartidoController->>PartidoValidator: validarGoleador(jugadorId, minuto)
-    PartidoController->>PartidoServiceImpl: registrarGoleador(id, jugadorId, minuto)
-    PartidoServiceImpl->>PartidoRepository: findById(id)
-    PartidoRepository-->>PartidoServiceImpl: Partido
+    Cliente->>UsuarioController: POST /api/users/referees/{id}/matches/{matchId}/goals {jugadorId, minuto}
+    UsuarioController->>PartidoServiceImpl: registrarGoleador(matchId, jugadorId, minuto)
+    PartidoServiceImpl->>PartidoRepository: findById(matchId)
     PartidoServiceImpl->>PartidoServiceImpl: validarPartidoEnCurso(partido)
     PartidoServiceImpl->>JugadorRepository: findById(jugadorId)
-    JugadorRepository-->>PartidoServiceImpl: Jugador
-    PartidoServiceImpl->>PartidoServiceImpl: new Gol(jugador, minuto) → partido.getGoles().add(gol)
-    PartidoServiceImpl->>PartidoServiceImpl: actualizar marcador local o visitante
+    PartidoServiceImpl->>PartidoServiceImpl: new Gol con UUID → partido.getGoles().add(gol)
+    PartidoServiceImpl->>PartidoServiceImpl: actualizar marcador
     PartidoServiceImpl->>PartidoRepository: save(partido)
-    PartidoServiceImpl-->>PartidoController: Partido
-    PartidoController-->>Cliente: 200 OK Partido
+    PartidoServiceImpl-->>UsuarioController: Partido
+    UsuarioController-->>Cliente: 200 OK Partido
 
-    %% Registrar tarjeta
-    Cliente->>PartidoController: POST /api/partidos/{id}/tarjetas {jugadorId, tipo, minuto}
-    PartidoController->>PartidoValidator: validarTarjeta(jugadorId, tipo, minuto)
-    PartidoController->>PartidoServiceImpl: registrarTarjeta(id, jugadorId, tipo, minuto)
-    PartidoServiceImpl->>PartidoRepository: findById(id)
-    PartidoRepository-->>PartidoServiceImpl: Partido
+    %% Registrar sancion
+    Cliente->>UsuarioController: POST /api/users/referees/{id}/matches/{matchId}/sanctions {jugadorId, tipoSancion, descripcion}
+    UsuarioController->>PartidoValidator: validarSancion(sancion)
+    UsuarioController->>PartidoServiceImpl: registrarSancion(matchId, jugadorId, tipoSancion, descripcion)
+    PartidoServiceImpl->>PartidoRepository: findById(matchId)
     PartidoServiceImpl->>PartidoServiceImpl: validarPartidoEnCurso(partido)
     PartidoServiceImpl->>JugadorRepository: findById(jugadorId)
-    JugadorRepository-->>PartidoServiceImpl: Jugador
-    PartidoServiceImpl->>PartidoServiceImpl: new Tarjeta(jugador, tipo, minuto) → partido.getTarjetas().add(tarjeta)
+    PartidoServiceImpl->>PartidoServiceImpl: new Sancion con UUID → partido y jugador
     PartidoServiceImpl->>PartidoRepository: save(partido)
-    PartidoServiceImpl-->>PartidoController: Partido
-    PartidoController-->>Cliente: 200 OK Partido
+    PartidoServiceImpl-->>UsuarioController: Partido
+    UsuarioController-->>Cliente: 200 OK Partido
+
+    %% Registrar resultado
+    Cliente->>UsuarioController: PUT /api/users/referees/{id}/matches/{matchId}/result {golesLocal, golesVisitante}
+    UsuarioController->>PartidoValidator: validarResultado(golesLocal, golesVisitante)
+    UsuarioController->>PartidoServiceImpl: registrarResultado(matchId, golesLocal, golesVisitante)
+    PartidoServiceImpl->>PartidoRepository: findById(matchId)
+    PartidoServiceImpl->>PartidoServiceImpl: partido.registrarResultado(golesLocal, golesVisitante)
+    PartidoServiceImpl->>PartidoRepository: save(partido)
+    PartidoServiceImpl-->>UsuarioController: Partido
+    UsuarioController-->>Cliente: 200 OK Partido
 
     %% Finalizar partido
-    Cliente->>PartidoController: PUT /api/partidos/{id}/finalizar
-    PartidoController->>PartidoServiceImpl: finalizarPartido(id)
-    PartidoServiceImpl->>PartidoRepository: findById(id)
-    PartidoRepository-->>PartidoServiceImpl: Partido
-    PartidoServiceImpl->>PartidoServiceImpl: partido.finalizar() → estado FINALIZADO
+    Cliente->>UsuarioController: PUT /api/users/referees/{id}/matches/{matchId}/end
+    UsuarioController->>PartidoServiceImpl: finalizarPartido(matchId)
+    PartidoServiceImpl->>PartidoRepository: findById(matchId)
+    PartidoServiceImpl->>PartidoServiceImpl: partido.finalizar() → FINALIZADO
     PartidoServiceImpl->>PartidoRepository: save(partido)
-    PartidoServiceImpl-->>PartidoController: Partido
-    PartidoController-->>Cliente: 200 OK Partido
+    PartidoServiceImpl-->>UsuarioController: Partido
+    UsuarioController-->>Cliente: 200 OK Partido
 ```

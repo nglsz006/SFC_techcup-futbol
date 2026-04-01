@@ -8,28 +8,24 @@ sequenceDiagram
     participant AlineacionRepository
     participant ValidacionAlineacion
     participant Subject
-    participant NotificadorTorneo
 
     %% Crear alineacion
-    Cliente->>AlineacionController: POST /api/alineaciones {equipoId, partidoId, formacion, titulares, reservas}
-    AlineacionController->>AlineacionController: new Alineacion() + setters
-    AlineacionController->>AlineacionController: Formacion.fromString(formacion)
-    AlineacionController->>AlineacionService: crear(alineacion, Map.of())
+    Cliente->>AlineacionController: POST /api/lineups {equipoId, partidoId, formacion, titulares, reservas}
+    AlineacionController->>AlineacionService: crear(alineacion, datos)
     AlineacionService->>ValidacionAlineacion: validar(datos)
     alt validacion falla
-        ValidacionAlineacion-->>AlineacionService: excepcion
-        AlineacionService-->>AlineacionController: excepcion
+        ValidacionAlineacion-->>AlineacionService: IllegalArgumentException
+        AlineacionService-->>AlineacionController: IllegalArgumentException
         AlineacionController-->>Cliente: 400 Bad Request
     end
-    AlineacionService->>AlineacionRepository: save(alineacion)
+    AlineacionService->>AlineacionRepository: save(alineacion) → UUID generado
     AlineacionRepository-->>AlineacionService: Alineacion guardada
     AlineacionService->>Subject: notificar("ALINEACION_CREADA", {id, equipoId})
-    Subject->>NotificadorTorneo: actualizar("ALINEACION_CREADA", datos)
     AlineacionService-->>AlineacionController: Alineacion
     AlineacionController-->>Cliente: 200 OK Alineacion
 
     %% Obtener alineacion
-    Cliente->>AlineacionController: GET /api/alineaciones/{id}
+    Cliente->>AlineacionController: GET /api/lineups/{id}
     AlineacionController->>AlineacionService: obtener(id)
     AlineacionService->>AlineacionRepository: findById(id)
     alt no encontrada
@@ -37,7 +33,15 @@ sequenceDiagram
         AlineacionService-->>AlineacionController: IllegalArgumentException
         AlineacionController-->>Cliente: 400 Bad Request
     end
-    AlineacionRepository-->>AlineacionService: Optional.of(alineacion)
+    AlineacionRepository-->>AlineacionService: Alineacion
     AlineacionService-->>AlineacionController: Alineacion
     AlineacionController-->>Cliente: 200 OK Alineacion
+
+    %% Listar alineaciones
+    Cliente->>AlineacionController: GET /api/lineups
+    AlineacionController->>AlineacionService: listar()
+    AlineacionService->>AlineacionRepository: findAll()
+    AlineacionRepository-->>AlineacionService: List~Alineacion~
+    AlineacionService-->>AlineacionController: List~Alineacion~
+    AlineacionController-->>Cliente: 200 OK List~Alineacion~
 ```

@@ -1,9 +1,10 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
-import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.OAuth2Response;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.OAuth2Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ public class OAuth2Controller {
     @Operation(summary = "Google OAuth2 callback",
                description = "Callback de Google OAuth2. Registra al usuario si no existe (rol FAMILIAR) y retorna un token JWT.")
     @GetMapping("/oauth2/google")
-    public LoginResponse googleCallback(OAuth2AuthenticationToken authentication) {
+    public OAuth2Response googleCallback(OAuth2AuthenticationToken authentication) {
         return oAuth2Service.procesarCallback(authentication);
     }
 }

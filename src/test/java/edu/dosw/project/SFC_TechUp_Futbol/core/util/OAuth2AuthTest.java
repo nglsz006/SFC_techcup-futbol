@@ -1,6 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.util;
 
-import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.OAuth2Response;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
@@ -63,9 +63,8 @@ class OAuth2AuthTest {
     @Test
     void oauth2_usuarioNuevo_seRegistraYRetornaToken() {
         OAuth2AuthenticationToken token = crearToken("nuevo@gmail.com", "Nuevo");
-        LoginResponse response = oAuth2Service.procesarCallback(token);
+        OAuth2Response response = oAuth2Service.procesarCallback(token);
         assertNotNull(response.getToken());
-        assertEquals("nuevo@gmail.com", response.getEmail());
         verify(repo, times(1)).save(any());
     }
 
@@ -74,7 +73,7 @@ class OAuth2AuthTest {
         UsuarioRegistrado existente = new UsuarioRegistrado("uuid-1", "Existente", "existente@gmail.com", "hash", Usuario.TipoUsuario.FAMILIAR);
         when(repo.findByEmail("existente@gmail.com")).thenReturn(Optional.of(existente));
         OAuth2AuthenticationToken token = crearToken("existente@gmail.com", "Existente");
-        LoginResponse response = oAuth2Service.procesarCallback(token);
+        OAuth2Response response = oAuth2Service.procesarCallback(token);
         assertNotNull(response.getToken());
         verify(repo, never()).save(any());
     }
@@ -88,7 +87,7 @@ class OAuth2AuthTest {
     @Test
     void oauth2_tokenRetornado_esJwtValido() {
         OAuth2AuthenticationToken token = crearToken("valido@gmail.com", "Valido");
-        LoginResponse response = oAuth2Service.procesarCallback(token);
+        OAuth2Response response = oAuth2Service.procesarCallback(token);
         assertTrue(jwtService.esValido(response.getToken()));
         assertEquals("valido@gmail.com", jwtService.extraerEmail(response.getToken()));
     }
