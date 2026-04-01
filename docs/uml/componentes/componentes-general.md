@@ -8,14 +8,14 @@ Acá se ve el sistema completo de un vistazo. Toda petición que llega del clien
 graph TD
     CLI[Cliente - Swagger / Postman / Frontend]
 
-    subgraph Seguridad["Seguridad"]
+    subgraph Seguridad["🔒 Seguridad"]
         JF[JwtFilter]
         JS[JwtService]
         OH[OAuth2SuccessHandler]
         SC[SecurityConfig]
     end
 
-    subgraph Controllers["Controllers"]
+    subgraph Controllers["🎮 Controllers"]
         AC[AccesoController]
         UC[UsuarioController]
         TC[TorneoController]
@@ -28,23 +28,23 @@ graph TD
         OC[OAuth2Controller]
     end
 
-    subgraph Services["Services"]
+    subgraph Services["⚙️ Services"]
         SVC[AccesoServiceImpl\nJugadorService\nCapitanService\nOrganizadorService\nArbitroService\nTorneoService\nPartidoServiceImpl\nPagoServiceImpl\nAlineacionService\nAdministradorService\nAuditoriaService\nPerfilDeportivoServiceImpl\nOAuth2Service]
     end
 
-    subgraph Validators["Validators"]
+    subgraph Validators["✅ Validators"]
         VAL[AccesoValidator\nJugadorValidator\nPartidoValidator\nPagoValidator\nValidacionTorneo\nValidacionEquipo\nValidacionAlineacion\nPerfilDeportivoValidator\nAdministradorValidator\nAuditoriaValidator]
     end
 
-    subgraph Patterns["Patrones"]
+    subgraph Patterns["🔄 Patrones"]
         PAT[Subject - Observer\nState - Partido\nState - Pago\nState - Torneo]
     end
 
-    subgraph Repositories["Repositories"]
+    subgraph Repositories["🗄️ Repositories"]
         REP[UsuarioRegistradoRepository\nJugadorRepository\nCapitanRepository\nOrganizadorRepository\nArbitroRepository\nTorneoRepository\nPartidoRepository\nPagoRepository\nAlineacionRepository\nAdministradorRepository\nRegistroAuditoriaRepository\nPerfilDeportivoRepository\nEquipoRepository\nSancionRepository]
     end
 
-    subgraph Persistence["JPA"]
+    subgraph Persistence["💾 JPA"]
         ENT[Entities]
         MAP[Mappers]
         JPA[JPA Repositories]

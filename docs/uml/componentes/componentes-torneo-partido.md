@@ -8,25 +8,25 @@ Cuando se crea un torneo, el `TorneoService` lo guarda y notifica a los observer
 
 ```mermaid
 graph TD
-    subgraph Controllers["Controllers"]
+    subgraph Controllers["🎮 Controllers"]
         UC[UsuarioController]
         TC[TorneoController]
         PC[PartidoController]
     end
 
-    subgraph Services["Services"]
+    subgraph Services["⚙️ Services"]
         OS[OrganizadorService]
         TS[TorneoService]
         PS[PartidoServiceImpl]
     end
 
-    subgraph Validators["Validators"]
+    subgraph Validators["✅ Validators"]
         TV[ValidacionTorneo]
         PV[PartidoValidator]
         UV[UsuarioValidator]
     end
 
-    subgraph Patterns["Patrones"]
+    subgraph Patterns["🔄 Patrones"]
         SUB[Subject]
         NT[NotificadorTorneo]
         LO[LoggerObserver]
@@ -34,7 +34,7 @@ graph TD
         SP[State - Partido]
     end
 
-    subgraph Repos["Repositorios"]
+    subgraph Repos["🗄️ Repositorios"]
         TR[TorneoRepository]
         PR[PartidoRepository]
         ER[EquipoRepository]

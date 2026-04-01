@@ -15,14 +15,14 @@ graph TD
         GG[Google OAuth2]
     end
 
-    subgraph Seguridad["Seguridad"]
+    subgraph Seguridad["🔒 Seguridad"]
         JF[JwtFilter]
         JS[JwtService]
         OH[OAuth2SuccessHandler]
         SC[SecurityConfig]
     end
 
-    subgraph Acceso["Acceso"]
+    subgraph Acceso["🔑 Acceso"]
         AC[AccesoController]
         OC[OAuth2Controller]
         AS[AccesoServiceImpl]
@@ -32,7 +32,7 @@ graph TD
         PU[PasswordUtil]
     end
 
-    subgraph Repos["Repositorios"]
+    subgraph Repos["🗄️ Repositorios"]
         UR[UsuarioRegistradoRepository]
         OR[OrganizadorRepository]
         ARR[ArbitroRepository]
