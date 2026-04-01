@@ -114,7 +114,7 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 
 ### Diagrama de Entidad-Relacion
 
-[Ver diagrama Entidad-Relacion](docs/uml/DiagramaER/DiagramaER.jpg)
+[Ver diagrama Entidad-Relacion](docs/uml/DiagramaER/DiagramaER.md)
 
 ### Diagramas de secuencia
 
