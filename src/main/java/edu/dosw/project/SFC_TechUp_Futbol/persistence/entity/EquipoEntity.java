@@ -1,6 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.persistence.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,8 @@ public class EquipoEntity {
     @Column(name = "id", nullable = false, updatable = false)
     private String id;
 
-    @Column(nullable = false)
+    @NotNull
+    @Column(nullable = false, unique = true)
     private String nombre;
 
     @Column

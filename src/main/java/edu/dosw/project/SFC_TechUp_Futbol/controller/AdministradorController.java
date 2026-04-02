@@ -2,8 +2,10 @@ package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdministrativoRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.RegistroAdministrativoResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Administrador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AdministradorService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AutenticacionAdministradorService;
@@ -53,14 +55,16 @@ public class AdministradorController {
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Operation(summary = "Register organizer or referee")
     @PostMapping("/users")
-    public Map<String, String> registrarUsuario(
+    public RegistroAdministrativoResponse registrarUsuario(
             @RequestHeader("X-Administrador-Id") String administradorId,
             @RequestHeader("X-Administrador-Token") String token,
             @RequestBody RegistroAdministrativoRequest request) {
         administradorValidator.validarAdministradorId(administradorId);
         autenticacionAdministradorService.validarSesion(administradorId, token);
         administradorValidator.validarRegistro(request);
-        administradorService.registrarUsuarioAdministrativo(administradorId, request);
-        return Map.of("mensaje", "Usuario registrado correctamente.");
+        Usuario usuario = administradorService.registrarUsuarioAdministrativo(administradorId, request);
+        return new RegistroAdministrativoResponse(
+                usuario.getId(), usuario.getName(), usuario.getEmail(),
+                usuario.getUserType(), request.getRol(), administradorId);
     }
 }

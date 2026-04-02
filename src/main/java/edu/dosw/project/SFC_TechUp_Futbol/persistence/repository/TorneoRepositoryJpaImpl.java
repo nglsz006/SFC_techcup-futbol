@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.TorneoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.TorneoMapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class TorneoRepositoryJpaImpl implements TorneoRepository {
         this.mapper = mapper;
     }
 
+    @Transactional
     @Override
     public Torneo save(Torneo torneo) {
         if (torneo.getId() == null) torneo.setId(IdGeneratorUtil.generarId());
@@ -38,6 +40,13 @@ public class TorneoRepositoryJpaImpl implements TorneoRepository {
     @Override
     public List<Torneo> findAll() {
         return jpaRepository.findAll().stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Torneo> findByEstado(Torneo.EstadoTorneo estado) {
+        return jpaRepository.findByEstado(estado).stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }

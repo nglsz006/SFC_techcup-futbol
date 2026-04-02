@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ArbitroJpaRepository extends JpaRepository<ArbitroEntity, String> {
     Optional<ArbitroEntity> findByEmail(String email);
+    boolean existsByEmail(String email);
 }
