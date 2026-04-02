@@ -8,7 +8,8 @@ Estos diagramas muestran cómo está organizado el sistema por dentro: qué part
 
 El diagrama general muestra toda esa cadena de un vistazo. El cliente (puede ser Swagger, Postman o el frontend) manda una petición HTTP. Los **Controllers** la reciben y la delegan a los **Services**, que son los que tienen la lógica de negocio. Los **Services** usan los **Repositories** para guardar o consultar datos. Los **Validators** entran antes de que el servicio haga cualquier cosa, para asegurarse de que los datos estén bien. Y si algo sale mal, las **Exceptions** lo capturan y devuelven un error claro al cliente.
 
-<img width="304" height="542" alt="Diagrama de componentes general" src="https://github.com/user-attachments/assets/18c074fe-b614-4267-8ff3-f57cf9fe90f7" />
+<img width="319" height="555" alt="image" src="https://github.com/user-attachments/assets/e018baaa-e623-4b43-9585-e09d793891f3" />
+
 
 ---
 
