@@ -2,6 +2,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.entity;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -12,7 +13,8 @@ public class PagoEntity {
     @Column(name = "id", nullable = false, updatable = false)
     private String id;
 
-    @Column
+    @NotNull
+    @Column(nullable = false)
     private String comprobante;
 
     @Column(name = "fecha_subida")
@@ -22,8 +24,9 @@ public class PagoEntity {
     @Column(nullable = false)
     private Pago.PagoEstado estado;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipo_id")
+    @JoinColumn(name = "equipo_id", nullable = false)
     private EquipoEntity equipo;
 
     public PagoEntity() {

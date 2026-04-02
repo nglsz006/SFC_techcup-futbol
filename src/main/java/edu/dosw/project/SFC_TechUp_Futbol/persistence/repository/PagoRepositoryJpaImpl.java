@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.PagoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.PagoMapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class PagoRepositoryJpaImpl implements PagoRepository {
     }
 
     @Override
+    @Transactional
     public Pago save(Pago pago) {
         if (pago.getId() == null) pago.setId(IdGeneratorUtil.generarId());
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(pago)));

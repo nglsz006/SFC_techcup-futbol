@@ -2,6 +2,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.entity;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,10 +16,12 @@ public class TorneoEntity {
     @Column(nullable = false)
     private String nombre;
 
-    @Column(name = "fecha_inicio")
+    @NotNull
+    @Column(name = "fecha_inicio", nullable = false)
     private LocalDateTime fechaInicio;
 
-    @Column(name = "fecha_fin")
+    @NotNull
+    @Column(name = "fecha_fin", nullable = false)
     private LocalDateTime fechaFin;
 
     @Column(name = "cantidad_equipos")
@@ -27,9 +30,10 @@ public class TorneoEntity {
     @Column
     private double costo;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Torneo.EstadoTorneo estado;
+    private Torneo.EstadoTorneo estado = Torneo.EstadoTorneo.CREADO;
 
     @Column(columnDefinition = "TEXT")
     private String reglamento;

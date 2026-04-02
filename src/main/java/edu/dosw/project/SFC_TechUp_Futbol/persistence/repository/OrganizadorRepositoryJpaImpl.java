@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.OrganizadorRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class OrganizadorRepositoryJpaImpl implements OrganizadorRepository {
     }
 
     @Override
+    @Transactional
     public Organizador save(Organizador organizador) {
         if (organizador.getId() == null) organizador.setId(IdGeneratorUtil.generarId());
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(organizador)));

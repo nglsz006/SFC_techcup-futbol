@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.ArbitroRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.ArbitroMapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class ArbitroRepositoryJpaImpl implements ArbitroRepository {
     }
 
     @Override
+    @Transactional
     public Arbitro save(Arbitro arbitro) {
         if (arbitro.getId() == null) arbitro.setId(IdGeneratorUtil.generarId());
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(arbitro)));

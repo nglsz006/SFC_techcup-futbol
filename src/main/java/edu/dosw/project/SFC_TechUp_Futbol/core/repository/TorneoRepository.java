@@ -8,5 +8,6 @@ public interface TorneoRepository {
     Torneo save(Torneo torneo);
     Optional<Torneo> findById(String id);
     List<Torneo> findAll();
+    List<Torneo> findByEstado(Torneo.EstadoTorneo estado);
 }
 

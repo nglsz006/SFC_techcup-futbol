@@ -2,6 +2,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.entity;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +35,14 @@ public class PartidoEntity {
     @JoinColumn(name = "torneo_id")
     private TorneoEntity torneo;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipo_local_id")
+    @JoinColumn(name = "equipo_local_id", nullable = false)
     private EquipoEntity equipoLocal;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipo_visitante_id")
+    @JoinColumn(name = "equipo_visitante_id", nullable = false)
     private EquipoEntity equipoVisitante;
 
     @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true)
