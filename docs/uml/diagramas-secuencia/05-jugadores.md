@@ -3,69 +3,69 @@
 ```mermaid
 sequenceDiagram
     actor Cliente
-    participant JugadorController
+    participant UsuarioController
     participant JugadorService
     participant JugadorRepository
+    participant PerfilDeportivoService
+    participant PerfilDeportivoRepository
     participant JugadorValidator
 
     %% Crear jugador
-    Cliente->>JugadorController: POST /api/jugadores {nombre, email, password, tipoUsuario, numeroCamiseta, posicion, foto}
-    JugadorController->>JugadorService: getJugadores()
-    JugadorService->>JugadorRepository: findAll()
-    JugadorRepository-->>JugadorService: List<Jugador>
-    JugadorService-->>JugadorController: List<Jugador>
-    JugadorController->>JugadorController: new Jugador(id, campos...)
-    JugadorController->>JugadorRepository: save(jugador)
-    JugadorRepository-->>JugadorController: Jugador guardado
-    JugadorController-->>Cliente: 200 OK Jugador
+    Cliente->>UsuarioController: POST /api/users/players {nombre, email, password, tipoUsuario, numeroCamiseta, posicion}
+    UsuarioController->>JugadorRepository: save(jugador) → UUID generado
+    JugadorRepository-->>UsuarioController: Jugador guardado
+    UsuarioController-->>Cliente: 200 OK Jugador
 
-    %% Listar jugadores
-    Cliente->>JugadorController: GET /api/jugadores
-    JugadorController->>JugadorService: getJugadores()
-    JugadorService->>JugadorRepository: findAll()
-    JugadorRepository-->>JugadorService: List<Jugador>
-    JugadorService-->>JugadorController: List<Jugador>
-    JugadorController-->>Cliente: 200 OK List<Jugador>
+    %% Crear perfil deportivo
+    Cliente->>UsuarioController: POST /api/users/players/{id}/profile {posiciones, dorsal, foto, edad, genero, identificacion, semestre}
+    UsuarioController->>PerfilDeportivoService: crearPerfil(id, posiciones, dorsal, foto, edad, genero, identificacion, semestre)
+    PerfilDeportivoService->>JugadorRepository: findById(id)
+    alt jugador no encontrado
+        JugadorRepository-->>PerfilDeportivoService: Optional.empty()
+        PerfilDeportivoService-->>UsuarioController: IllegalArgumentException
+        UsuarioController-->>Cliente: 400 Bad Request
+    end
+    PerfilDeportivoService->>PerfilDeportivoRepository: findByJugadorId(id)
+    alt ya tiene perfil
+        PerfilDeportivoRepository-->>PerfilDeportivoService: Optional.of(perfil)
+        PerfilDeportivoService-->>UsuarioController: IllegalStateException
+        UsuarioController-->>Cliente: 409 Conflict
+    end
+    PerfilDeportivoService->>PerfilDeportivoRepository: save(perfil) → UUID generado
+    PerfilDeportivoRepository-->>PerfilDeportivoService: PerfilDeportivo guardado
+    PerfilDeportivoService-->>UsuarioController: PerfilDeportivo
+    UsuarioController-->>Cliente: 200 OK PerfilDeportivo
+
+    %% Editar perfil
+    Cliente->>UsuarioController: PATCH /api/users/players/{id}/profile {nombre, numeroCamiseta, posicion, foto}
+    UsuarioController->>JugadorService: editarPerfil(id, nombre, numeroCamiseta, posicion, foto)
+    JugadorService->>JugadorRepository: findById(id)
+    JugadorRepository-->>JugadorService: Jugador
+    JugadorService->>JugadorRepository: save(jugador actualizado)
+    JugadorService-->>UsuarioController: Jugador
+    UsuarioController-->>Cliente: 200 OK Jugador
 
     %% Aceptar invitacion
-    Cliente->>JugadorController: PATCH /api/jugadores/{id}/aceptarInvitacion
-    JugadorController->>JugadorService: aceptarInvitacion(id)
+    Cliente->>UsuarioController: PATCH /api/users/players/{id}/accept-invitation
+    UsuarioController->>JugadorService: aceptarInvitacion(id)
     JugadorService->>JugadorRepository: findById(id)
-    alt no encontrado
-        JugadorRepository-->>JugadorService: Optional.empty()
-        JugadorService-->>JugadorController: IllegalArgumentException
-        JugadorController-->>Cliente: 400 Bad Request
-    end
     JugadorRepository-->>JugadorService: Jugador
     JugadorService->>JugadorService: jugador.setAvailable(false)
     JugadorService->>JugadorRepository: save(jugador)
-    JugadorService-->>JugadorController: void
-    JugadorController-->>Cliente: 200 OK "Invitacion aceptada correctamente"
-
-    %% Rechazar invitacion
-    Cliente->>JugadorController: PATCH /api/jugadores/{id}/rechazarInvitacion
-    JugadorController->>JugadorService: rechazarInvitacion(id)
-    JugadorService->>JugadorRepository: findById(id)
-    JugadorRepository-->>JugadorService: Jugador
-    JugadorService->>JugadorService: jugador.setAvailable(true)
-    JugadorService->>JugadorRepository: save(jugador)
-    JugadorService-->>JugadorController: void
-    JugadorController-->>Cliente: 200 OK "Invitacion rechazada correctamente"
+    JugadorService-->>UsuarioController: void
+    UsuarioController-->>Cliente: 200 OK "Invitacion aceptada correctamente"
 
     %% Marcar disponible
-    Cliente->>JugadorController: PATCH /api/jugadores/{id}/disponibilidad
-    JugadorController->>JugadorService: marcarDisponible(id)
+    Cliente->>UsuarioController: PATCH /api/users/players/{id}/availability
+    UsuarioController->>JugadorService: marcarDisponible(id)
     JugadorService->>JugadorRepository: findById(id)
     JugadorRepository-->>JugadorService: Jugador
     JugadorService->>JugadorValidator: jugadorDisponibleParaEquipo(jugador)
-    alt jugador ya en equipo
+    alt ya en equipo
         JugadorValidator-->>JugadorService: false
-        JugadorService-->>JugadorController: IllegalStateException
-        JugadorController-->>Cliente: 400 Bad Request
+        JugadorService-->>UsuarioController: IllegalStateException
+        UsuarioController-->>Cliente: 409 Conflict
     end
-    JugadorValidator-->>JugadorService: true
-    JugadorService->>JugadorService: jugador.setAvailable(true)
     JugadorService->>JugadorRepository: save(jugador)
-    JugadorService-->>JugadorController: void
-    JugadorController-->>Cliente: 200 OK "Jugador marcado como disponible"
+    UsuarioController-->>Cliente: 200 OK "Jugador marcado como disponible"
 ```

@@ -3,57 +3,63 @@
 ```mermaid
 sequenceDiagram
     actor Cliente
-    participant EquipoController
+    participant UsuarioController
+    participant CapitanService
     participant EquipoService
     participant EquipoRepository
     participant Subject
-    participant NotificadorTorneo
+
+    %% Crear capitan
+    Cliente->>UsuarioController: POST /api/users/captains {nombre, email, password, tipoUsuario, numeroCamiseta, posicion}
+    UsuarioController->>CapitanService: save(capitan)
+    CapitanService->>EquipoRepository: save(capitan) → UUID generado
+    EquipoRepository-->>CapitanService: Capitan guardado
+    CapitanService-->>UsuarioController: Capitan
+    UsuarioController-->>Cliente: 200 OK Capitan
 
     %% Crear equipo
-    Cliente->>EquipoController: POST /api/equipos {nombre, escudo, colorPrincipal, colorSecundario, capitanId}
-    EquipoController->>EquipoController: new Equipo() + setters
-    EquipoController->>EquipoService: crear(equipo, Map.of())
-    EquipoService->>EquipoRepository: save(equipo)
-    EquipoRepository-->>EquipoService: Equipo guardado
-    EquipoService->>Subject: notificar("EQUIPO_CREADO", {id, nombre})
-    Subject->>NotificadorTorneo: actualizar("EQUIPO_CREADO", datos)
-    EquipoService-->>EquipoController: Equipo
-    EquipoController-->>Cliente: 200 OK Equipo
-
-    %% Obtener equipo
-    Cliente->>EquipoController: GET /api/equipos/{id}
-    EquipoController->>EquipoService: obtener(id)
-    EquipoService->>EquipoRepository: findById(id)
-    alt no encontrado
-        EquipoRepository-->>EquipoService: Optional.empty()
-        EquipoService-->>EquipoController: IllegalArgumentException
-        EquipoController-->>Cliente: 400 Bad Request
+    Cliente->>UsuarioController: POST /api/users/captains/{id}/team?nombreEquipo=X
+    UsuarioController->>CapitanService: crearEquipo(id, nombreEquipo)
+    CapitanService->>CapitanService: getOrThrow(id)
+    CapitanService->>CapitanService: usuarioValidator.nombreValido(nombreEquipo)
+    alt nombre no valido
+        CapitanService-->>UsuarioController: IllegalArgumentException
+        UsuarioController-->>Cliente: 400 Bad Request
     end
-    EquipoRepository-->>EquipoService: Optional.of(equipo)
-    EquipoService-->>EquipoController: Equipo
-    EquipoController-->>Cliente: 200 OK Equipo
+    CapitanService-->>UsuarioController: "equipo X creado por capitan"
+    UsuarioController-->>Cliente: 200 OK mensaje
+
+    %% Invitar jugador
+    Cliente->>UsuarioController: POST /api/users/captains/{id}/invite/{playerId}
+    UsuarioController->>CapitanService: invitarJugador(id, playerId)
+    CapitanService->>CapitanService: getOrThrow(id)
+    CapitanService->>CapitanService: jugadorService.buscarJugadorPorId(playerId)
+    alt jugador no encontrado
+        CapitanService-->>UsuarioController: IllegalArgumentException
+        UsuarioController-->>Cliente: 400 Bad Request
+    end
+    CapitanService->>CapitanService: jugadorValidator.jugadorDisponibleParaEquipo(jugador)
+    alt jugador no disponible
+        CapitanService-->>UsuarioController: IllegalArgumentException
+        UsuarioController-->>Cliente: 400 Bad Request
+    end
+    CapitanService-->>UsuarioController: "capitan invito a jugador"
+    UsuarioController-->>Cliente: 200 OK mensaje
+
+    %% Validar composicion equipo
+    Cliente->>UsuarioController: GET /api/users/captains/{id}/team/validate
+    UsuarioController->>EquipoService: validarComposicion(equipoId)
+    EquipoService->>EquipoRepository: findById(equipoId)
+    EquipoRepository-->>EquipoService: Equipo
+    EquipoService->>EquipoService: validar 7 <= jugadores <= 12
+    EquipoService-->>UsuarioController: {equipoId, nombre, totalJugadores, valido}
+    UsuarioController-->>Cliente: 200 OK resultado
 
     %% Listar equipos
-    Cliente->>EquipoController: GET /api/equipos
-    EquipoController->>EquipoService: listar()
+    Cliente->>UsuarioController: GET /api/teams
+    UsuarioController->>EquipoService: listar()
     EquipoService->>EquipoRepository: findAll()
-    EquipoRepository-->>EquipoService: List<Equipo>
-    EquipoService-->>EquipoController: List<Equipo>
-    EquipoController-->>Cliente: 200 OK List<Equipo>
-
-    %% Agregar jugador a equipo
-    Cliente->>EquipoController: POST /api/equipos/{equipoId}/jugadores/{jugadorId}
-    EquipoController->>EquipoService: agregarJugador(equipoId, jugadorId)
-    EquipoService->>EquipoRepository: findById(equipoId)
-    alt equipo no encontrado
-        EquipoRepository-->>EquipoService: Optional.empty()
-        EquipoService-->>EquipoController: IllegalArgumentException
-        EquipoController-->>Cliente: 400 Bad Request
-    end
-    EquipoRepository-->>EquipoService: Equipo
-    EquipoService->>EquipoService: equipo.agregarJugador(jugadorId)
-    EquipoService->>Subject: notificar("JUGADOR_AGREGADO", {equipoId, jugadorId})
-    Subject->>NotificadorTorneo: actualizar("JUGADOR_AGREGADO", datos)
-    EquipoService-->>EquipoController: Equipo actualizado
-    EquipoController-->>Cliente: 200 OK Equipo
+    EquipoRepository-->>EquipoService: List~Equipo~
+    EquipoService-->>UsuarioController: List~Equipo~
+    UsuarioController-->>Cliente: 200 OK List~Equipo~
 ```

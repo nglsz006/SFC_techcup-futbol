@@ -3,30 +3,61 @@
 ```mermaid
 sequenceDiagram
     actor Cliente
-    participant ArbitroController
+    participant UsuarioController
     participant ArbitroService
     participant ArbitroRepository
+    participant PartidoRepository
+    participant PartidoServiceImpl
 
-    %% Crear arbitro
-    Cliente->>ArbitroController: POST /arbitros {nombre, email, password, tipoUsuario}
-    ArbitroController->>ArbitroController: new Arbitro(null, nombre, email, password, tipoUsuario)
-    ArbitroController->>ArbitroService: save(arbitro)
-    ArbitroService->>ArbitroRepository: save(arbitro)
+    %% Crear arbitro via admin
+    Cliente->>UsuarioController: POST /api/users/referees {nombre, email, password, tipoUsuario}
+    UsuarioController->>ArbitroService: save(arbitro)
+    ArbitroService->>ArbitroRepository: save(arbitro) → UUID generado
     ArbitroRepository-->>ArbitroService: Arbitro guardado
-    ArbitroService-->>ArbitroController: Arbitro
-    ArbitroController-->>Cliente: 200 OK Arbitro
+    ArbitroService-->>UsuarioController: Arbitro
+    UsuarioController-->>Cliente: 200 OK Arbitro
+
+    %% Asignar partido a arbitro
+    Cliente->>UsuarioController: POST /api/users/referees/{id}/matches/{matchId}
+    UsuarioController->>ArbitroRepository: findById(id)
+    UsuarioController->>PartidoRepository: findById(matchId)
+    alt partido no encontrado
+        PartidoRepository-->>UsuarioController: Optional.empty()
+        UsuarioController-->>Cliente: 400 Bad Request
+    end
+    UsuarioController->>ArbitroService: save(arbitro con partido asignado)
+    ArbitroService->>ArbitroRepository: save(arbitro)
+    ArbitroService-->>UsuarioController: void
+    UsuarioController-->>Cliente: 200 OK "Arbitro asignado al partido correctamente"
 
     %% Consultar partidos asignados
-    Cliente->>ArbitroController: GET /arbitros/{id}/partidos
-    ArbitroController->>ArbitroService: consultarPartidosAsignados(id)
+    Cliente->>UsuarioController: GET /api/users/referees/{id}/matches
+    UsuarioController->>ArbitroService: consultarPartidosAsignados(id)
     ArbitroService->>ArbitroRepository: findById(id)
     alt arbitro no encontrado
         ArbitroRepository-->>ArbitroService: Optional.empty()
-        ArbitroService-->>ArbitroController: List vacía
-        ArbitroController-->>Cliente: 200 OK []
+        ArbitroService-->>UsuarioController: List vacía
+        UsuarioController-->>Cliente: 200 OK []
     end
-    ArbitroRepository-->>ArbitroService: Optional.of(arbitro)
     ArbitroService->>ArbitroService: arbitro.getAssignedMatches()
-    ArbitroService-->>ArbitroController: List<Partido>
-    ArbitroController-->>Cliente: 200 OK List<Partido>
+    ArbitroService-->>UsuarioController: List~Partido~
+    UsuarioController-->>Cliente: 200 OK List~Partido~
+
+    %% Iniciar partido
+    Cliente->>UsuarioController: PUT /api/users/referees/{id}/matches/{matchId}/start
+    UsuarioController->>PartidoServiceImpl: iniciarPartido(matchId)
+    PartidoServiceImpl->>PartidoRepository: findById(matchId)
+    PartidoServiceImpl->>PartidoServiceImpl: partido.iniciar() → EN_CURSO
+    PartidoServiceImpl->>PartidoRepository: save(partido)
+    PartidoServiceImpl-->>UsuarioController: Partido
+    UsuarioController-->>Cliente: 200 OK Partido
+
+    %% Finalizar partido
+    Cliente->>UsuarioController: PUT /api/users/referees/{id}/matches/{matchId}/end
+    UsuarioController->>PartidoServiceImpl: finalizarPartido(matchId)
+    PartidoServiceImpl->>PartidoRepository: findById(matchId)
+    PartidoServiceImpl->>PartidoServiceImpl: partido.finalizar() → FINALIZADO
+    PartidoServiceImpl->>PartidoRepository: save(partido)
+    PartidoServiceImpl-->>UsuarioController: Partido
+    UsuarioController-->>Cliente: 200 OK Partido
 ```

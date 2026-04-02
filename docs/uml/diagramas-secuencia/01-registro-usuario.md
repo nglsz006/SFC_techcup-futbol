@@ -10,7 +10,7 @@ sequenceDiagram
     participant AccesoMapper
     participant PasswordUtil
 
-    Cliente->>AccesoController: POST /api/acceso/registro {nombre, email, password, tipoUsuario}
+    Cliente->>AccesoController: POST /api/access/register {nombre, email, password, tipoUsuario}
     AccesoController->>AccesoValidator: validarRegistro(request)
     AccesoValidator->>AccesoValidator: nombreValido(nombre)
     AccesoValidator->>AccesoValidator: correoValido(email)
@@ -25,15 +25,15 @@ sequenceDiagram
     alt email ya existe
         UsuarioRegistradoRepository-->>AccesoServiceImpl: Optional.of(usuario)
         AccesoServiceImpl-->>AccesoController: IllegalStateException
-        AccesoController-->>Cliente: 400 Bad Request
+        AccesoController-->>Cliente: 409 Conflict
     end
     UsuarioRegistradoRepository-->>AccesoServiceImpl: Optional.empty()
     AccesoServiceImpl->>AccesoMapper: toModelo(request)
     AccesoMapper->>PasswordUtil: cifrar(password)
-    PasswordUtil-->>AccesoMapper: passwordHash (BCrypt)
+    PasswordUtil-->>AccesoMapper: passwordHash BCrypt
     AccesoMapper-->>AccesoServiceImpl: UsuarioRegistrado
     AccesoServiceImpl->>UsuarioRegistradoRepository: save(usuario)
-    UsuarioRegistradoRepository-->>AccesoServiceImpl: UsuarioRegistrado guardado
+    UsuarioRegistradoRepository-->>AccesoServiceImpl: UsuarioRegistrado guardado con UUID
     AccesoServiceImpl->>AccesoMapper: toUsuarioResponse(usuario)
     AccesoMapper-->>AccesoServiceImpl: UsuarioResponse
     AccesoServiceImpl-->>AccesoController: UsuarioResponse

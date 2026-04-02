@@ -1,11 +1,10 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
-import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.OAuth2Response;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
 import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.RolFuncional;
-import edu.dosw.project.SFC_TechUp_Futbol.core.util.AccesoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -32,7 +31,8 @@ public class OAuth2Service {
         this.jwtService = jwtService;
     }
 
-    public LoginResponse procesarCallback(OAuth2AuthenticationToken authentication) {
+    public OAuth2Response procesarCallback(OAuth2AuthenticationToken authentication) {
+        try {
         Map<String, Object> atributos = authentication.getPrincipal().getAttributes();
         String email = (String) atributos.get("email");
         String nombre = (String) atributos.getOrDefault("name", email);
@@ -53,6 +53,10 @@ public class OAuth2Service {
 
         String token = jwtService.generarToken(usuario.getEmail(), RolFuncional.JUGADOR);
         log.info("Login OAuth2 exitoso: " + sanitize(email));
-        return AccesoMapper.toLoginResponse(usuario, token);
+        return new OAuth2Response(token);
+        } catch (Exception e) {
+            log.severe("ERROR OAuth2: " + e.getClass().getName() + " - " + e.getMessage());
+            throw e;
+        }
     }
 }
