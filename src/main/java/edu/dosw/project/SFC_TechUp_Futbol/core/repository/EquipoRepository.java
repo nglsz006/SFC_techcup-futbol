@@ -8,5 +8,6 @@ public interface EquipoRepository {
     Equipo save(Equipo equipo);
     Optional<Equipo> findById(String id);
     List<Equipo> findAll();
+    List<Equipo> findByCapitanId(String capitanId);
 }
 

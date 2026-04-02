@@ -1,5 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
+import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AccesoValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
@@ -25,10 +26,9 @@ public class AccesoController {
 
     @Operation(summary = "Register user")
     @PostMapping("/register")
-    public Map<String, String> registrar(@RequestBody RegistroRequest request) {
+    public UsuarioResponse registrar(@RequestBody RegistroRequest request) {
         authValidator.validarRegistro(request);
-        authService.registrar(request);
-        return Map.of("mensaje", "Usuario registrado correctamente.");
+        return authService.registrar(request);
     }
 
     @Operation(summary = "Login")

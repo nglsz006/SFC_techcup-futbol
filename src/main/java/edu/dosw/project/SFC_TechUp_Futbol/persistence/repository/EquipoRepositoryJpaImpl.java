@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.EquipoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class EquipoRepositoryJpaImpl implements EquipoRepository {
         this.mapper = mapper;
     }
 
+    @Transactional
     @Override
     public Equipo save(Equipo equipo) {
         if (equipo.getId() == null) equipo.setId(IdGeneratorUtil.generarId());
@@ -38,6 +40,13 @@ public class EquipoRepositoryJpaImpl implements EquipoRepository {
     @Override
     public List<Equipo> findAll() {
         return jpaRepository.findAll().stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Equipo> findByCapitanId(String capitanId) {
+        return jpaRepository.findByCapitanId(capitanId).stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }

@@ -2,6 +2,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.entity;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "usuario")
@@ -13,9 +14,11 @@ public abstract class UsuarioEntity {
     @Column(name = "id", nullable = false, updatable = false)
     private String id;
 
+    @NotNull
     @Column(nullable = false)
     private String name;
 
+    @NotNull
     @Column(nullable = false, unique = true)
     private String email;
 

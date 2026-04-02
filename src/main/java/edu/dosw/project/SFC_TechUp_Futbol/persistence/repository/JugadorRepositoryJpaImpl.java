@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.JugadorRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class JugadorRepositoryJpaImpl implements JugadorRepository {
         this.mapper = mapper;
     }
 
+    @Transactional
     @Override
     public Jugador save(Jugador jugador) {
         if (jugador.getId() == null) jugador.setId(IdGeneratorUtil.generarId());

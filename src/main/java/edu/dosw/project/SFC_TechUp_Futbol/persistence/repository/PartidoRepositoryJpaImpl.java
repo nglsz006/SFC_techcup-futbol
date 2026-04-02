@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.repository.PartidoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.PartidoMapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class PartidoRepositoryJpaImpl implements PartidoRepository {
     }
 
     @Override
+    @Transactional
     public Partido save(Partido partido) {
         if (partido.getId() == null) partido.setId(IdGeneratorUtil.generarId());
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(partido)));

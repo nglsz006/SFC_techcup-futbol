@@ -1,6 +1,6 @@
-# TECHCUP FÚTBOL
+# TECHCUP FUTBOL
 
-Repositorio dedicado al desarrollo del proyecto **TECHCUP FÚTBOL**.
+Repositorio dedicado al desarrollo del proyecto **TECHCUP FUTBOL**.
 
 ---
 
@@ -14,28 +14,28 @@ Repositorio dedicado al desarrollo del proyecto **TECHCUP FÚTBOL**.
 | Juan Esteban Hernandez Moreno |
 | Juan Manuel Lopez Barrera |
 | Nicolas Andres Parrado Gonzalez |
-| Nicolas Guillermo Ibañez Leon |
+| Nicolas Guillermo Ibanez Leon |
 | Jeyder Nicolay Leon Lancheros |
 
 ---
 
-## Descripción del problema
+## Descripcion del problema
 
-Los programas de Ingeniería de Sistemas, IA, Ciberseguridad y Estadística realizan cada semestre un torneo interno de fútbol en el que participan estudiantes de distintos semestres. Aunque la actividad tiene alta acogida, su organización actualmente depende de procesos manuales: mensajes por WhatsApp, formularios aislados y hojas de cálculo.
+Los programas de Ingenieria de Sistemas, IA, Ciberseguridad y Estadistica realizan cada semestre un torneo interno de futbol en el que participan estudiantes de distintos semestres. Aunque la actividad tiene alta acogida, su organizacion actualmente depende de procesos manuales: mensajes por WhatsApp, formularios aislados y hojas de calculo.
 
-Esta forma de manejo genera desorden, retrasos y confusión entre participantes y organizadores. Muchos estudiantes no conocen el proceso de inscripción, los equipos se completan tarde, los pagos se verifican manualmente y la información del torneo (fechas, reglas, resultados) se encuentra dispersa.
+Esta forma de manejo genera desorden, retrasos y confusion entre participantes y organizadores. Muchos estudiantes no conocen el proceso de inscripcion, los equipos se completan tarde, los pagos se verifican manualmente y la informacion del torneo (fechas, reglas, resultados) se encuentra dispersa.
 
-**TECHCUP FÚTBOL** propone desarrollar una plataforma web que centralice toda la gestión del torneo, permitiendo que estudiantes, capitanes y organizadores interactúen en un solo sistema organizado y transparente.
+**TECHCUP FUTBOL** propone desarrollar una plataforma web que centralice toda la gestion del torneo, permitiendo que estudiantes, capitanes y organizadores interactuen en un solo sistema organizado y transparente.
 
 ### Dificultades actuales
 
-- El proceso de inscripción no es claro para los participantes.
+- El proceso de inscripcion no es claro para los participantes.
 - Los capitanes tienen problemas para completar sus equipos.
-- Los pagos no se verifican de forma rápida y es un proceso manual.
+- Los pagos no se verifican de forma rapida y es un proceso manual.
 - Los resultados y la tabla de posiciones se actualizan manualmente.
 - Las llaves eliminatorias se organizan a mano.
-- No existe historial ni estadísticas del torneo.
-- La información oficial está dispersa.
+- No existe historial ni estadisticas del torneo.
+- La informacion oficial esta dispersa.
 - Esto ocasiona retrasos, errores administrativos y conflictos entre los participantes.
 
 ---
@@ -58,27 +58,27 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 - Subir comprobante de pago
 - Verificar pago
 - Configurar torneo
-- Gestionar alineación
-- Consultar alineación rival
+- Gestionar alineacion
+- Consultar alineacion rival
 - Registrar partido
 - Consultar partido
 - Tabla de posiciones
 - Llave eliminatoria
-- Estadísticas
+- Estadisticas
 - Registro de arbitros y organizadores
 - Consultar auditoria
 
 ### No funcionales
 
 - Paleta de colores
-- Diseño responsive
+- Diseno responsive
 - Tiempo de respuesta
-- Cifrado de contraseñas
-- Límite de archivos
+- Cifrado de contrasenas
+- Limite de archivos
 - Disponibilidad del sistema
 - Compatibilidad de navegadores
 
-### Análisis de requerimientos
+### Analisis de requerimientos
 
 [Ver requerimientos del sistema](docs/requierments/requirements.md)
 
@@ -128,7 +128,7 @@ Esta forma de manejo genera desorden, retrasos y confusión entre participantes 
 - [07 - Pagos](docs/uml/diagramas-secuencia/07-pagos.md)
 - [08 - Capitanes](docs/uml/diagramas-secuencia/08-capitanes.md)
 - [09 - Organizadores](docs/uml/diagramas-secuencia/09-organizadores.md)
-- [10 - Árbitros](docs/uml/diagramas-secuencia/10-arbitros.md)
+- [10 - Arbitros](docs/uml/diagramas-secuencia/10-arbitros.md)
 - [11 - Alineaciones](docs/uml/diagramas-secuencia/11-alineaciones.md)
 - [12 - OAuth2 y Administrador](docs/uml/diagramas-secuencia/12-oauth2-admin.md)
 

@@ -174,7 +174,7 @@ public class UsuarioController {
 
     @Operation(summary = "Create captain")
     @PostMapping("/captains")
-    public Map<String, String> crearCapitan(@RequestBody Map<String, Object> body) {
+    public CapitanResponse crearCapitan(@RequestBody Map<String, Object> body) {
         Capitan capitan = new Capitan(
                 null,
                 body.get("nombre").toString(),
@@ -187,8 +187,8 @@ public class UsuarioController {
                 "",
                 null
         );
-        capitanService.save(capitan);
-        return Map.of("mensaje", "Capitán registrado correctamente.");
+        Capitan guardado = capitanService.save(capitan);
+        return new CapitanResponse(guardado);
     }
 
     @Operation(summary = "List captains")
@@ -336,7 +336,7 @@ public class UsuarioController {
 
     @Operation(summary = "Create organizer")
     @PostMapping("/organizers")
-    public Map<String, String> crearOrganizador(@RequestBody Map<String, Object> body) {
+    public OrganizadorResponse crearOrganizador(@RequestBody Map<String, Object> body) {
         Organizador organizador = new Organizador(
                 null,
                 body.get("nombre").toString(),
@@ -345,8 +345,8 @@ public class UsuarioController {
                 Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString()),
                 null
         );
-        organizadorService.save(organizador);
-        return Map.of("mensaje", "Organizador registrado correctamente.");
+        Organizador guardado = organizadorService.save(organizador);
+        return new OrganizadorResponse(guardado);
     }
 
     @Operation(summary = "List organizers")
