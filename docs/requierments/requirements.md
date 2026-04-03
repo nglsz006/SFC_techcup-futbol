@@ -107,6 +107,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de entradas, salidas y reglas para reflejar la creación real del torneo y su estado inicial CREADO. |
  
@@ -177,6 +179,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste del flujo de gestión para reflejar inicio y finalización del torneo actual del organizador y sus estados reales. |
  
@@ -244,6 +248,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de la consulta para documentar búsqueda por identificador, listado general y datos efectivamente retornados. |
  
@@ -323,6 +329,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste del registro de jugadores a los campos reales del backend, validación de dominio por tipo y restricción de correo duplicado. |
  
@@ -400,6 +408,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste del requerimiento al modelo real de perfil deportivo, sus validaciones y la actualización parcial del jugador. |
  
@@ -468,6 +478,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de la disponibilidad para documentar la operación real de marcado como disponible y su restricción de uso. |
  
@@ -538,6 +550,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de aceptación y rechazo de invitaciones al comportamiento real del backend sobre disponibilidad del jugador. |
  
@@ -609,6 +623,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de creación de equipo a la operación real basada en nombre de equipo y validación del capitán. |
  
@@ -678,6 +694,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste del alcance para documentar que la gestión implementada corresponde al envío de invitaciones a jugadores disponibles. |
  
@@ -747,6 +765,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de la validación de equipo a la comprobación real de cantidad mínima y máxima de jugadores. |
  
@@ -823,6 +843,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de búsqueda para reflejar el filtro real por posición y eliminar filtros no implementados. |
  
@@ -894,6 +916,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste del comprobante de pago a la referencia textual registrada por el backend y al estado inicial `PENDIENTE`. |
  
@@ -966,6 +990,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de verificación de pago a las transiciones reales de aprobación y rechazo implementadas por el backend. |
  
@@ -1043,6 +1069,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de configuración de torneo a actualización parcial, validación de cierre de inscripciones y restricciones por estado. |
  
@@ -1115,6 +1143,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de alineación al envío real de titulares mínimos requerido por el backend, sin formación ni reservas persistidas en esta operación. |
  
@@ -1182,6 +1212,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de consulta de alineación al acceso real por identificador y listado general de alineaciones registradas. |
  
@@ -1262,6 +1294,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste del registro de partido al flujo real: creación por organizador y gestión operativa por árbitro. |
  
@@ -1332,6 +1366,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de consulta de partidos del árbitro a los datos realmente retornados para encuentros asignados. |
  
@@ -1408,6 +1444,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de tabla de posiciones al cálculo real con partidos finalizados y orden descendente por puntos. |
  
@@ -1481,6 +1519,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de llaves eliminatorias para documentar el bracket construido con partidos registrados, sin generación automática de rondas. |
  
@@ -1555,6 +1595,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de estadísticas al resumen real de partidos, estados, goles y promedio calculado por el backend. |
  
@@ -1631,6 +1673,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste del registro administrativo a sesión válida de administrador, roles permitidos y evento de auditoría generado. |
  
@@ -1706,6 +1750,8 @@ Copiar
 
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |--------------|-------------|-------|----------------------------------------|
+| Shawarma FC | Nicolas Guillermo Ibañez Leon | 12/03/2026 | Creación inicial del requerimiento, definiendo su estructura funcional, descripción, actores, precondiciones, entradas, salidas, flujo básico, flujo alterno y reglas de negocio para el Sprint #1. |
+| Shawarma FC | Daniel Felipe Rayo Rodriguez | 17/03/2026 | Actualización y refinamiento del requerimiento con base en el feedback del Sprint #1, ajustando su alcance funcional, validaciones, estructura técnica, consistencia con el backlog, pruebas y arquitectura del sistema para el Sprint #2. |
 | Shawarma FC | Juan Manuel Lopez Barrera | 23/03/2026 | Adición de prototipo e historia de usuario a cada requerimiento |
 | Shawarma FC | Jeyder Nicolay Leon Lancheros | 02/04/2026 | Ajuste de auditoría a los filtros, tipos de acción y reglas realmente soportados por el backend. |
 
