@@ -5,10 +5,12 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AccesoDenegadoException
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RolNoPermitidoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AdministradorService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,67 +22,81 @@ import static org.mockito.Mockito.*;
 class AdministradorServiceTest {
 
     private AdministradorService administradorService;
-    private RegistroAuditoriaRepository auditoriaRepository;
+    private RegistroAuditoriaJpaRepository auditoriaRepository;
+    private RegistroAuditoriaMapper auditoriaMapper;
 
     @BeforeEach
     void setUp() {
-        Map<String, Administrador> adminStore = new HashMap<>();
-        AdministradorRepository adminRepo = mock(AdministradorRepository.class);
+        Map<String, AdministradorEntity> adminStore = new HashMap<>();
+        AdministradorJpaRepository adminRepo = mock(AdministradorJpaRepository.class);
+        AdministradorMapper adminMapper = new AdministradorMapper();
         when(adminRepo.save(any())).thenAnswer(inv -> {
-            Administrador a = inv.getArgument(0);
-            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
-            adminStore.put(a.getId(), a);
-            return a;
+            AdministradorEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            adminStore.put(e.getId(), e);
+            return e;
         });
         when(adminRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(adminStore.get(inv.<String>getArgument(0))));
         when(adminRepo.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
-            return adminStore.values().stream().filter(a -> email.equals(a.getEmail())).findFirst();
+            return adminStore.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
         when(adminRepo.findAll()).thenAnswer(inv -> new ArrayList<>(adminStore.values()));
 
-        Map<String, Organizador> orgStore = new HashMap<>();
-        OrganizadorRepository orgRepo = mock(OrganizadorRepository.class);
+        Map<String, OrganizadorEntity> orgStore = new HashMap<>();
+        OrganizadorJpaRepository orgRepo = mock(OrganizadorJpaRepository.class);
+        TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
+        TorneoMapper torneoMapper = new TorneoMapper();
+        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepo, torneoMapper);
         when(orgRepo.save(any())).thenAnswer(inv -> {
-            Organizador o = inv.getArgument(0);
-            if (o.getId() == null) o.setId(UUID.randomUUID().toString());
-            orgStore.put(o.getId(), o);
-            return o;
+            OrganizadorEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            orgStore.put(e.getId(), e);
+            return e;
         });
         when(orgRepo.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
-            return orgStore.values().stream().filter(o -> email.equals(o.getEmail())).findFirst();
+            return orgStore.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
         when(orgRepo.findAll()).thenAnswer(inv -> new ArrayList<>(orgStore.values()));
 
-        Map<String, Arbitro> arbitroStore = new HashMap<>();
-        ArbitroRepository arbitroRepo = mock(ArbitroRepository.class);
+        Map<String, ArbitroEntity> arbitroStore = new HashMap<>();
+        ArbitroJpaRepository arbitroRepo = mock(ArbitroJpaRepository.class);
+        EquipoMapper equipoMapper = new EquipoMapper();
+        JugadorMapper jugadorMapper = new JugadorMapper();
+        TorneoMapper torneoMapper2 = new TorneoMapper();
+        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper2, equipoMapper, jugadorMapper);
+        ArbitroMapper arbitroMapper = new ArbitroMapper(partidoMapper);
         when(arbitroRepo.save(any())).thenAnswer(inv -> {
-            Arbitro a = inv.getArgument(0);
-            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
-            arbitroStore.put(a.getId(), a);
-            return a;
+            ArbitroEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            arbitroStore.put(e.getId(), e);
+            return e;
         });
         when(arbitroRepo.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
-            return arbitroStore.values().stream().filter(a -> email.equals(a.getEmail())).findFirst();
+            return arbitroStore.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
         when(arbitroRepo.findAll()).thenAnswer(inv -> new ArrayList<>(arbitroStore.values()));
 
-        UsuarioRegistradoRepository usuarioRepo = mock(UsuarioRegistradoRepository.class);
+        UsuarioRegistradoJpaRepository usuarioRepo = mock(UsuarioRegistradoJpaRepository.class);
+        UsuarioRegistradoMapper usuarioMapper = new UsuarioRegistradoMapper();
         when(usuarioRepo.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        List<RegistroAuditoria> auditoriaList = new ArrayList<>();
-        auditoriaRepository = mock(RegistroAuditoriaRepository.class);
+        List<RegistroAuditoriaEntity> auditoriaList = new ArrayList<>();
+        auditoriaRepository = mock(RegistroAuditoriaJpaRepository.class);
+        auditoriaMapper = new RegistroAuditoriaMapper();
         when(auditoriaRepository.save(any())).thenAnswer(inv -> {
-            RegistroAuditoria r = inv.getArgument(0);
-            if (r.getId() == null) r.setId(UUID.randomUUID().toString());
-            auditoriaList.add(r);
-            return r;
+            RegistroAuditoriaEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            auditoriaList.add(e);
+            return e;
         });
         when(auditoriaRepository.findAll()).thenAnswer(inv -> new ArrayList<>(auditoriaList));
 
-        administradorService = new AdministradorService(adminRepo, orgRepo, arbitroRepo, usuarioRepo, new AuditoriaService(auditoriaRepository));
+        administradorService = new AdministradorService(
+                adminRepo, adminMapper, orgRepo, orgMapper, arbitroRepo, arbitroMapper,
+                usuarioRepo, new AuditoriaService(auditoriaRepository, auditoriaMapper));
     }
 
     @Test
@@ -90,7 +106,7 @@ class AdministradorServiceTest {
         assertInstanceOf(Organizador.class, usuario);
         assertEquals("org@escuelaing.edu.co", usuario.getEmail());
         assertTrue(PasswordUtil.verificar("password123", usuario.getPassword()));
-        assertEquals(TipoAccionAuditoria.REGISTRO_ORGANIZADOR, auditoriaRepository.findAll().getFirst().getTipoAccion());
+        assertEquals(TipoAccionAuditoria.REGISTRO_ORGANIZADOR, auditoriaMapper.toDomain(auditoriaRepository.findAll().getFirst()).getTipoAccion());
     }
 
     @Test
@@ -99,7 +115,7 @@ class AdministradorServiceTest {
         Usuario usuario = administradorService.registrarUsuarioAdministrativo(administrador.getId(), crearRequest("Arbitro", "arbitro@escuelaing.edu.co", "ARBITRO"));
         assertInstanceOf(Arbitro.class, usuario);
         assertEquals("arbitro@escuelaing.edu.co", usuario.getEmail());
-        assertEquals(TipoAccionAuditoria.REGISTRO_ARBITRO, auditoriaRepository.findAll().getFirst().getTipoAccion());
+        assertEquals(TipoAccionAuditoria.REGISTRO_ARBITRO, auditoriaMapper.toDomain(auditoriaRepository.findAll().getFirst()).getTipoAccion());
     }
 
     @Test

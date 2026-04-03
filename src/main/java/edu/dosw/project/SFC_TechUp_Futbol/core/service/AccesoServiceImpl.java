@@ -6,10 +6,15 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioResponse;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.ArbitroRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.CapitanRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.OrganizadorRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.ArbitroMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.CapitanMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.UsuarioRegistradoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.ArbitroJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.CapitanJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.UsuarioRegistradoJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.AccesoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
@@ -22,21 +27,33 @@ public class AccesoServiceImpl implements AccesoService {
 
     private static final Logger log = Logger.getLogger(AccesoServiceImpl.class.getName());
 
-    private final UsuarioRegistradoRepository usuarioRepository;
-    private final OrganizadorRepository organizadorRepository;
-    private final ArbitroRepository arbitroRepository;
-    private final CapitanRepository capitanRepository;
+    private final UsuarioRegistradoJpaRepository usuarioRepository;
+    private final UsuarioRegistradoMapper usuarioMapper;
+    private final OrganizadorJpaRepository organizadorRepository;
+    private final OrganizadorMapper organizadorMapper;
+    private final ArbitroJpaRepository arbitroRepository;
+    private final ArbitroMapper arbitroMapper;
+    private final CapitanJpaRepository capitanRepository;
+    private final CapitanMapper capitanMapper;
     private final JwtService jwtService;
 
-    public AccesoServiceImpl(UsuarioRegistradoRepository usuarioRepository,
-                             OrganizadorRepository organizadorRepository,
-                             ArbitroRepository arbitroRepository,
-                             CapitanRepository capitanRepository,
+    public AccesoServiceImpl(UsuarioRegistradoJpaRepository usuarioRepository,
+                             UsuarioRegistradoMapper usuarioMapper,
+                             OrganizadorJpaRepository organizadorRepository,
+                             OrganizadorMapper organizadorMapper,
+                             ArbitroJpaRepository arbitroRepository,
+                             ArbitroMapper arbitroMapper,
+                             CapitanJpaRepository capitanRepository,
+                             CapitanMapper capitanMapper,
                              JwtService jwtService) {
         this.usuarioRepository = usuarioRepository;
+        this.usuarioMapper = usuarioMapper;
         this.organizadorRepository = organizadorRepository;
+        this.organizadorMapper = organizadorMapper;
         this.arbitroRepository = arbitroRepository;
+        this.arbitroMapper = arbitroMapper;
         this.capitanRepository = capitanRepository;
+        this.capitanMapper = capitanMapper;
         this.jwtService = jwtService;
     }
 
@@ -45,7 +62,8 @@ public class AccesoServiceImpl implements AccesoService {
         if (usuarioRepository.findByEmail(request.getEmail()).isPresent())
             throw new IllegalStateException("Ya existe un usuario con ese correo.");
         UsuarioRegistrado usuario = AccesoMapper.toModelo(request);
-        usuarioRepository.save(usuario);
+        if (usuario.getId() == null) usuario.setId(edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil.generarId());
+        usuarioRepository.save(usuarioMapper.toEntity(usuario));
         log.info("Usuario registrado exitosamente");
         return AccesoMapper.toUsuarioResponse(usuario);
     }
@@ -55,34 +73,38 @@ public class AccesoServiceImpl implements AccesoService {
         String email = request.getEmail();
         String password = request.getPassword();
 
-        var org = organizadorRepository.findByEmail(email);
-        if (org.isPresent()) {
-            if (!PasswordUtil.verificar(password, org.get().getPassword()))
+        var orgEntity = organizadorRepository.findByEmail(email);
+        if (orgEntity.isPresent()) {
+            var org = organizadorMapper.toDomain(orgEntity.get());
+            if (!PasswordUtil.verificar(password, org.getPassword()))
                 throw new IllegalArgumentException("Credenciales incorrectas.");
             log.info("Login organizador exitoso");
             return new LoginResponse(jwtService.generarToken(email, RolFuncional.ORGANIZADOR),
-                    org.get().getName(), email, org.get().getUserType());
+                    org.getName(), email, org.getUserType());
         }
 
-        var arb = arbitroRepository.findByEmail(email);
-        if (arb.isPresent()) {
-            if (!PasswordUtil.verificar(password, arb.get().getPassword()))
+        var arbEntity = arbitroRepository.findByEmail(email);
+        if (arbEntity.isPresent()) {
+            var arb = arbitroMapper.toDomain(arbEntity.get());
+            if (!PasswordUtil.verificar(password, arb.getPassword()))
                 throw new IllegalArgumentException("Credenciales incorrectas.");
             log.info("Login arbitro exitoso");
             return new LoginResponse(jwtService.generarToken(email, RolFuncional.ARBITRO),
-                    arb.get().getName(), email, arb.get().getUserType());
+                    arb.getName(), email, arb.getUserType());
         }
 
-        var cap = capitanRepository.findByEmail(email);
-        if (cap.isPresent()) {
-            if (!PasswordUtil.verificar(password, cap.get().getPassword()))
+        var capEntity = capitanRepository.findByEmail(email);
+        if (capEntity.isPresent()) {
+            var cap = capitanMapper.toDomain(capEntity.get());
+            if (!PasswordUtil.verificar(password, cap.getPassword()))
                 throw new IllegalArgumentException("Credenciales incorrectas.");
             log.info("Login capitan exitoso");
             return new LoginResponse(jwtService.generarToken(email, RolFuncional.CAPITAN),
-                    cap.get().getName(), email, cap.get().getUserType());
+                    cap.getName(), email, cap.getUserType());
         }
 
         UsuarioRegistrado usuario = usuarioRepository.findByEmail(email)
+                .map(usuarioMapper::toDomain)
                 .orElseThrow(() -> new IllegalArgumentException("Credenciales incorrectas."));
         if (!PasswordUtil.verificar(password, usuario.getPassword()))
             throw new IllegalArgumentException("Credenciales incorrectas.");

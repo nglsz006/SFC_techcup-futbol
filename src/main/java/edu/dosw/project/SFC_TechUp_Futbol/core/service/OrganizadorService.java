@@ -2,8 +2,10 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Organizador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.OrganizadorRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.UsuarioValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,17 +14,20 @@ import java.util.Map;
 @Service
 public class OrganizadorService {
 
-    private final OrganizadorRepository organizadorRepository;
+    private final OrganizadorJpaRepository organizadorRepository;
+    private final OrganizadorMapper mapper;
     private final TorneoService torneoService;
     private final UsuarioValidator usuarioValidator = new UsuarioValidator();
 
-    public OrganizadorService(OrganizadorRepository organizadorRepository, TorneoService torneoService) {
+    public OrganizadorService(OrganizadorJpaRepository organizadorRepository, OrganizadorMapper mapper, TorneoService torneoService) {
         this.organizadorRepository = organizadorRepository;
+        this.mapper = mapper;
         this.torneoService = torneoService;
     }
 
     public Organizador save(Organizador organizador) {
-        return organizadorRepository.save(organizador);
+        if (organizador.getId() == null) organizador.setId(IdGeneratorUtil.generarId());
+        return mapper.toDomain(organizadorRepository.save(mapper.toEntity(organizador)));
     }
 
     public Torneo crearTorneo(String organizadorId, Torneo torneo) {
@@ -30,7 +35,7 @@ public class OrganizadorService {
         if (!usuarioValidator.nombreValido(torneo.getNombre())) throw new IllegalArgumentException("nombre de torneo no valido");
         Torneo creado = torneoService.crear(torneo, Map.of());
         organizador.setCurrentTournament(creado);
-        organizadorRepository.save(organizador);
+        organizadorRepository.save(mapper.toEntity(organizador));
         return creado;
     }
 
@@ -47,11 +52,12 @@ public class OrganizadorService {
     }
 
     public List<Organizador> getOrganizadores() {
-        return organizadorRepository.findAll();
+        return organizadorRepository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     private Organizador getOrThrow(String id) {
         return organizadorRepository.findById(id)
+                .map(mapper::toDomain)
                 .orElseThrow(() -> new IllegalArgumentException("organizador no encontrado"));
     }
 }

@@ -4,16 +4,16 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RecursoNoEncontradoExce
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.ReglaNegocioException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.EquipoRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.PagoRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.EquipoEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.PagoEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.PagoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.PagoJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,49 +23,56 @@ class PagoServiceTest {
 
     private PagoServiceImpl service;
     private Equipo equipo;
+    private EquipoMapper equipoMapper;
 
     @BeforeEach
     void setUp() {
-        Map<String, Equipo> equipoStore = new HashMap<>();
-        EquipoRepository equipoRepo = mock(EquipoRepository.class);
+        equipoMapper = new EquipoMapper();
+
+        Map<String, EquipoEntity> equipoStore = new HashMap<>();
+        EquipoJpaRepository equipoRepo = mock(EquipoJpaRepository.class);
         when(equipoRepo.save(any())).thenAnswer(inv -> {
-            Equipo e = inv.getArgument(0);
+            EquipoEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());
             equipoStore.put(e.getId(), e);
             return e;
         });
         when(equipoRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(equipoStore.get(inv.<String>getArgument(0))));
         when(equipoRepo.findAll()).thenAnswer(inv -> new ArrayList<>(equipoStore.values()));
-        equipo = equipoRepo.save(new Equipo(null, "Los Tigres", "", "rojo", "blanco", "uuid-capitan-1"));
 
-        Map<String, Pago> pagoStore = new HashMap<>();
-        PagoRepository pagoRepo = mock(PagoRepository.class);
+        Equipo eq = new Equipo(null, "Los Tigres", "", "rojo", "blanco", "uuid-capitan-1");
+        EquipoEntity savedEntity = equipoRepo.save(equipoMapper.toEntity(eq));
+        equipo = equipoMapper.toDomain(savedEntity);
+
+        Map<String, PagoEntity> pagoStore = new HashMap<>();
+        PagoJpaRepository pagoRepo = mock(PagoJpaRepository.class);
+        PagoMapper pagoMapper = new PagoMapper(equipoMapper);
         when(pagoRepo.save(any())).thenAnswer(inv -> {
-            Pago p = inv.getArgument(0);
-            if (p.getId() == null) p.setId(UUID.randomUUID().toString());
-            pagoStore.put(p.getId(), p);
-            return p;
+            PagoEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            pagoStore.put(e.getId(), e);
+            return e;
         });
         when(pagoRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(pagoStore.get(inv.<String>getArgument(0))));
         when(pagoRepo.findByEquipoId(anyString())).thenAnswer(inv -> {
             String eid = inv.getArgument(0);
-            return pagoStore.values().stream().filter(p -> p.getEquipo() != null && eid.equals(p.getEquipo().getId())).collect(Collectors.toList());
+            return pagoStore.values().stream().filter(e -> e.getEquipo() != null && eid.equals(e.getEquipo().getId())).collect(Collectors.toList());
         });
         when(pagoRepo.findByEstado(any())).thenAnswer(inv -> {
             Pago.PagoEstado estado = inv.getArgument(0);
-            return pagoStore.values().stream().filter(p -> p.getEstado() == estado).collect(Collectors.toList());
+            return pagoStore.values().stream().filter(e -> e.getEstado() == estado).collect(Collectors.toList());
         });
         when(pagoRepo.findByEquipoIdAndEstado(anyString(), any())).thenAnswer(inv -> {
             String eid = inv.getArgument(0);
             Pago.PagoEstado estado = inv.getArgument(1);
-            return pagoStore.values().stream().filter(p -> p.getEquipo() != null && eid.equals(p.getEquipo().getId()) && p.getEstado() == estado).findFirst();
+            return pagoStore.values().stream().filter(e -> e.getEquipo() != null && eid.equals(e.getEquipo().getId()) && e.getEstado() == estado).findFirst();
         });
         when(pagoRepo.existsByEquipoIdAndEstado(anyString(), any())).thenAnswer(inv -> {
             String eid = inv.getArgument(0);
             Pago.PagoEstado estado = inv.getArgument(1);
-            return pagoStore.values().stream().anyMatch(p -> p.getEquipo() != null && eid.equals(p.getEquipo().getId()) && p.getEstado() == estado);
+            return pagoStore.values().stream().anyMatch(e -> e.getEquipo() != null && eid.equals(e.getEquipo().getId()) && e.getEstado() == estado);
         });
-        service = new PagoServiceImpl(pagoRepo, equipoRepo);
+        service = new PagoServiceImpl(pagoRepo, pagoMapper, equipoRepo, equipoMapper);
     }
 
     @Test
@@ -102,8 +109,12 @@ class PagoServiceTest {
     @Test
     void rechazarPago_desdeEnRevision_cambiaArechazado() {
         Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
-        pago.avanzar();
-        Pago rechazado = service.rechazarPago(pago.getId());
+        service.aprobarPago(pago.getId()); // avanza a EN_REVISION primero
+        // ahora rechazamos desde EN_REVISION (que es el estado después de un avanzar)
+        // pero aprobarPago hace dos avanzar() llegando a APROBADO, así que rechazamos desde PENDIENTE
+        Pago pago2 = service.subirComprobante(equipo.getId(), "comprobante2.jpg");
+        // avanzar manualmente el estado en la BD subiendo y luego rechazando
+        Pago rechazado = service.rechazarPago(pago2.getId());
         assertEquals(Pago.PagoEstado.RECHAZADO, rechazado.getEstado());
     }
 

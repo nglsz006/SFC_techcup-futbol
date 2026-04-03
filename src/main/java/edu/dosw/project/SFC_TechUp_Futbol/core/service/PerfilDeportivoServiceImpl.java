@@ -2,9 +2,12 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.PerfilDeportivo;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.JugadorRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.PerfilDeportivoRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PerfilDeportivoValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.PerfilDeportivoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.JugadorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.PerfilDeportivoJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +22,16 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
         return input == null ? "null" : input.replaceAll("[\r\n\t]", "_");
     }
 
-    private final PerfilDeportivoRepository perfilRepository;
-    private final JugadorRepository jugadorRepository;
+    private final PerfilDeportivoJpaRepository perfilRepository;
+    private final PerfilDeportivoMapper perfilMapper;
+    private final JugadorJpaRepository jugadorRepository;
     private final PerfilDeportivoValidator validator;
 
-    public PerfilDeportivoServiceImpl(PerfilDeportivoRepository perfilRepository,
-                                      JugadorRepository jugadorRepository) {
+    public PerfilDeportivoServiceImpl(PerfilDeportivoJpaRepository perfilRepository,
+                                      PerfilDeportivoMapper perfilMapper,
+                                      JugadorJpaRepository jugadorRepository) {
         this.perfilRepository = perfilRepository;
+        this.perfilMapper = perfilMapper;
         this.jugadorRepository = jugadorRepository;
         this.validator = new PerfilDeportivoValidator();
     }
@@ -44,10 +50,10 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
         validator.validarPerfil(posiciones, dorsal, edad, genero, identificacion);
         validator.validarSemestre(semestre);
 
-        PerfilDeportivo perfil = new PerfilDeportivo(null, jugadorId, posiciones, dorsal,
+        PerfilDeportivo perfil = new PerfilDeportivo(IdGeneratorUtil.generarId(), jugadorId, posiciones, dorsal,
                 foto, edad, genero, identificacion, semestre);
 
-        PerfilDeportivo guardado = perfilRepository.save(perfil);
+        PerfilDeportivo guardado = perfilMapper.toDomain(perfilRepository.save(perfilMapper.toEntity(perfil)));
         log.info("Perfil deportivo creado para jugador: " + sanitize(jugadorId));
         return guardado;
     }
@@ -57,6 +63,7 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
                                         String foto, int edad, PerfilDeportivo.Genero genero,
                                         String identificacion, Integer semestre) {
         PerfilDeportivo perfil = perfilRepository.findByJugadorId(jugadorId)
+                .map(perfilMapper::toDomain)
                 .orElseThrow(() -> new IllegalArgumentException("El jugador no tiene perfil deportivo. Crea uno primero."));
 
         validator.validarPerfil(posiciones, dorsal, edad, genero, identificacion);
@@ -70,7 +77,7 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
         perfil.setIdentificacion(identificacion);
         perfil.setSemestre(semestre);
 
-        PerfilDeportivo actualizado = perfilRepository.save(perfil);
+        PerfilDeportivo actualizado = perfilMapper.toDomain(perfilRepository.save(perfilMapper.toEntity(perfil)));
         log.info("Perfil deportivo actualizado para jugador: " + sanitize(jugadorId));
         return actualizado;
     }
@@ -78,6 +85,7 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
     @Override
     public PerfilDeportivo consultarPerfil(String jugadorId) {
         return perfilRepository.findByJugadorId(jugadorId)
+                .map(perfilMapper::toDomain)
                 .orElseThrow(() -> new IllegalArgumentException("El jugador no tiene perfil deportivo registrado."));
     }
 }

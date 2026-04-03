@@ -6,11 +6,13 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdministrativoRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.ErrorHandler;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AdministradorService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AutenticacionAdministradorService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AdministradorValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -33,83 +35,95 @@ class AdministradorControllerTest {
 
     @BeforeEach
     void setUp() {
-        Map<String, Administrador> adminStore = new HashMap<>();
-        AdministradorRepository administradorRepository = mock(AdministradorRepository.class);
+        TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
+        TorneoMapper torneoMapper = new TorneoMapper();
+        EquipoMapper equipoMapper = new EquipoMapper();
+        JugadorMapper jugadorMapper = new JugadorMapper();
+        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
+        AdministradorMapper adminMapper = new AdministradorMapper();
+        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepo, torneoMapper);
+        ArbitroMapper arbitroMapper = new ArbitroMapper(partidoMapper);
+        UsuarioRegistradoMapper usuarioMapper = new UsuarioRegistradoMapper();
+
+        Map<String, AdministradorEntity> adminStore = new HashMap<>();
+        AdministradorJpaRepository administradorRepository = mock(AdministradorJpaRepository.class);
         when(administradorRepository.save(any())).thenAnswer(inv -> {
-            Administrador a = inv.getArgument(0);
-            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
-            adminStore.put(a.getId(), a);
-            return a;
+            AdministradorEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            adminStore.put(e.getId(), e);
+            return e;
         });
         when(administradorRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(adminStore.get(inv.<String>getArgument(0))));
         when(administradorRepository.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
-            return adminStore.values().stream().filter(a -> email.equals(a.getEmail())).findFirst();
+            return adminStore.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
         when(administradorRepository.findAll()).thenAnswer(inv -> new ArrayList<>(adminStore.values()));
 
-        Map<String, Organizador> orgStore = new HashMap<>();
-        OrganizadorRepository organizadorRepository = mock(OrganizadorRepository.class);
+        Map<String, OrganizadorEntity> orgStore = new HashMap<>();
+        OrganizadorJpaRepository organizadorRepository = mock(OrganizadorJpaRepository.class);
         when(organizadorRepository.save(any())).thenAnswer(inv -> {
-            Organizador o = inv.getArgument(0);
-            if (o.getId() == null) o.setId(UUID.randomUUID().toString());
-            orgStore.put(o.getId(), o);
-            return o;
+            OrganizadorEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            orgStore.put(e.getId(), e);
+            return e;
         });
         when(organizadorRepository.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
-            return orgStore.values().stream().filter(o -> email.equals(o.getEmail())).findFirst();
+            return orgStore.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
         when(organizadorRepository.findAll()).thenAnswer(inv -> new ArrayList<>(orgStore.values()));
 
-        Map<String, Arbitro> arbitroStore = new HashMap<>();
-        ArbitroRepository arbitroRepository = mock(ArbitroRepository.class);
+        Map<String, ArbitroEntity> arbitroStore = new HashMap<>();
+        ArbitroJpaRepository arbitroRepository = mock(ArbitroJpaRepository.class);
         when(arbitroRepository.save(any())).thenAnswer(inv -> {
-            Arbitro a = inv.getArgument(0);
-            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
-            arbitroStore.put(a.getId(), a);
-            return a;
+            ArbitroEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            arbitroStore.put(e.getId(), e);
+            return e;
         });
         when(arbitroRepository.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
-            return arbitroStore.values().stream().filter(a -> email.equals(a.getEmail())).findFirst();
+            return arbitroStore.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
         when(arbitroRepository.findAll()).thenAnswer(inv -> new ArrayList<>(arbitroStore.values()));
 
-        UsuarioRegistradoRepository usuarioRegistradoRepository = mock(UsuarioRegistradoRepository.class);
+        UsuarioRegistradoJpaRepository usuarioRegistradoRepository = mock(UsuarioRegistradoJpaRepository.class);
         when(usuarioRegistradoRepository.findByEmail(anyString())).thenReturn(Optional.empty());
         when(usuarioRegistradoRepository.findAll()).thenReturn(new ArrayList<>());
 
-        List<RegistroAuditoria> auditoriaList1 = new ArrayList<>();
-        RegistroAuditoriaRepository auditoriaRepo1 = mock(RegistroAuditoriaRepository.class);
+        List<RegistroAuditoriaEntity> auditoriaList1 = new ArrayList<>();
+        RegistroAuditoriaJpaRepository auditoriaRepo1 = mock(RegistroAuditoriaJpaRepository.class);
+        RegistroAuditoriaMapper auditoriaMapper = new RegistroAuditoriaMapper();
         when(auditoriaRepo1.save(any())).thenAnswer(inv -> {
-            RegistroAuditoria r = inv.getArgument(0);
-            if (r.getId() == null) r.setId(UUID.randomUUID().toString());
-            auditoriaList1.add(r);
-            return r;
+            RegistroAuditoriaEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            auditoriaList1.add(e);
+            return e;
         });
         when(auditoriaRepo1.findAll()).thenAnswer(inv -> new ArrayList<>(auditoriaList1));
 
-        List<RegistroAuditoria> auditoriaList2 = new ArrayList<>();
-        RegistroAuditoriaRepository auditoriaRepo2 = mock(RegistroAuditoriaRepository.class);
+        List<RegistroAuditoriaEntity> auditoriaList2 = new ArrayList<>();
+        RegistroAuditoriaJpaRepository auditoriaRepo2 = mock(RegistroAuditoriaJpaRepository.class);
         when(auditoriaRepo2.save(any())).thenAnswer(inv -> {
-            RegistroAuditoria r = inv.getArgument(0);
-            if (r.getId() == null) r.setId(UUID.randomUUID().toString());
-            auditoriaList2.add(r);
-            return r;
+            RegistroAuditoriaEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            auditoriaList2.add(e);
+            return e;
         });
         when(auditoriaRepo2.findAll()).thenAnswer(inv -> new ArrayList<>(auditoriaList2));
 
         administradorService = new AdministradorService(
-                administradorRepository, organizadorRepository, arbitroRepository,
-                usuarioRegistradoRepository, new AuditoriaService(auditoriaRepo1));
-        autenticacionAdministradorService = new AutenticacionAdministradorService(administradorRepository);
+                administradorRepository, adminMapper, organizadorRepository, orgMapper,
+                arbitroRepository, arbitroMapper, usuarioRegistradoRepository,
+                new AuditoriaService(auditoriaRepo1, auditoriaMapper));
+        autenticacionAdministradorService = new AutenticacionAdministradorService(administradorRepository, adminMapper);
         AdministradorValidator administradorValidator = new AdministradorValidator(
                 administradorRepository, organizadorRepository, arbitroRepository, usuarioRegistradoRepository);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(new AdministradorController(
                         administradorService, administradorValidator,
-                        autenticacionAdministradorService, new AuditoriaService(auditoriaRepo2)))
+                        autenticacionAdministradorService, new AuditoriaService(auditoriaRepo2, auditoriaMapper)))
                 .setControllerAdvice(new ErrorHandler()).build();
     }
 

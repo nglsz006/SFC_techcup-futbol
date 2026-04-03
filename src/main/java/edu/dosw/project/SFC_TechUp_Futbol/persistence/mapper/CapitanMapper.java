@@ -2,11 +2,19 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Capitan;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.CapitanEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CapitanMapper {
 
+    private final EquipoJpaRepository equipoJpaRepository;
+    private final EquipoMapper equipoMapper;
+
+    public CapitanMapper(EquipoJpaRepository equipoJpaRepository, EquipoMapper equipoMapper) {
+        this.equipoJpaRepository = equipoJpaRepository;
+        this.equipoMapper = equipoMapper;
+    }
     public CapitanEntity toEntity(Capitan capitan) {
         if (capitan == null) {
             return null;
@@ -29,9 +37,7 @@ public class CapitanMapper {
     }
 
     public Capitan toDomain(CapitanEntity entity) {
-        if (entity == null) {
-            return null;
-        }
+        if (entity == null) return null;
         Capitan capitan = new Capitan();
         capitan.setId(entity.getId());
         capitan.setName(entity.getName());
@@ -43,7 +49,10 @@ public class CapitanMapper {
         capitan.setAvailable(entity.isAvailable());
         capitan.setPhoto(entity.getPhoto());
         capitan.setEquipo(entity.getEquipoId());
-        // team se resuelve en el servicio si se necesita
+        if (entity.getTeamId() != null) {
+            equipoJpaRepository.findById(entity.getTeamId())
+                    .ifPresent(e -> capitan.setTeam(equipoMapper.toDomain(e)));
+        }
         return capitan;
     }
 }
