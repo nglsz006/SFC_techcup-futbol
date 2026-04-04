@@ -1,16 +1,16 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/techcup_futbol
-    username: postgres
-    password: 1234
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   security:
     oauth2:
       client:
         registration:
           google:
-            client-id: <GOOGLE_CLIENT_ID>
-            client-secret: <GOOGLE_CLIENT_SECRET>
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: email, profile
         provider:
           google:
@@ -29,3 +29,5 @@ spring:
 
 server:
   port: 8080
+  http:
+    port: ${SERVER_HTTP_PORT}

@@ -1,0 +1,11 @@
+# Base de datos
+DB_URL=
+DB_USERNAME=
+DB_PASSWORD=
+
+# Google OAuth2
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Servidor
+SERVER_HTTP_PORT=
