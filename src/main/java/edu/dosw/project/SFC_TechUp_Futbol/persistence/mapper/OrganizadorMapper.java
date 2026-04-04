@@ -1,6 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Organizador;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.OrganizadorEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class OrganizadorMapper {
         OrganizadorEntity entity = new OrganizadorEntity();
         entity.setId(organizador.getId());
         entity.setName(organizador.getName());
-        entity.setEmail(organizador.getEmail());
+        entity.setEmail(Base64Util.encode(organizador.getEmail()));
         entity.setPassword(organizador.getPassword());
         entity.setUserType(organizador.getUserType());
         if (organizador.getCurrentTournament() != null) {
@@ -36,7 +37,7 @@ public class OrganizadorMapper {
         Organizador organizador = new Organizador();
         organizador.setId(entity.getId());
         organizador.setName(entity.getName());
-        organizador.setEmail(entity.getEmail());
+        organizador.setEmail(Base64Util.decode(entity.getEmail()));
         organizador.setPassword(entity.getPassword());
         organizador.setUserType(entity.getUserType());
         if (entity.getTorneoId() != null) {

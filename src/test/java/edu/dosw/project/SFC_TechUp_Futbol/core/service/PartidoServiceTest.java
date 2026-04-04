@@ -188,8 +188,8 @@ class PartidoServiceTest {
         jugador.setId(saved.getId());
         Partido p = service.crearPartido(torneo.getId(), local.getId(), visitante.getId(), LocalDateTime.now(), "cancha 1");
         service.iniciarPartido(p.getId());
-        service.registrarSancion(p.getId(), jugador.getId(), Sancion.TipoSancion.AGRESION_VERBAL, "Insultos al árbitro en el minuto 35");
-        assertTrue(jugador.tieneSancion(Sancion.TipoSancion.AGRESION_VERBAL));
+        Partido conSancion = service.registrarSancion(p.getId(), jugador.getId(), Sancion.TipoSancion.AGRESION_VERBAL, "Insultos al árbitro en el minuto 35");
+        assertTrue(conSancion.getSanciones().stream().anyMatch(s -> s.getTipoSancion() == Sancion.TipoSancion.AGRESION_VERBAL));
     }
 
     @Test
@@ -199,9 +199,10 @@ class PartidoServiceTest {
         jugador.setId(saved.getId());
         Partido p = service.crearPartido(torneo.getId(), local.getId(), visitante.getId(), LocalDateTime.now(), "cancha 1");
         service.iniciarPartido(p.getId());
-        service.registrarSancion(p.getId(), jugador.getId(), Sancion.TipoSancion.TARJETA_AMARILLA, "Primera falta en minuto 20");
-        service.registrarSancion(p.getId(), jugador.getId(), Sancion.TipoSancion.TARJETA_AMARILLA, "Segunda falta en minuto 60");
-        assertEquals(2, jugador.getSanciones().size());
+        Partido con1 = service.registrarSancion(p.getId(), jugador.getId(), Sancion.TipoSancion.TARJETA_AMARILLA, "Primera falta en minuto 20");
+        Partido con2 = service.registrarSancion(p.getId(), jugador.getId(), Sancion.TipoSancion.TARJETA_AMARILLA, "Segunda falta en minuto 60");
+        assertEquals(1, con1.getSanciones().size());
+        assertEquals(1, con2.getSanciones().size());
     }
 
     @Test

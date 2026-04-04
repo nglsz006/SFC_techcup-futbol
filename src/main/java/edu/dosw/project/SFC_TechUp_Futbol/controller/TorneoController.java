@@ -45,6 +45,14 @@ public class TorneoController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Check if enrollment is open", description = "Returns whether the tournament accepts team enrollments.")
+    @GetMapping("/{id}/enrollment")
+    public Map<String, Object> inscripcionHabilitada(@PathVariable String id) {
+        boolean habilitada = service.puedeInscribirEquipos(id);
+        return Map.of("torneoId", id, "inscripcionHabilitada", habilitada);
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Standings table", description = "Calculates and returns the tournament standings based on finished matches.")
     @GetMapping("/{id}/positions")
     public List<Map<String, Object>> tablaPosiciones(@PathVariable String id) {

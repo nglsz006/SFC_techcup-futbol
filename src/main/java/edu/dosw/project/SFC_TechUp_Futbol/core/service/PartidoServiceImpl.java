@@ -138,7 +138,8 @@ public class PartidoServiceImpl implements PartidoService {
         jugador.agregarSancion(sancion);
 
         log.info("Sanción registrada");
-        return partidoMapper.toDomain(partidoRepository.save(partidoMapper.toEntity(partido)));
+        partidoRepository.save(partidoMapper.toEntity(partido));
+        return partido;
     }
 
     @Override

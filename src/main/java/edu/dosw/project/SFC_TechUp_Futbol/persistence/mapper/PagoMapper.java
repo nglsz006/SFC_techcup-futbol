@@ -2,6 +2,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.*;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.PagoEntity;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class PagoMapper {
         }
         PagoEntity entity = new PagoEntity();
         entity.setId(pago.getId());
-        entity.setComprobante(pago.getComprobante());
+        entity.setComprobante(Base64Util.encode(pago.getComprobante()));
         entity.setFechaSubida(pago.getFechaSubida());
         entity.setEstado(pago.getEstado());
         entity.setEquipo(equipoMapper.toEntity(pago.getEquipo()));
@@ -33,7 +34,7 @@ public class PagoMapper {
         }
         Pago pago = new Pago();
         pago.setId(entity.getId());
-        pago.setComprobante(entity.getComprobante());
+        pago.setComprobante(Base64Util.decode(entity.getComprobante()));
         pago.setFechaSubida(entity.getFechaSubida());
         pago.setEstado(entity.getEstado());
         pago.setState(resolverPagoState(entity.getEstado()));

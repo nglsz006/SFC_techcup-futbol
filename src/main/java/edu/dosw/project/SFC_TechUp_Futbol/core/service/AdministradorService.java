@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AccesoDenegadoException
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RolNoPermitidoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper;
@@ -89,7 +90,7 @@ public class AdministradorService {
     }
 
     public Administrador obtenerAdministradorPorEmail(String email) {
-        return administradorRepository.findByEmail(email)
+        return administradorRepository.findByEmail(Base64Util.encode(email))
                 .map(administradorMapper::toDomain)
                 .orElseThrow(() -> new AccesoDenegadoException("El administrador no esta autorizado."));
     }
@@ -103,10 +104,11 @@ public class AdministradorService {
     }
 
     private void validarCorreoUnico(String email) {
-        if (administradorRepository.findByEmail(email).isPresent()
-                || organizadorRepository.findByEmail(email).isPresent()
-                || arbitroRepository.findByEmail(email).isPresent()
-                || usuarioRegistradoRepository.findByEmail(email).isPresent()) {
+        String emailEncoded = Base64Util.encode(email);
+        if (administradorRepository.findByEmail(emailEncoded).isPresent()
+                || organizadorRepository.findByEmail(emailEncoded).isPresent()
+                || arbitroRepository.findByEmail(emailEncoded).isPresent()
+                || usuarioRegistradoRepository.findByEmail(emailEncoded).isPresent()) {
             throw new CorreoYaRegistradoException("Ya existe un usuario con ese correo.");
         }
     }

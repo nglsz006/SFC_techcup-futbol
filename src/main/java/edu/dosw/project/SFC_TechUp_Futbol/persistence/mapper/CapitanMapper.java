@@ -1,6 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Capitan;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.CapitanEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class CapitanMapper {
         CapitanEntity entity = new CapitanEntity();
         entity.setId(capitan.getId());
         entity.setName(capitan.getName());
-        entity.setEmail(capitan.getEmail());
+        entity.setEmail(Base64Util.encode(capitan.getEmail()));
         entity.setPassword(capitan.getPassword());
         entity.setUserType(capitan.getUserType());
         entity.setJerseyNumber(capitan.getJerseyNumber());
@@ -41,7 +42,7 @@ public class CapitanMapper {
         Capitan capitan = new Capitan();
         capitan.setId(entity.getId());
         capitan.setName(entity.getName());
-        capitan.setEmail(entity.getEmail());
+        capitan.setEmail(Base64Util.decode(entity.getEmail()));
         capitan.setPassword(entity.getPassword());
         capitan.setUserType(entity.getUserType());
         capitan.setJerseyNumber(entity.getJerseyNumber());

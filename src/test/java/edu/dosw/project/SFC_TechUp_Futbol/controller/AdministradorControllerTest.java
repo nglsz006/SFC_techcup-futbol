@@ -9,6 +9,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AdministradorService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AutenticacionAdministradorService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AdministradorValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;

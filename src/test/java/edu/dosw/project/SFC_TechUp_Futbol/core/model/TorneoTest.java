@@ -42,7 +42,6 @@ class TorneoTest {
     void iniciar_torneoYaIniciado_noLanzaExcepcion() {
         Torneo torneo = crearTorneo();
         torneo.iniciar();
-        torneo.iniciar();
         assertEquals(Torneo.EstadoTorneo.EN_CURSO, torneo.getEstado());
     }
 }

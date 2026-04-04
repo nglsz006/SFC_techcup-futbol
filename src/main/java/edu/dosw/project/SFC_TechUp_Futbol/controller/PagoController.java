@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Payments", description = "Tournament payment management.")
 @RestController
@@ -29,6 +30,12 @@ public class PagoController {
         return pagoService.subirComprobante(teamId, comprobante);
     }
 
+    @Operation(summary = "Send payment to review")
+    @PatchMapping("/{id}/review")
+    public Pago enviarARevision(@PathVariable String id) {
+        return pagoService.enviarARevision(id);
+    }
+
     @Operation(summary = "Get payment by ID")
     @GetMapping("/{id}")
     public Pago consultarPago(@PathVariable String id) {
@@ -45,5 +52,24 @@ public class PagoController {
     @GetMapping("/team/{teamId}")
     public List<Pago> consultarPagosPorEquipo(@PathVariable String teamId) {
         return pagoService.consultarPagosPorEquipo(teamId);
+    }
+
+    @Operation(summary = "Get payments by status", description = "Valid values: PENDIENTE, EN_REVISION, APROBADO, RECHAZADO")
+    @GetMapping("/status/{estado}")
+    public List<Pago> consultarPagosPorEstado(@PathVariable String estado) {
+        Pago.PagoEstado pagoEstado;
+        try {
+            pagoEstado = Pago.PagoEstado.valueOf(estado.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Estado invalido. Use: PENDIENTE, EN_REVISION, APROBADO o RECHAZADO.");
+        }
+        return pagoService.consultarPagosPorEstado(pagoEstado);
+    }
+
+    @Operation(summary = "Check if team is enabled", description = "Returns whether the team has an approved payment.")
+    @GetMapping("/team/{teamId}/enabled")
+    public Map<String, Object> equipoHabilitado(@PathVariable String teamId) {
+        boolean habilitado = pagoService.equipoHabilitado(teamId);
+        return Map.of("equipoId", teamId, "habilitado", habilitado);
     }
 }
