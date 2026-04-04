@@ -1,8 +1,10 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.JugadorRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.JugadorValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.JugadorJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,16 +13,22 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 
 @Service
 public class JugadorService {
 
-    private final JugadorRepository jugadorRepository;
+    private final JugadorJpaRepository jugadorRepository;
+    private final JugadorMapper mapper;
     private final JugadorValidator jugadorValidator = new JugadorValidator();
 
-    public JugadorService(JugadorRepository jugadorRepository) {
+    public JugadorService(JugadorJpaRepository jugadorRepository, JugadorMapper mapper) {
         this.jugadorRepository = jugadorRepository;
+        this.mapper = mapper;
+    }
+
+    public Jugador save(Jugador jugador) {
+        if (jugador.getId() == null) jugador.setId(IdGeneratorUtil.generarId());
+        return mapper.toDomain(jugadorRepository.save(mapper.toEntity(jugador)));
     }
 
     public Jugador editarPerfil(String jugadorId, String nombre, int numeroCamiseta, Jugador.Posicion posicion, String foto) {
@@ -29,19 +37,20 @@ public class JugadorService {
         if (numeroCamiseta > 0) jugador.setJerseyNumber(numeroCamiseta);
         if (posicion != null) jugador.setPosition(posicion);
         if (foto != null && !foto.isBlank()) jugador.setPhoto(foto);
-        return jugadorRepository.save(jugador);
+        if (jugador.getId() == null) jugador.setId(IdGeneratorUtil.generarId());
+        return mapper.toDomain(jugadorRepository.save(mapper.toEntity(jugador)));
     }
 
     public void aceptarInvitacion(String jugadorId) {
         Jugador jugador = getOrThrow(jugadorId);
         jugador.setAvailable(false);
-        jugadorRepository.save(jugador);
+        jugadorRepository.save(mapper.toEntity(jugador));
     }
 
     public void rechazarInvitacion(String jugadorId) {
         Jugador jugador = getOrThrow(jugadorId);
         jugador.setAvailable(true);
-        jugadorRepository.save(jugador);
+        jugadorRepository.save(mapper.toEntity(jugador));
     }
 
     public void marcarDisponible(String jugadorId) {
@@ -49,19 +58,20 @@ public class JugadorService {
         if (!jugadorValidator.jugadorDisponibleParaEquipo(jugador))
             throw new IllegalStateException("ese jugador ya pertenece a un equipo.");
         jugador.setAvailable(true);
-        jugadorRepository.save(jugador);
+        jugadorRepository.save(mapper.toEntity(jugador));
     }
 
     public Jugador buscarJugadorPorId(String id) {
-        return jugadorRepository.findById(id).orElse(null);
+        return jugadorRepository.findById(id).map(mapper::toDomain).orElse(null);
     }
 
     public List<Jugador> getJugadores() {
-        return jugadorRepository.findAll();
+        return jugadorRepository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     private Jugador getOrThrow(String id) {
         return jugadorRepository.findById(id)
+                .map(mapper::toDomain)
                 .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado."));
     }
 
@@ -83,7 +93,7 @@ public class JugadorService {
                 throw new IllegalArgumentException("Ruta de archivo no permitida");
             file.transferTo(destino.toFile());
             jugador.setPhoto(destino.toString());
-            jugadorRepository.save(jugador);
+            jugadorRepository.save(mapper.toEntity(jugador));
             return "Imagen subida correctamente";
         } catch (IOException e) {
             throw new RuntimeException("Error al guardar la imagen");

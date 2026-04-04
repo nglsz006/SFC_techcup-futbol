@@ -4,10 +4,10 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdminis
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RolNoPermitidoException;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.AdministradorRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.ArbitroRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.OrganizadorRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.ArbitroJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.UsuarioRegistradoJpaRepository;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,15 +15,15 @@ public class AdministradorValidator {
 
     private final UsuarioValidator usuarioValidator = new UsuarioValidator();
     private final RegistroValidator registroValidator = new RegistroValidator();
-    private final AdministradorRepository administradorRepository;
-    private final OrganizadorRepository organizadorRepository;
-    private final ArbitroRepository arbitroRepository;
-    private final UsuarioRegistradoRepository usuarioRegistradoRepository;
+    private final AdministradorJpaRepository administradorRepository;
+    private final OrganizadorJpaRepository organizadorRepository;
+    private final ArbitroJpaRepository arbitroRepository;
+    private final UsuarioRegistradoJpaRepository usuarioRegistradoRepository;
 
-    public AdministradorValidator(AdministradorRepository administradorRepository,
-                                  OrganizadorRepository organizadorRepository,
-                                  ArbitroRepository arbitroRepository,
-                                  UsuarioRegistradoRepository usuarioRegistradoRepository) {
+    public AdministradorValidator(AdministradorJpaRepository administradorRepository,
+                                  OrganizadorJpaRepository organizadorRepository,
+                                  ArbitroJpaRepository arbitroRepository,
+                                  UsuarioRegistradoJpaRepository usuarioRegistradoRepository) {
         this.administradorRepository = administradorRepository;
         this.organizadorRepository = organizadorRepository;
         this.arbitroRepository = arbitroRepository;

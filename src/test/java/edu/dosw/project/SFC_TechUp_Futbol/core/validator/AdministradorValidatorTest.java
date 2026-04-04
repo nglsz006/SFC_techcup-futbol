@@ -5,11 +5,19 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoExcep
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RolNoPermitidoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Organizador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.AdministradorRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.ArbitroRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.OrganizadorRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AdministradorValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.AdministradorEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.ArbitroEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.OrganizadorEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.UsuarioRegistradoEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.TorneoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.ArbitroJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.UsuarioRegistradoJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,33 +30,38 @@ import static org.mockito.Mockito.*;
 class AdministradorValidatorTest {
 
     private AdministradorValidator administradorValidator;
-    private OrganizadorRepository organizadorRepository;
+    private OrganizadorJpaRepository organizadorRepository;
+    private OrganizadorMapper orgMapper;
 
     @BeforeEach
     void setUp() {
-        Map<String, Organizador> orgStore = new HashMap<>();
-        organizadorRepository = mock(OrganizadorRepository.class);
+        TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
+        TorneoMapper torneoMapper = new TorneoMapper();
+        orgMapper = new OrganizadorMapper(torneoRepo, torneoMapper);
+
+        Map<String, OrganizadorEntity> orgStore = new HashMap<>();
+        organizadorRepository = mock(OrganizadorJpaRepository.class);
         when(organizadorRepository.save(any())).thenAnswer(inv -> {
-            Organizador o = inv.getArgument(0);
-            if (o.getId() == null) o.setId(UUID.randomUUID().toString());
-            orgStore.put(o.getId(), o);
-            return o;
+            OrganizadorEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            orgStore.put(e.getId(), e);
+            return e;
         });
         when(organizadorRepository.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
-            return orgStore.values().stream().filter(o -> email.equals(o.getEmail())).findFirst();
+            return orgStore.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
         when(organizadorRepository.findAll()).thenAnswer(inv -> new ArrayList<>(orgStore.values()));
 
-        AdministradorRepository adminRepo = mock(AdministradorRepository.class);
+        AdministradorJpaRepository adminRepo = mock(AdministradorJpaRepository.class);
         when(adminRepo.findByEmail(anyString())).thenReturn(Optional.empty());
         when(adminRepo.findAll()).thenReturn(new ArrayList<>());
 
-        ArbitroRepository arbitroRepo = mock(ArbitroRepository.class);
+        ArbitroJpaRepository arbitroRepo = mock(ArbitroJpaRepository.class);
         when(arbitroRepo.findByEmail(anyString())).thenReturn(Optional.empty());
         when(arbitroRepo.findAll()).thenReturn(new ArrayList<>());
 
-        UsuarioRegistradoRepository usuarioRepo = mock(UsuarioRegistradoRepository.class);
+        UsuarioRegistradoJpaRepository usuarioRepo = mock(UsuarioRegistradoJpaRepository.class);
         when(usuarioRepo.findByEmail(anyString())).thenReturn(Optional.empty());
         when(usuarioRepo.findAll()).thenReturn(new ArrayList<>());
 
@@ -67,7 +80,13 @@ class AdministradorValidatorTest {
 
     @Test
     void validarRegistro_cuandoCorreoYaExiste_lanzaExcepcion() {
-        organizadorRepository.save(new Organizador(null, "Existente", "duplicado@escuelaing.edu.co", "password123", Usuario.TipoUsuario.ESTUDIANTE, null));
+        OrganizadorEntity entity = new OrganizadorEntity();
+        entity.setId(UUID.randomUUID().toString());
+        entity.setName("Existente");
+        entity.setEmail("duplicado@escuelaing.edu.co");
+        entity.setPassword("password123");
+        entity.setUserType(Usuario.TipoUsuario.ESTUDIANTE);
+        organizadorRepository.save(entity);
         assertThrows(CorreoYaRegistradoException.class,
                 () -> administradorValidator.validarRegistro(crearRequest("Nuevo", "duplicado@escuelaing.edu.co", "ORGANIZADOR")));
     }

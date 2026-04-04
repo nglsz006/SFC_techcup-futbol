@@ -2,9 +2,11 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Capitan;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.CapitanRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.JugadorValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.UsuarioValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.CapitanMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.CapitanJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,18 +14,21 @@ import java.util.List;
 @Service
 public class CapitanService {
 
-    private final CapitanRepository capitanRepository;
+    private final CapitanJpaRepository capitanRepository;
+    private final CapitanMapper mapper;
     private final JugadorService jugadorService;
     private final JugadorValidator jugadorValidator = new JugadorValidator();
     private final UsuarioValidator usuarioValidator = new UsuarioValidator();
 
-    public CapitanService(CapitanRepository capitanRepository, JugadorService jugadorService) {
+    public CapitanService(CapitanJpaRepository capitanRepository, CapitanMapper mapper, JugadorService jugadorService) {
         this.capitanRepository = capitanRepository;
+        this.mapper = mapper;
         this.jugadorService = jugadorService;
     }
 
     public Capitan save(Capitan capitan) {
-        return capitanRepository.save(capitan);
+        if (capitan.getId() == null) capitan.setId(IdGeneratorUtil.generarId());
+        return mapper.toDomain(capitanRepository.save(mapper.toEntity(capitan)));
     }
 
     public String crearEquipo(String capitanId, String nombreEquipo) {
@@ -60,11 +65,12 @@ public class CapitanService {
     }
 
     public List<Capitan> getCapitanes() {
-        return capitanRepository.findAll();
+        return capitanRepository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     private Capitan getOrThrow(String id) {
         return capitanRepository.findById(id)
+                .map(mapper::toDomain)
                 .orElseThrow(() -> new IllegalArgumentException("capitan no encontrado"));
     }
 }

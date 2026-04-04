@@ -2,11 +2,19 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Organizador;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.OrganizadorEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OrganizadorMapper {
 
+    private final TorneoJpaRepository torneoJpaRepository;
+    private final TorneoMapper torneoMapper;
+
+    public OrganizadorMapper(TorneoJpaRepository torneoJpaRepository, TorneoMapper torneoMapper) {
+        this.torneoJpaRepository = torneoJpaRepository;
+        this.torneoMapper = torneoMapper;
+    }
     public OrganizadorEntity toEntity(Organizador organizador) {
         if (organizador == null) {
             return null;
@@ -24,16 +32,17 @@ public class OrganizadorMapper {
     }
 
     public Organizador toDomain(OrganizadorEntity entity) {
-        if (entity == null) {
-            return null;
-        }
+        if (entity == null) return null;
         Organizador organizador = new Organizador();
         organizador.setId(entity.getId());
         organizador.setName(entity.getName());
         organizador.setEmail(entity.getEmail());
         organizador.setPassword(entity.getPassword());
         organizador.setUserType(entity.getUserType());
-        // currentTournament se resuelve en el servicio si se necesita
+        if (entity.getTorneoId() != null) {
+            torneoJpaRepository.findById(entity.getTorneoId())
+                    .ifPresent(t -> organizador.setCurrentTournament(torneoMapper.toDomain(t)));
+        }
         return organizador;
     }
 }

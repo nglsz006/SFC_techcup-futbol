@@ -1,7 +1,9 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.TorneoRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.TorneoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -12,14 +14,17 @@ public class TorneoService extends Subject {
 
     private static final Logger log = Logger.getLogger(TorneoService.class.getName());
 
-    private final TorneoRepository repository;
+    private final TorneoJpaRepository repository;
+    private final TorneoMapper mapper;
 
-    public TorneoService(TorneoRepository repository) {
+    public TorneoService(TorneoJpaRepository repository, TorneoMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     public Torneo crear(Torneo torneo, Map<String, Object> datos) {
-        Torneo saved = repository.save(torneo);
+        if (torneo.getId() == null) torneo.setId(IdGeneratorUtil.generarId());
+        Torneo saved = mapper.toDomain(repository.save(mapper.toEntity(torneo)));
         log.info("Torneo creado");
         notificar("TORNEO_CREADO", Map.of("id", saved.getId(), "nombre", saved.getNombre()));
         return saved;
@@ -27,11 +32,12 @@ public class TorneoService extends Subject {
 
     public Torneo obtener(String id) {
         return repository.findById(id)
+            .map(mapper::toDomain)
             .orElseThrow(() -> new IllegalArgumentException("Torneo no encontrado"));
     }
 
     public List<Torneo> listar() {
-        return repository.findAll();
+        return repository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     public Torneo iniciar(String id) {
@@ -39,7 +45,7 @@ public class TorneoService extends Subject {
         torneo.iniciar();
         log.info("Torneo iniciado");
         notificar("TORNEO_INICIADO", Map.of("id", id));
-        return torneo;
+        return mapper.toDomain(repository.save(mapper.toEntity(torneo)));
     }
 
     public Torneo finalizar(String id) {
@@ -47,7 +53,7 @@ public class TorneoService extends Subject {
         torneo.finalizar();
         log.info("Torneo finalizado");
         notificar("TORNEO_FINALIZADO", Map.of("id", id));
-        return torneo;
+        return mapper.toDomain(repository.save(mapper.toEntity(torneo)));
     }
 
     public Torneo configurar(String id, String reglamento, String canchas, String horarios,
@@ -75,6 +81,6 @@ public class TorneoService extends Subject {
         }
 
         log.info("Torneo configurado");
-        return repository.save(torneo);
+        return mapper.toDomain(repository.save(mapper.toEntity(torneo)));
     }
 }

@@ -1,7 +1,9 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.EquipoRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -16,14 +18,17 @@ public class EquipoService extends Subject {
         return input == null ? "null" : input.replaceAll("[\r\n\t]", "_");
     }
 
-    private final EquipoRepository repository;
+    private final EquipoJpaRepository repository;
+    private final EquipoMapper mapper;
 
-    public EquipoService(EquipoRepository repository) {
+    public EquipoService(EquipoJpaRepository repository, EquipoMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     public Equipo crear(Equipo equipo, Map<String, Object> datos) {
-        Equipo saved = repository.save(equipo);
+        if (equipo.getId() == null) equipo.setId(IdGeneratorUtil.generarId());
+        Equipo saved = mapper.toDomain(repository.save(mapper.toEntity(equipo)));
         log.info("Equipo creado con id: " + sanitize(saved.getId()));
         notificar("EQUIPO_CREADO", Map.of("id", saved.getId(), "nombre", saved.getNombre()));
         return saved;
@@ -31,11 +36,12 @@ public class EquipoService extends Subject {
 
     public Equipo obtener(String id) {
         return repository.findById(id)
+            .map(mapper::toDomain)
             .orElseThrow(() -> new IllegalArgumentException("Equipo no encontrado"));
     }
 
     public List<Equipo> listar() {
-        return repository.findAll();
+        return repository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     public Equipo agregarJugador(String equipoId, String jugadorId) {
@@ -43,7 +49,7 @@ public class EquipoService extends Subject {
         equipo.agregarJugador(jugadorId);
         log.info("Jugador agregado al equipo");
         notificar("JUGADOR_AGREGADO", Map.of("equipoId", equipoId, "jugadorId", jugadorId));
-        return equipo;
+        return mapper.toDomain(repository.save(mapper.toEntity(equipo)));
     }
 
     public Map<String, Object> validarComposicion(String equipoId) {

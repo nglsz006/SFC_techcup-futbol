@@ -2,8 +2,9 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AutenticacionAdminException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Administrador;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.AdministradorRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -13,15 +14,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class AutenticacionAdministradorService {
 
-    private final AdministradorRepository administradorRepository;
+    private final AdministradorJpaRepository administradorRepository;
+    private final AdministradorMapper mapper;
     private final Map<String, String> sesiones = new ConcurrentHashMap<>();
 
-    public AutenticacionAdministradorService(AdministradorRepository administradorRepository) {
+    public AutenticacionAdministradorService(AdministradorJpaRepository administradorRepository, AdministradorMapper mapper) {
         this.administradorRepository = administradorRepository;
+        this.mapper = mapper;
     }
 
     public String login(String email, String password) {
         Administrador administrador = administradorRepository.findByEmail(email)
+                .map(mapper::toDomain)
                 .orElseThrow(() -> new AutenticacionAdminException("Credenciales de administrador incorrectas."));
 
         if (!administrador.isActivo() || !PasswordUtil.verificar(password, administrador.getPassword())) {

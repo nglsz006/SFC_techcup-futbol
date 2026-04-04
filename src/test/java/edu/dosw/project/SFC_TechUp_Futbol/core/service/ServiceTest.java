@@ -2,16 +2,17 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.EquipoRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.TorneoRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.EquipoEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.TorneoEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.TorneoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -20,32 +21,37 @@ class ServiceTest {
 
     private TorneoService torneoService;
     private EquipoService equipoService;
+    private TorneoMapper torneoMapper;
+    private EquipoMapper equipoMapper;
 
     @BeforeEach
     void setUp() {
-        Map<String, Torneo> torneoStore = new HashMap<>();
-        TorneoRepository torneoRepo = mock(TorneoRepository.class);
-        when(torneoRepo.save(any())).thenAnswer(inv -> {
-            Torneo t = inv.getArgument(0);
-            if (t.getId() == null) t.setId(UUID.randomUUID().toString());
-            torneoStore.put(t.getId(), t);
-            return t;
-        });
-        when(torneoRepo.findById(anyString())).thenAnswer(inv -> java.util.Optional.ofNullable(torneoStore.get(inv.<String>getArgument(0))));
-        when(torneoRepo.findAll()).thenAnswer(inv -> new ArrayList<>(torneoStore.values()));
-        torneoService = new TorneoService(torneoRepo);
+        torneoMapper = new TorneoMapper();
+        equipoMapper = new EquipoMapper();
 
-        Map<String, Equipo> equipoStore = new HashMap<>();
-        EquipoRepository equipoRepo = mock(EquipoRepository.class);
+        Map<String, TorneoEntity> torneoStore = new HashMap<>();
+        TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
+        when(torneoRepo.save(any())).thenAnswer(inv -> {
+            TorneoEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            torneoStore.put(e.getId(), e);
+            return e;
+        });
+        when(torneoRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(torneoStore.get(inv.<String>getArgument(0))));
+        when(torneoRepo.findAll()).thenAnswer(inv -> new ArrayList<>(torneoStore.values()));
+        torneoService = new TorneoService(torneoRepo, torneoMapper);
+
+        Map<String, EquipoEntity> equipoStore = new HashMap<>();
+        EquipoJpaRepository equipoRepo = mock(EquipoJpaRepository.class);
         when(equipoRepo.save(any())).thenAnswer(inv -> {
-            Equipo e = inv.getArgument(0);
+            EquipoEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());
             equipoStore.put(e.getId(), e);
             return e;
         });
-        when(equipoRepo.findById(anyString())).thenAnswer(inv -> java.util.Optional.ofNullable(equipoStore.get(inv.<String>getArgument(0))));
+        when(equipoRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(equipoStore.get(inv.<String>getArgument(0))));
         when(equipoRepo.findAll()).thenAnswer(inv -> new ArrayList<>(equipoStore.values()));
-        equipoService = new EquipoService(equipoRepo);
+        equipoService = new EquipoService(equipoRepo, equipoMapper);
     }
 
     @Test
