@@ -3,7 +3,9 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.ConsultaAuditoriaRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.RegistroAuditoria;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.RegistroAuditoriaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.RegistroAuditoriaEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.RegistroAuditoriaMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.RegistroAuditoriaJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,16 +25,17 @@ class AuditoriaServiceTest {
 
     @BeforeEach
     void setUp() {
-        List<RegistroAuditoria> store = new ArrayList<>();
-        RegistroAuditoriaRepository repo = mock(RegistroAuditoriaRepository.class);
+        List<RegistroAuditoriaEntity> store = new ArrayList<>();
+        RegistroAuditoriaJpaRepository repo = mock(RegistroAuditoriaJpaRepository.class);
+        RegistroAuditoriaMapper mapper = new RegistroAuditoriaMapper();
         when(repo.save(any())).thenAnswer(inv -> {
-            RegistroAuditoria r = inv.getArgument(0);
-            if (r.getId() == null) r.setId(UUID.randomUUID().toString());
-            store.add(r);
-            return r;
+            RegistroAuditoriaEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            store.add(e);
+            return e;
         });
         when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store));
-        auditoriaService = new AuditoriaService(repo);
+        auditoriaService = new AuditoriaService(repo, mapper);
     }
 
     @Test

@@ -2,7 +2,6 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoServiceImpl;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
@@ -10,13 +9,32 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.UsuarioRegistradoEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.OrganizadorEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.ArbitroEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.CapitanEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.UsuarioRegistradoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.ArbitroMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.CapitanMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.PartidoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.TorneoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.UsuarioRegistradoJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.ArbitroJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.CapitanJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -27,27 +45,42 @@ class AccesoServiceTest {
 
     @BeforeEach
     void setUp() {
-        Map<String, UsuarioRegistrado> store = new HashMap<>();
-        AtomicLong idGen = new AtomicLong(1);
-        UsuarioRegistradoRepository repo = mock(UsuarioRegistradoRepository.class);
+        Map<String, UsuarioRegistradoEntity> store = new HashMap<>();
+        UsuarioRegistradoJpaRepository repo = mock(UsuarioRegistradoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> {
-            UsuarioRegistrado u = inv.getArgument(0);
-            if (u.getId() == null) u.setId(java.util.UUID.randomUUID().toString());
-            store.put(u.getId(), u);
-            return u;
+            UsuarioRegistradoEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            store.put(e.getId(), e);
+            return e;
         });
         when(repo.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
-            return store.values().stream().filter(u -> email.equals(u.getEmail())).findFirst();
+            return store.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
         when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store.values()));
-        var orgRepo = mock(edu.dosw.project.SFC_TechUp_Futbol.core.repository.OrganizadorRepository.class);
-        when(orgRepo.findByEmail(anyString())).thenReturn(java.util.Optional.empty());
-        var arbRepo = mock(edu.dosw.project.SFC_TechUp_Futbol.core.repository.ArbitroRepository.class);
-        when(arbRepo.findByEmail(anyString())).thenReturn(java.util.Optional.empty());
-        var capRepo = mock(edu.dosw.project.SFC_TechUp_Futbol.core.repository.CapitanRepository.class);
-        when(capRepo.findByEmail(anyString())).thenReturn(java.util.Optional.empty());
-        accesoService = new AccesoServiceImpl(repo, orgRepo, arbRepo, capRepo, new JwtService());
+
+        OrganizadorJpaRepository orgRepo = mock(OrganizadorJpaRepository.class);
+        when(orgRepo.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        ArbitroJpaRepository arbRepo = mock(ArbitroJpaRepository.class);
+        when(arbRepo.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        CapitanJpaRepository capRepo = mock(CapitanJpaRepository.class);
+        when(capRepo.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
+        EquipoJpaRepository equipoRepo = mock(EquipoJpaRepository.class);
+
+        UsuarioRegistradoMapper usuarioMapper = new UsuarioRegistradoMapper();
+        TorneoMapper torneoMapper = new TorneoMapper();
+        EquipoMapper equipoMapper = new EquipoMapper();
+        JugadorMapper jugadorMapper = new JugadorMapper();
+        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
+        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepo, torneoMapper);
+        ArbitroMapper arbMapper = new ArbitroMapper(partidoMapper);
+        CapitanMapper capMapper = new CapitanMapper(equipoRepo, equipoMapper);
+
+        accesoService = new AccesoServiceImpl(repo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, new JwtService());
     }
 
     private RegistroRequest registroValido() {

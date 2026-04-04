@@ -5,9 +5,8 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.CapitanRespons
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.JugadorResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.OrganizadorResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.JugadorRepository;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.PartidoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.LinkedHashMap;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @Tag(name = "Users", description = "Management of system actors: Players, Captains, Referees and Organizers.")
@@ -34,10 +32,8 @@ public class UsuarioController {
     }
 
     private final JugadorService jugadorService;
-    private final JugadorRepository jugadorRepository;
     private final CapitanService capitanService;
     private final ArbitroService arbitroService;
-    private final PartidoRepository partidoRepository;
     private final OrganizadorService organizadorService;
     private final PagoService pagoService;
     private final PartidoService partidoService;
@@ -46,17 +42,15 @@ public class UsuarioController {
     private final TorneoService torneoService;
     private final PerfilDeportivoService perfilDeportivoService;
 
-    public UsuarioController(JugadorService jugadorService, JugadorRepository jugadorRepository,
+    public UsuarioController(JugadorService jugadorService,
                              CapitanService capitanService, ArbitroService arbitroService,
-                             PartidoRepository partidoRepository, OrganizadorService organizadorService,
+                             OrganizadorService organizadorService,
                              PagoService pagoService, PartidoService partidoService,
                              PartidoValidator partidoValidator, EquipoService equipoService,
                              TorneoService torneoService, PerfilDeportivoService perfilDeportivoService) {
         this.jugadorService = jugadorService;
-        this.jugadorRepository = jugadorRepository;
         this.capitanService = capitanService;
         this.arbitroService = arbitroService;
-        this.partidoRepository = partidoRepository;
         this.organizadorService = organizadorService;
         this.pagoService = pagoService;
         this.partidoService = partidoService;
@@ -104,7 +98,7 @@ public class UsuarioController {
                 true,
                 ""
         );
-        jugadorRepository.save(jugador);
+        jugadorService.save(jugador);
         return Map.of("mensaje", "Jugador registrado correctamente.");
     }
 
@@ -272,8 +266,7 @@ public class UsuarioController {
                 .filter(a -> a.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Arbitro no encontrado"));
-        Partido partido = partidoRepository.findById(matchId)
-                .orElseThrow(() -> new IllegalArgumentException("Partido no encontrado"));
+        Partido partido = partidoService.consultarPartido(matchId);
         arbitro.getAssignedMatches().add(partido);
         arbitroService.save(arbitro);
         return "Arbitro asignado al partido correctamente";
@@ -321,10 +314,10 @@ public class UsuarioController {
         String jugadorId = body.get("jugadorId").toString();
         Sancion.TipoSancion tipoSancion = Sancion.TipoSancion.valueOf(body.get("tipoSancion").toString());
         String descripcion = sanitize(body.get("descripcion").toString());
-        Jugador jugador = jugadorRepository.findById(jugadorId)
-                .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado"));
+        Jugador jugador = jugadorService.buscarJugadorPorId(jugadorId);
+        if (jugador == null) throw new IllegalArgumentException("Jugador no encontrado");
         Sancion sancion = new Sancion();
-        sancion.setId(UUID.randomUUID().toString());
+        sancion.setId(IdGeneratorUtil.generarId());
         sancion.setJugador(jugador);
         sancion.setTipoSancion(tipoSancion);
         sancion.setDescripcion(descripcion);

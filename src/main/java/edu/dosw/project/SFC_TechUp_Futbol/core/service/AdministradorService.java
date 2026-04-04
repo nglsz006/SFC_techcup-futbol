@@ -5,27 +5,44 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AccesoDenegadoException
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RolNoPermitidoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.ArbitroMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.UsuarioRegistradoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.ArbitroJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.UsuarioRegistradoJpaRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AdministradorService {
 
-    private final AdministradorRepository administradorRepository;
-    private final OrganizadorRepository organizadorRepository;
-    private final ArbitroRepository arbitroRepository;
-    private final UsuarioRegistradoRepository usuarioRegistradoRepository;
+    private final AdministradorJpaRepository administradorRepository;
+    private final AdministradorMapper administradorMapper;
+    private final OrganizadorJpaRepository organizadorRepository;
+    private final OrganizadorMapper organizadorMapper;
+    private final ArbitroJpaRepository arbitroRepository;
+    private final ArbitroMapper arbitroMapper;
+    private final UsuarioRegistradoJpaRepository usuarioRegistradoRepository;
     private final AuditoriaService auditoriaService;
 
-    public AdministradorService(AdministradorRepository administradorRepository,
-                                OrganizadorRepository organizadorRepository,
-                                ArbitroRepository arbitroRepository,
-                                UsuarioRegistradoRepository usuarioRegistradoRepository,
+    public AdministradorService(AdministradorJpaRepository administradorRepository,
+                                AdministradorMapper administradorMapper,
+                                OrganizadorJpaRepository organizadorRepository,
+                                OrganizadorMapper organizadorMapper,
+                                ArbitroJpaRepository arbitroRepository,
+                                ArbitroMapper arbitroMapper,
+                                UsuarioRegistradoJpaRepository usuarioRegistradoRepository,
                                 AuditoriaService auditoriaService) {
         this.administradorRepository = administradorRepository;
+        this.administradorMapper = administradorMapper;
         this.organizadorRepository = organizadorRepository;
+        this.organizadorMapper = organizadorMapper;
         this.arbitroRepository = arbitroRepository;
+        this.arbitroMapper = arbitroMapper;
         this.usuarioRegistradoRepository = usuarioRegistradoRepository;
         this.auditoriaService = auditoriaService;
     }
@@ -33,9 +50,9 @@ public class AdministradorService {
     public Administrador registrarAdministrador(RegistroAdministrativoRequest request) {
         validarCorreoUnico(request.getEmail());
         Administrador administrador = new Administrador(
-                null, request.getNombre(), request.getEmail(),
+                IdGeneratorUtil.generarId(), request.getNombre(), request.getEmail(),
                 PasswordUtil.cifrar(request.getPassword()), request.getTipoUsuario(), true);
-        return administradorRepository.save(administrador);
+        return administradorMapper.toDomain(administradorRepository.save(administradorMapper.toEntity(administrador)));
     }
 
     public Usuario registrarUsuarioAdministrativo(String administradorId, RegistroAdministrativoRequest request) {
@@ -51,9 +68,9 @@ public class AdministradorService {
         obtenerAdministradorAutorizado(administradorId);
         validarCorreoUnico(request.getEmail());
         Organizador organizador = new Organizador(
-                null, request.getNombre(), request.getEmail(),
+                IdGeneratorUtil.generarId(), request.getNombre(), request.getEmail(),
                 PasswordUtil.cifrar(request.getPassword()), request.getTipoUsuario(), null);
-        Organizador guardado = organizadorRepository.save(organizador);
+        Organizador guardado = organizadorMapper.toDomain(organizadorRepository.save(organizadorMapper.toEntity(organizador)));
         auditoriaService.registrarEvento(administradorId, guardado.getEmail(),
                 TipoAccionAuditoria.REGISTRO_ORGANIZADOR, "Registro administrativo de organizador.");
         return guardado;
@@ -63,9 +80,9 @@ public class AdministradorService {
         obtenerAdministradorAutorizado(administradorId);
         validarCorreoUnico(request.getEmail());
         Arbitro arbitro = new Arbitro(
-                null, request.getNombre(), request.getEmail(),
+                IdGeneratorUtil.generarId(), request.getNombre(), request.getEmail(),
                 PasswordUtil.cifrar(request.getPassword()), request.getTipoUsuario());
-        Arbitro guardado = arbitroRepository.save(arbitro);
+        Arbitro guardado = arbitroMapper.toDomain(arbitroRepository.save(arbitroMapper.toEntity(arbitro)));
         auditoriaService.registrarEvento(administradorId, guardado.getEmail(),
                 TipoAccionAuditoria.REGISTRO_ARBITRO, "Registro administrativo de arbitro.");
         return guardado;
@@ -73,11 +90,13 @@ public class AdministradorService {
 
     public Administrador obtenerAdministradorPorEmail(String email) {
         return administradorRepository.findByEmail(email)
+                .map(administradorMapper::toDomain)
                 .orElseThrow(() -> new AccesoDenegadoException("El administrador no esta autorizado."));
     }
 
     private Administrador obtenerAdministradorAutorizado(String administradorId) {
         Administrador administrador = administradorRepository.findById(administradorId)
+                .map(administradorMapper::toDomain)
                 .orElseThrow(() -> new AccesoDenegadoException("El administrador no esta autorizado."));
         if (!administrador.isActivo()) throw new AccesoDenegadoException("El administrador no esta autorizado.");
         return administrador;

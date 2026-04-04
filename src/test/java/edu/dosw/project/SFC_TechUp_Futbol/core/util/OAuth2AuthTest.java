@@ -3,10 +3,12 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.util;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.OAuth2Response;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.UsuarioRegistradoRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.OAuth2Service;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtFilter;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.UsuarioRegistradoEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.UsuarioRegistradoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.UsuarioRegistradoJpaRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,27 +30,29 @@ import static org.mockito.Mockito.*;
 class OAuth2AuthTest {
 
     private JwtService jwtService;
-    private UsuarioRegistradoRepository repo;
+    private UsuarioRegistradoJpaRepository repo;
+    private UsuarioRegistradoMapper mapper;
     private OAuth2Service oAuth2Service;
     private JwtFilter jwtFilter;
 
     @BeforeEach
     void setUp() {
         jwtService = new JwtService();
-        Map<String, UsuarioRegistrado> store = new HashMap<>();
-        repo = mock(UsuarioRegistradoRepository.class);
+        mapper = new UsuarioRegistradoMapper();
+        Map<String, UsuarioRegistradoEntity> store = new HashMap<>();
+        repo = mock(UsuarioRegistradoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> {
-            UsuarioRegistrado u = inv.getArgument(0);
-            if (u.getId() == null) u.setId(UUID.randomUUID().toString());
-            store.put(u.getId(), u);
-            return u;
+            UsuarioRegistradoEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            store.put(e.getId(), e);
+            return e;
         });
         when(repo.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
-            return store.values().stream().filter(u -> email.equals(u.getEmail())).findFirst();
+            return store.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
         when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store.values()));
-        oAuth2Service = new OAuth2Service(repo, jwtService);
+        oAuth2Service = new OAuth2Service(repo, mapper, jwtService);
         jwtFilter = new JwtFilter(jwtService);
     }
 
@@ -70,7 +74,12 @@ class OAuth2AuthTest {
 
     @Test
     void oauth2_usuarioExistente_seAutenticaSinRegistrar() {
-        UsuarioRegistrado existente = new UsuarioRegistrado("uuid-1", "Existente", "existente@gmail.com", "hash", Usuario.TipoUsuario.FAMILIAR);
+        UsuarioRegistradoEntity existente = new UsuarioRegistradoEntity();
+        existente.setId("uuid-1");
+        existente.setName("Existente");
+        existente.setEmail("existente@gmail.com");
+        existente.setPassword("hash");
+        existente.setUserType(Usuario.TipoUsuario.FAMILIAR);
         when(repo.findByEmail("existente@gmail.com")).thenReturn(Optional.of(existente));
         OAuth2AuthenticationToken token = crearToken("existente@gmail.com", "Existente");
         OAuth2Response response = oAuth2Service.procesarCallback(token);

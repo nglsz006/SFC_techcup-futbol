@@ -1,9 +1,11 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
-import edu.dosw.project.SFC_TechUp_Futbol.core.repository.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,81 +23,92 @@ class ServiciosExtrasTest {
     private OrganizadorService organizadorService;
     private TorneoService torneoService;
     private JugadorService jugadorService;
-    private JugadorRepository jugadorRepo;
+    private JugadorJpaRepository jugadorRepo;
+    private JugadorMapper jugadorMapper;
 
     @BeforeEach
     void setUp() {
-        Map<String, Alineacion> alineacionStore = new HashMap<>();
-        AlineacionRepository alineacionRepo = mock(AlineacionRepository.class);
+        TorneoMapper torneoMapper = new TorneoMapper();
+        EquipoMapper equipoMapper = new EquipoMapper();
+        jugadorMapper = new JugadorMapper();
+        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
+        AlineacionMapper alineacionMapper = new AlineacionMapper();
+
+        Map<String, AlineacionEntity> alineacionStore = new HashMap<>();
+        AlineacionJpaRepository alineacionRepo = mock(AlineacionJpaRepository.class);
         when(alineacionRepo.save(any())).thenAnswer(inv -> {
-            Alineacion a = inv.getArgument(0);
-            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
-            alineacionStore.put(a.getId(), a);
-            return a;
+            AlineacionEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            alineacionStore.put(e.getId(), e);
+            return e;
         });
         when(alineacionRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(alineacionStore.get(inv.<String>getArgument(0))));
         when(alineacionRepo.findAll()).thenAnswer(inv -> new ArrayList<>(alineacionStore.values()));
-        alineacionService = new AlineacionService(alineacionRepo);
+        alineacionService = new AlineacionService(alineacionRepo, alineacionMapper);
 
-        Map<String, Arbitro> arbitroStore = new HashMap<>();
-        ArbitroRepository arbitroRepository = mock(ArbitroRepository.class);
+        Map<String, ArbitroEntity> arbitroStore = new HashMap<>();
+        ArbitroJpaRepository arbitroRepository = mock(ArbitroJpaRepository.class);
+        ArbitroMapper arbitroMapper = new ArbitroMapper(partidoMapper);
         when(arbitroRepository.save(any())).thenAnswer(inv -> {
-            Arbitro a = inv.getArgument(0);
-            if (a.getId() == null) a.setId(UUID.randomUUID().toString());
-            arbitroStore.put(a.getId(), a);
-            return a;
+            ArbitroEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            arbitroStore.put(e.getId(), e);
+            return e;
         });
         when(arbitroRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(arbitroStore.get(inv.<String>getArgument(0))));
         when(arbitroRepository.findAll()).thenAnswer(inv -> new ArrayList<>(arbitroStore.values()));
-        arbitroService = new ArbitroService(arbitroRepository);
+        arbitroService = new ArbitroService(arbitroRepository, arbitroMapper);
 
-        Map<String, Jugador> jugadorStore = new HashMap<>();
-        jugadorRepo = mock(JugadorRepository.class);
+        Map<String, JugadorEntity> jugadorStore = new HashMap<>();
+        jugadorRepo = mock(JugadorJpaRepository.class);
         when(jugadorRepo.save(any())).thenAnswer(inv -> {
-            Jugador j = inv.getArgument(0);
-            if (j.getId() == null) j.setId(UUID.randomUUID().toString());
-            jugadorStore.put(j.getId(), j);
-            return j;
+            JugadorEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            jugadorStore.put(e.getId(), e);
+            return e;
         });
         when(jugadorRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(jugadorStore.get(inv.<String>getArgument(0))));
         when(jugadorRepo.findAll()).thenAnswer(inv -> new ArrayList<>(jugadorStore.values()));
-        jugadorService = new JugadorService(jugadorRepo);
+        jugadorService = new JugadorService(jugadorRepo, jugadorMapper);
 
-        Map<String, Capitan> capitanStore = new HashMap<>();
-        CapitanRepository capitanRepository = mock(CapitanRepository.class);
+        Map<String, CapitanEntity> capitanStore = new HashMap<>();
+        CapitanJpaRepository capitanRepository = mock(CapitanJpaRepository.class);
+        EquipoJpaRepository equipoRepo = mock(EquipoJpaRepository.class);
+        CapitanMapper capitanMapper = new CapitanMapper(equipoRepo, equipoMapper);
         when(capitanRepository.save(any())).thenAnswer(inv -> {
-            Capitan c = inv.getArgument(0);
-            if (c.getId() == null) c.setId(UUID.randomUUID().toString());
-            capitanStore.put(c.getId(), c);
-            return c;
+            CapitanEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            capitanStore.put(e.getId(), e);
+            return e;
         });
         when(capitanRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(capitanStore.get(inv.<String>getArgument(0))));
         when(capitanRepository.findAll()).thenAnswer(inv -> new ArrayList<>(capitanStore.values()));
-        capitanService = new CapitanService(capitanRepository, jugadorService);
+        capitanService = new CapitanService(capitanRepository, capitanMapper, jugadorService);
 
-        Map<String, Torneo> torneoStore = new HashMap<>();
-        TorneoRepository torneoRepository = mock(TorneoRepository.class);
+        Map<String, TorneoEntity> torneoStore = new HashMap<>();
+        TorneoJpaRepository torneoRepository = mock(TorneoJpaRepository.class);
         when(torneoRepository.save(any())).thenAnswer(inv -> {
-            Torneo t = inv.getArgument(0);
-            if (t.getId() == null) t.setId(UUID.randomUUID().toString());
-            torneoStore.put(t.getId(), t);
-            return t;
+            TorneoEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            torneoStore.put(e.getId(), e);
+            return e;
         });
         when(torneoRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(torneoStore.get(inv.<String>getArgument(0))));
         when(torneoRepository.findAll()).thenAnswer(inv -> new ArrayList<>(torneoStore.values()));
-        torneoService = new TorneoService(torneoRepository);
+        torneoService = new TorneoService(torneoRepository, torneoMapper);
 
-        Map<String, Organizador> orgStore = new HashMap<>();
-        OrganizadorRepository orgRepository = mock(OrganizadorRepository.class);
+        Map<String, OrganizadorEntity> orgStore = new HashMap<>();
+        OrganizadorJpaRepository orgRepository = mock(OrganizadorJpaRepository.class);
+        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepository, torneoMapper);
         when(orgRepository.save(any())).thenAnswer(inv -> {
-            Organizador o = inv.getArgument(0);
-            if (o.getId() == null) o.setId(UUID.randomUUID().toString());
-            orgStore.put(o.getId(), o);
-            return o;
+            OrganizadorEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            orgStore.put(e.getId(), e);
+            return e;
         });
         when(orgRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(orgStore.get(inv.<String>getArgument(0))));
         when(orgRepository.findAll()).thenAnswer(inv -> new ArrayList<>(orgStore.values()));
-        organizadorService = new OrganizadorService(orgRepository, torneoService);
+        organizadorService = new OrganizadorService(orgRepository, orgMapper, torneoService);
     }
 
     @Test
@@ -192,7 +205,8 @@ class ServiciosExtrasTest {
     void jugador_editarPerfil_actualizaCampos() {
         Jugador jugador = new Jugador(null, "Original", "orig@test.com", "pass",
                 Usuario.TipoUsuario.ESTUDIANTE, 5, Jugador.Posicion.DEFENSA, true, "");
-        jugadorRepo.save(jugador);
+        JugadorEntity saved = jugadorRepo.save(jugadorMapper.toEntity(jugador));
+        jugador.setId(saved.getId());
         Jugador editado = jugadorService.editarPerfil(jugador.getId(), "Editado", 10, Jugador.Posicion.PORTERO, "foto.jpg");
         assertEquals("Editado", editado.getName());
         assertEquals(10, editado.getJerseyNumber());
