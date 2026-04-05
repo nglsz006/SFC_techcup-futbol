@@ -237,7 +237,7 @@ class ControllerTest {
 
     @Test
     void obtenerEquipo_existente_retorna200() throws Exception {
-        Equipo e = equipoService2.crear(new Equipo(null, "Los Leones", "", "azul", "blanco", null), new HashMap<>());
+        Equipo e = equipoService2.crear(new Equipo(null, "Los Leones", "", "azul", "blanco", null), Map.of("nombre", "Los Leones", "colorPrincipal", "azul"));
         equipoMvc.perform(get("/api/teams/" + e.getId())).andExpect(status().isOk());
     }
 

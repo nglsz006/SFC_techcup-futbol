@@ -6,12 +6,12 @@ public class TorneoFinalizado implements EstadoTorneoInterface {
 
     @Override
     public EstadoTorneoInterface iniciar(Torneo torneo) {
-        return this;
+        throw new IllegalStateException("El torneo ya está finalizado.");
     }
 
     @Override
     public EstadoTorneoInterface finalizar(Torneo torneo) {
-        return this;
+        throw new IllegalStateException("El torneo ya está finalizado.");
     }
 
     @Override

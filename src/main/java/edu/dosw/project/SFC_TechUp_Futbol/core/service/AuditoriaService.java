@@ -4,6 +4,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.ConsultaAuditor
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.RegistroAuditoria;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AuditoriaValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.RegistroAuditoriaMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.RegistroAuditoriaJpaRepository;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,12 @@ public class AuditoriaService {
 
     private final RegistroAuditoriaJpaRepository registroAuditoriaRepository;
     private final RegistroAuditoriaMapper mapper;
+    private final AuditoriaValidator auditoriaValidator;
 
     public AuditoriaService(RegistroAuditoriaJpaRepository registroAuditoriaRepository, RegistroAuditoriaMapper mapper) {
         this.registroAuditoriaRepository = registroAuditoriaRepository;
         this.mapper = mapper;
+        this.auditoriaValidator = new AuditoriaValidator();
     }
 
     public RegistroAuditoria registrarEvento(String administradorId, String usuario, TipoAccionAuditoria tipoAccion,
@@ -31,6 +34,7 @@ public class AuditoriaService {
     }
 
     public List<RegistroAuditoria> consultarHistorial(ConsultaAuditoriaRequest request) {
+        auditoriaValidator.validarConsulta(request);
         return registroAuditoriaRepository.findAll().stream()
                 .map(mapper::toDomain)
                 .filter(r -> coincideUsuario(r, request.getUsuario()))

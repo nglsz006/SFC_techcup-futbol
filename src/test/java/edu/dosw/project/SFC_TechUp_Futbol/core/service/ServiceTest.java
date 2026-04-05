@@ -83,14 +83,14 @@ class ServiceTest {
     @Test
     void crearEquipo_seGuardaCorrectamente() {
         Equipo equipo = new Equipo(null, "Los Tigres", "escudo.png", "rojo", "blanco", "uuid-capitan-1");
-        equipoService.crear(equipo, new HashMap<>());
+        equipoService.crear(equipo, Map.of("nombre", "Los Tigres", "colorPrincipal", "rojo"));
         assertFalse(equipoService.listar().isEmpty());
     }
 
     @Test
     void obtenerEquipo_idExistente_retornaEquipo() {
         Equipo equipo = new Equipo(null, "Los Tigres", "escudo.png", "rojo", "blanco", "uuid-capitan-1");
-        equipoService.crear(equipo, new HashMap<>());
+        equipoService.crear(equipo, Map.of("nombre", "Los Tigres", "colorPrincipal", "rojo"));
         assertNotNull(equipoService.obtener(equipo.getId()));
     }
 
@@ -102,7 +102,7 @@ class ServiceTest {
     @Test
     void agregarJugador_equipoExistente_jugadorAgregado() {
         Equipo equipo = new Equipo(null, "Los Tigres", "escudo.png", "rojo", "blanco", "uuid-capitan-1");
-        equipoService.crear(equipo, new HashMap<>());
+        equipoService.crear(equipo, Map.of("nombre", "Los Tigres", "colorPrincipal", "rojo"));
         equipoService.agregarJugador(equipo.getId(), "uuid-jugador-5");
         assertEquals(1, equipoService.obtener(equipo.getId()).getJugadores().size());
     }
@@ -110,7 +110,7 @@ class ServiceTest {
     @Test
     void validarComposicion_menosDeSiete_retornaInvalido() {
         Equipo equipo = new Equipo(null, "Pocos", "", "rojo", "blanco", "uuid-capitan-1");
-        equipoService.crear(equipo, new HashMap<>());
+        equipoService.crear(equipo, Map.of("nombre", "Pocos", "colorPrincipal", "rojo"));
         equipoService.agregarJugador(equipo.getId(), "uuid-j1");
         equipoService.agregarJugador(equipo.getId(), "uuid-j2");
         var resultado = equipoService.validarComposicion(equipo.getId());
@@ -120,7 +120,7 @@ class ServiceTest {
     @Test
     void validarComposicion_sieteJugadores_retornaValido() {
         Equipo equipo = new Equipo(null, "Suficientes", "", "rojo", "blanco", "uuid-capitan-1");
-        equipoService.crear(equipo, new HashMap<>());
+        equipoService.crear(equipo, Map.of("nombre", "Suficientes", "colorPrincipal", "rojo"));
         for (int i = 1; i <= 7; i++) equipoService.agregarJugador(equipo.getId(), "uuid-j" + i);
         var resultado = equipoService.validarComposicion(equipo.getId());
         assertEquals(true, resultado.get("valido"));

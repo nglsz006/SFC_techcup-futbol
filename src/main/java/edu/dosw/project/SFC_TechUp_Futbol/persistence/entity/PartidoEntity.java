@@ -51,6 +51,9 @@ public class PartidoEntity {
     @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TarjetaEntity> tarjetas = new ArrayList<>();
 
+    @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SancionEntity> sanciones = new ArrayList<>();
+
     public PartidoEntity() {
         this.estado = Partido.PartidoEstado.PROGRAMADO;
     }
@@ -141,5 +144,13 @@ public class PartidoEntity {
 
     public void setTarjetas(List<TarjetaEntity> tarjetas) {
         this.tarjetas = tarjetas;
+    }
+
+    public List<SancionEntity> getSanciones() {
+        return sanciones;
+    }
+
+    public void setSanciones(List<SancionEntity> sanciones) {
+        this.sanciones = sanciones;
     }
 }

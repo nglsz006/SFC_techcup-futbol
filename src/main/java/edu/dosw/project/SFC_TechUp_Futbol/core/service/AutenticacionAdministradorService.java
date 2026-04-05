@@ -2,10 +2,13 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AutenticacionAdminException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Administrador;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.RegistroAuditoriaMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.RegistroAuditoriaJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,11 +20,16 @@ public class AutenticacionAdministradorService {
 
     private final AdministradorJpaRepository administradorRepository;
     private final AdministradorMapper mapper;
+    private final AuditoriaService auditoriaService;
     private final Map<String, String> sesiones = new ConcurrentHashMap<>();
 
-    public AutenticacionAdministradorService(AdministradorJpaRepository administradorRepository, AdministradorMapper mapper) {
+    public AutenticacionAdministradorService(AdministradorJpaRepository administradorRepository,
+                                             AdministradorMapper mapper,
+                                             RegistroAuditoriaJpaRepository registroAuditoriaRepository,
+                                             RegistroAuditoriaMapper registroAuditoriaMapper) {
         this.administradorRepository = administradorRepository;
         this.mapper = mapper;
+        this.auditoriaService = new AuditoriaService(registroAuditoriaRepository, registroAuditoriaMapper);
     }
 
     public String login(String email, String password) {
@@ -35,6 +43,8 @@ public class AutenticacionAdministradorService {
 
         String token = UUID.randomUUID().toString();
         sesiones.put(token, administrador.getId());
+        auditoriaService.registrarEvento(administrador.getId(), administrador.getEmail(),
+                TipoAccionAuditoria.LOGIN_ADMIN, "Inicio de sesion administrativo.");
         return token;
     }
 

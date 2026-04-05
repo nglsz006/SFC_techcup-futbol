@@ -2,6 +2,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.core.validator.ValidacionEquipo;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
 
@@ -27,6 +28,7 @@ public class EquipoService extends Subject {
     }
 
     public Equipo crear(Equipo equipo, Map<String, Object> datos) {
+        new ValidacionEquipo().validar(datos);
         if (equipo.getId() == null) equipo.setId(IdGeneratorUtil.generarId());
         Equipo saved = mapper.toDomain(repository.save(mapper.toEntity(equipo)));
         log.info("Equipo creado con id: " + sanitize(saved.getId()));

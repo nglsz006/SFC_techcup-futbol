@@ -10,6 +10,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,6 +61,7 @@ public class UsuarioController {
         this.perfilDeportivoService = perfilDeportivoService;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get actions by actor")
     @GetMapping("/{actor}")
     public Map<String, Object> accionesPorActor(@PathVariable String actor) {
@@ -84,6 +86,7 @@ public class UsuarioController {
 
     // ── Players ──────────────────────────────────────────────────────────────
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create player")
     @PostMapping("/players")
     public Map<String, String> crearJugador(@RequestBody Map<String, Object> body) {
@@ -102,12 +105,14 @@ public class UsuarioController {
         return Map.of("mensaje", "Jugador registrado correctamente.");
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List players")
     @GetMapping("/players")
     public List<JugadorResponse> listarJugadores() {
         return jugadorService.getJugadores().stream().map(JugadorResponse::new).toList();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create sports profile")
     @PostMapping("/players/{id}/profile")
     public PerfilDeportivo crearPerfilDeportivo(@PathVariable String id, @RequestBody Map<String, Object> body) {
@@ -122,12 +127,14 @@ public class UsuarioController {
         return perfilDeportivoService.crearPerfil(id, posiciones, dorsal, foto, edad, genero, identificacion, semestre);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get sports profile")
     @GetMapping("/players/{id}/profile")
     public PerfilDeportivo consultarPerfilDeportivo(@PathVariable String id) {
         return perfilDeportivoService.consultarPerfil(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Edit sports profile")
     @PatchMapping("/players/{id}/profile")
     public JugadorResponse editarPerfil(@PathVariable String id, @RequestBody Map<String, Object> body) {
@@ -138,6 +145,7 @@ public class UsuarioController {
         return new JugadorResponse(jugadorService.editarPerfil(id, nombre, numeroCamiseta, posicion, foto));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Accept invitation")
     @PatchMapping("/players/{id}/accept-invitation")
     public String aceptarInvitacion(@PathVariable String id) {
@@ -145,6 +153,7 @@ public class UsuarioController {
         return "Invitacion aceptada correctamente";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Reject invitation")
     @PatchMapping("/players/{id}/reject-invitation")
     public String rechazarInvitacion(@PathVariable String id) {
@@ -152,6 +161,7 @@ public class UsuarioController {
         return "Invitacion rechazada correctamente";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Mark availability")
     @PatchMapping("/players/{id}/availability")
     public String marcarDisponible(@PathVariable String id) {
@@ -159,6 +169,7 @@ public class UsuarioController {
         return "Jugador marcado como disponible";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/players/{id}/photo")
     public String subirFotoJugador(@PathVariable String id, @RequestParam("file") MultipartFile file) {
         return jugadorService.subirFoto(id, file);
@@ -166,6 +177,7 @@ public class UsuarioController {
 
     // ── Captains ─────────────────────────────────────────────────────────────
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create captain")
     @PostMapping("/captains")
     public CapitanResponse crearCapitan(@RequestBody Map<String, Object> body) {
@@ -185,12 +197,14 @@ public class UsuarioController {
         return new CapitanResponse(guardado);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List captains")
     @GetMapping("/captains")
     public List<CapitanResponse> listarCapitanes() {
         return capitanService.getCapitanes().stream().map(CapitanResponse::new).toList();
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Create team")
     @PostMapping("/captains/{id}/team")
     public String crearEquipo(@PathVariable String id, @RequestParam String nombreEquipo) {
@@ -198,6 +212,7 @@ public class UsuarioController {
         return "Equipo creado correctamente";
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Validate team composition")
     @GetMapping("/captains/{id}/team/validate")
     public Map<String, Object> validarEquipo(@PathVariable String id) {
@@ -212,6 +227,7 @@ public class UsuarioController {
         return equipoService.validarComposicion(equipo.getId());
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Invite player")
     @PostMapping("/captains/{id}/invite/{playerId}")
     public String invitarJugador(@PathVariable String id, @PathVariable String playerId) {
@@ -219,18 +235,21 @@ public class UsuarioController {
         return "Invitacion enviada correctamente";
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Define lineup")
     @PostMapping("/captains/{id}/lineup")
     public String definirAlineacion(@PathVariable String id, @RequestBody List<Jugador> titulares) {
         return capitanService.definirAlineacion(id, titulares);
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Upload payment receipt")
     @PostMapping("/captains/{id}/receipt")
     public String subirComprobante(@PathVariable String id, @RequestParam String comprobante) {
         return capitanService.subirComprobantePago(id, comprobante);
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Search players by position")
     @GetMapping("/captains/{id}/search-players")
     public List<JugadorResponse> buscarJugadores(@PathVariable String id, @RequestParam String posicion) {
@@ -239,6 +258,7 @@ public class UsuarioController {
 
     // ── Referees ─────────────────────────────────────────────────────────────
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create referee")
     @PostMapping("/referees")
     public Map<String, String> crearArbitro(@RequestBody Map<String, Object> body) {
@@ -253,12 +273,14 @@ public class UsuarioController {
         return Map.of("mensaje", "Árbitro registrado correctamente.");
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List referees")
     @GetMapping("/referees")
     public List<ArbitroResponse> listarArbitros() {
         return arbitroService.getArbitros().stream().map(ArbitroResponse::new).toList();
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Assign referee to match")
     @PostMapping("/referees/{id}/matches/{matchId}")
     public String asignarPartido(@PathVariable String id, @PathVariable String matchId) {
@@ -272,18 +294,21 @@ public class UsuarioController {
         return "Arbitro asignado al partido correctamente";
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Get referee matches")
     @GetMapping("/referees/{id}/matches")
     public List<Partido> consultarPartidosAsignados(@PathVariable String id) {
         return arbitroService.consultarPartidosAsignados(id);
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Start match")
     @PutMapping("/referees/{id}/matches/{matchId}/start")
     public Partido iniciarPartido(@PathVariable String id, @PathVariable String matchId) {
         return partidoService.iniciarPartido(matchId);
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Register result")
     @PutMapping("/referees/{id}/matches/{matchId}/result")
     public Partido registrarResultado(@PathVariable String id, @PathVariable String matchId,
@@ -292,12 +317,14 @@ public class UsuarioController {
         return partidoService.registrarResultado(matchId, body.get("golesLocal"), body.get("golesVisitante"));
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "End match")
     @PutMapping("/referees/{id}/matches/{matchId}/end")
     public Partido finalizarPartido(@PathVariable String id, @PathVariable String matchId) {
         return partidoService.finalizarPartido(matchId);
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Register goal scorer")
     @PostMapping("/referees/{id}/matches/{matchId}/goals")
     public Partido registrarGoleador(@PathVariable String id, @PathVariable String matchId,
@@ -307,6 +334,7 @@ public class UsuarioController {
         return partidoService.registrarGoleador(matchId, jugadorId, minuto);
     }
 
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Register sanction")
     @PostMapping("/referees/{id}/matches/{matchId}/sanctions")
     public Partido registrarSancion(@PathVariable String id, @PathVariable String matchId,
@@ -327,6 +355,7 @@ public class UsuarioController {
 
     // ── Organizers ───────────────────────────────────────────────────────────
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create organizer")
     @PostMapping("/organizers")
     public OrganizadorResponse crearOrganizador(@RequestBody Map<String, Object> body) {
@@ -342,30 +371,35 @@ public class UsuarioController {
         return new OrganizadorResponse(guardado);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List organizers")
     @GetMapping("/organizers")
     public List<OrganizadorResponse> listarOrganizadores() {
         return organizadorService.getOrganizadores().stream().map(OrganizadorResponse::new).toList();
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Create tournament")
     @PostMapping("/organizers/{id}/tournament")
     public Torneo crearTorneo(@PathVariable String id, @RequestBody Torneo torneo) {
         return organizadorService.crearTorneo(id, torneo);
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Start tournament")
     @PatchMapping("/organizers/{id}/tournament/start")
     public Torneo iniciarTorneo(@PathVariable String id) {
         return organizadorService.iniciarTorneo(id);
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "End tournament")
     @PatchMapping("/organizers/{id}/tournament/end")
     public Torneo finalizarTorneo(@PathVariable String id) {
         return organizadorService.finalizarTorneo(id);
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Configure tournament")
     @PatchMapping("/organizers/{id}/tournament/configure")
     public Torneo configurarTorneo(@PathVariable String id, @RequestBody Map<String, Object> body) {
@@ -387,6 +421,7 @@ public class UsuarioController {
         );
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Create match")
     @PostMapping("/organizers/{id}/matches")
     public Partido crearPartido(@PathVariable String id, @RequestBody Map<String, Object> body) {
@@ -398,18 +433,21 @@ public class UsuarioController {
         return partidoService.crearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "View pending payments")
     @GetMapping("/organizers/{id}/payments/pending")
     public List<Pago> pagosPendientes(@PathVariable String id) {
         return pagoService.consultarPagosPendientes();
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Approve payment")
     @PutMapping("/organizers/{id}/payments/{paymentId}/approve")
     public Pago aprobarPago(@PathVariable String id, @PathVariable String paymentId) {
         return pagoService.aprobarPago(paymentId);
     }
 
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Reject payment")
     @PutMapping("/organizers/{id}/payments/{paymentId}/reject")
     public Pago rechazarPago(@PathVariable String id, @PathVariable String paymentId) {

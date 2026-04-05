@@ -118,7 +118,7 @@ class AdministradorControllerTest {
                 administradorRepository, adminMapper, organizadorRepository, orgMapper,
                 arbitroRepository, arbitroMapper, usuarioRegistradoRepository,
                 new AuditoriaService(auditoriaRepo1, auditoriaMapper));
-        autenticacionAdministradorService = new AutenticacionAdministradorService(administradorRepository, adminMapper);
+        autenticacionAdministradorService = new AutenticacionAdministradorService(administradorRepository, adminMapper, auditoriaRepo2, auditoriaMapper);
         AdministradorValidator administradorValidator = new AdministradorValidator(
                 administradorRepository, organizadorRepository, arbitroRepository, usuarioRegistradoRepository);
         mockMvc = MockMvcBuilders

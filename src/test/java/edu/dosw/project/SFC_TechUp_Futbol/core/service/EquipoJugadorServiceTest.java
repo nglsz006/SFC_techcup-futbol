@@ -55,7 +55,7 @@ class EquipoJugadorServiceTest {
     @Test
     void obtenerEquipo_existente_retornaEquipo() {
         Equipo equipo = new Equipo(null, "Los Tigres", "escudo.png", "rojo", "blanco", "uuid-capitan-1");
-        equipoService.crear(equipo, new HashMap<>());
+        equipoService.crear(equipo, Map.of("nombre", "Los Tigres", "colorPrincipal", "rojo"));
         Equipo resultado = equipoService.obtener(equipo.getId());
         assertNotNull(resultado);
         assertEquals("Los Tigres", resultado.getNombre());
@@ -68,8 +68,8 @@ class EquipoJugadorServiceTest {
 
     @Test
     void listarEquipos_conDosEquipos_retornaAmbos() {
-        equipoService.crear(new Equipo(null, "Equipo A", "", "azul", "blanco", "cap-1"), new HashMap<>());
-        equipoService.crear(new Equipo(null, "Equipo B", "", "verde", "negro", "cap-2"), new HashMap<>());
+        equipoService.crear(new Equipo(null, "Equipo A", "", "azul", "blanco", "cap-1"), Map.of("nombre", "Equipo A", "colorPrincipal", "azul"));
+        equipoService.crear(new Equipo(null, "Equipo B", "", "verde", "negro", "cap-2"), Map.of("nombre", "Equipo B", "colorPrincipal", "verde"));
         assertEquals(2, equipoService.listar().size());
     }
 
@@ -81,7 +81,7 @@ class EquipoJugadorServiceTest {
     @Test
     void agregarJugador_jugadorExistente_seAsociaAlEquipo() {
         Equipo equipo = new Equipo(null, "Los Leones", "", "amarillo", "negro", "cap-1");
-        equipoService.crear(equipo, new HashMap<>());
+        equipoService.crear(equipo, Map.of("nombre", "Los Leones", "colorPrincipal", "amarillo"));
 
         Jugador jugador = new Jugador(null, "Carlos", "carlos@test.com", "pass",
                 Usuario.TipoUsuario.ESTUDIANTE, 9, Jugador.Posicion.DELANTERO, true, "");
@@ -108,7 +108,7 @@ class EquipoJugadorServiceTest {
     @Test
     void agregarVariosJugadores_equipoTieneConteoCorrect() {
         Equipo equipo = new Equipo(null, "Los Pumas", "", "rojo", "blanco", "cap-3");
-        equipoService.crear(equipo, new HashMap<>());
+        equipoService.crear(equipo, Map.of("nombre", "Los Pumas", "colorPrincipal", "rojo"));
 
         for (int i = 1; i <= 5; i++) {
             Jugador j = new Jugador(null, "Jugador " + i, "j" + i + "@test.com", "pass",

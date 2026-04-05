@@ -4,6 +4,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdminis
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RolNoPermitidoException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.ArbitroJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
@@ -69,9 +70,10 @@ public class AdministradorValidator {
     }
 
     private boolean correoYaRegistrado(String email) {
-        return administradorRepository.findByEmail(email).isPresent()
-                || organizadorRepository.findByEmail(email).isPresent()
-                || arbitroRepository.findByEmail(email).isPresent()
-                || usuarioRegistradoRepository.findByEmail(email).isPresent();
+        String emailEncoded = Base64Util.encode(email);
+        return administradorRepository.findByEmail(emailEncoded).isPresent()
+                || organizadorRepository.findByEmail(emailEncoded).isPresent()
+                || arbitroRepository.findByEmail(emailEncoded).isPresent()
+                || usuarioRegistradoRepository.findByEmail(emailEncoded).isPresent();
     }
 }

@@ -202,7 +202,7 @@ class PartidoServiceTest {
         Partido con1 = service.registrarSancion(p.getId(), jugador.getId(), Sancion.TipoSancion.TARJETA_AMARILLA, "Primera falta en minuto 20");
         Partido con2 = service.registrarSancion(p.getId(), jugador.getId(), Sancion.TipoSancion.TARJETA_AMARILLA, "Segunda falta en minuto 60");
         assertEquals(1, con1.getSanciones().size());
-        assertEquals(1, con2.getSanciones().size());
+        assertEquals(2, con2.getSanciones().size());
     }
 
     @Test
