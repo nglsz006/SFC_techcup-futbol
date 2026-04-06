@@ -1,6 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Arbitro;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.ArbitroEntity;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ public class ArbitroMapper {
         ArbitroEntity entity = new ArbitroEntity();
         entity.setId(arbitro.getId());
         entity.setName(arbitro.getName());
-        entity.setEmail(arbitro.getEmail());
+        entity.setEmail(Base64Util.encode(arbitro.getEmail()));
         entity.setPassword(arbitro.getPassword());
         entity.setUserType(arbitro.getUserType());
         if (arbitro.getAssignedMatches() != null) {
@@ -36,7 +37,7 @@ public class ArbitroMapper {
         Arbitro arbitro = new Arbitro();
         arbitro.setId(entity.getId());
         arbitro.setName(entity.getName());
-        arbitro.setEmail(entity.getEmail());
+        arbitro.setEmail(Base64Util.decode(entity.getEmail()));
         arbitro.setPassword(entity.getPassword());
         arbitro.setUserType(entity.getUserType());
         if (entity.getAssignedMatches() != null) {

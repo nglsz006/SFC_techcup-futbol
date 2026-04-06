@@ -1,6 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.JugadorEntity;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ public class JugadorMapper {
         JugadorEntity entity = new JugadorEntity();
         entity.setId(jugador.getId());
         entity.setName(jugador.getName());
-        entity.setEmail(jugador.getEmail());
+        entity.setEmail(Base64Util.encode(jugador.getEmail()));
         entity.setPassword(jugador.getPassword());
         entity.setUserType(jugador.getUserType());
         entity.setJerseyNumber(jugador.getJerseyNumber());
@@ -32,7 +33,7 @@ public class JugadorMapper {
         Jugador jugador = new Jugador();
         jugador.setId(entity.getId());
         jugador.setName(entity.getName());
-        jugador.setEmail(entity.getEmail());
+        jugador.setEmail(Base64Util.decode(entity.getEmail()));
         jugador.setPassword(entity.getPassword());
         jugador.setUserType(entity.getUserType());
         jugador.setJerseyNumber(entity.getJerseyNumber());

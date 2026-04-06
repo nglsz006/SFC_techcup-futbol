@@ -88,8 +88,10 @@ class ControllerTest {
                 .standaloneSetup(new PartidoController(partidoService2, new PartidoValidator()))
                 .setControllerAdvice(new ErrorHandler()).build();
 
+        JugadorService jugadorServiceEquipo = new JugadorService(jugadorRepo2, jugadorMapper);
+
         equipoMvc = MockMvcBuilders
-                .standaloneSetup(new EquipoController(equipoService2))
+                .standaloneSetup(new EquipoController(equipoService2, jugadorServiceEquipo))
                 .setControllerAdvice(new ErrorHandler()).build();
 
         JugadorService jugadorService = new JugadorService(jugadorRepo2, jugadorMapper);
@@ -206,6 +208,7 @@ class ControllerTest {
         String orgId = mapper.readTree(respOrg).get("id").asText();
         Torneo t = new Torneo(null, "Copa Final", LocalDateTime.of(2025, 9, 1, 10, 0), LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
         usuarioMvc.perform(post("/api/users/organizers/" + orgId + "/tournament").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(t)));
+        usuarioMvc.perform(patch("/api/users/organizers/" + orgId + "/tournament/start"));
         usuarioMvc.perform(patch("/api/users/organizers/" + orgId + "/tournament/end")).andExpect(status().isOk());
     }
 

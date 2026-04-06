@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PagoValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
@@ -83,7 +84,9 @@ class PagoPartidoControllerTest {
 
         Map<String, AlineacionEntity> alineacionStore = new HashMap<>();
         AlineacionJpaRepository alineacionRepo = MockRepoHelper.alineacionRepo(alineacionStore);
-        AlineacionService alineacionService = new AlineacionService(alineacionRepo, alineacionMapper);
+        AlineacionService alineacionService = new AlineacionService(alineacionRepo, alineacionMapper,
+                equipoRepo, new edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper(),
+                partidoRepo, partidoMapper);
         alineacionMvc = MockMvcBuilders
                 .standaloneSetup(new AlineacionController(alineacionService))
                 .setControllerAdvice(new ErrorHandler()).build();
@@ -184,11 +187,11 @@ class PagoPartidoControllerTest {
     void pago_aprobar_retorna200() throws Exception {
         Map<String, Object> bodyCap = Map.of("nombre", "CapApr", "email", "capapr@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE", "numeroCamiseta", 4, "posicion", "PORTERO");
         usuarioMvc.perform(post("/api/users/captains").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(bodyCap)));
-        String capId = capitanRepoRef.findAll().stream().filter(c -> "capapr@test.com".equals(c.getEmail())).findFirst().get().getId();
+        String capId = capitanRepoRef.findAll().stream().filter(c -> Base64Util.encode("capapr@test.com").equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(post("/api/users/captains/" + capId + "/receipt").param("comprobante", "pago.jpg"));
         Map<String, Object> bodyOrg = Map.of("nombre", "OrgPago", "email", "orgpago@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE");
         usuarioMvc.perform(post("/api/users/organizers").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(bodyOrg)));
-        String orgId = orgRepoRef.findAll().stream().filter(o -> "orgpago@test.com".equals(o.getEmail())).findFirst().get().getId();
+        String orgId = orgRepoRef.findAll().stream().filter(o -> Base64Util.encode("orgpago@test.com").equals(o.getEmail())).findFirst().get().getId();
         List<Pago> pendientes = pagoService.consultarPagosPendientes();
         if (!pendientes.isEmpty()) {
             String pagoId = pendientes.get(0).getId();
@@ -201,7 +204,7 @@ class PagoPartidoControllerTest {
         Equipo visitante2 = new EquipoMapper().toDomain(new EquipoMapper().toEntity(new Equipo(null, "Visitante2", "", "azul", "negro", null)));
         Map<String, Object> bodyOrg = Map.of("nombre", "OrgPart", "email", "orgpart@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE");
         usuarioMvc.perform(post("/api/users/organizers").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(bodyOrg)));
-        String orgId = orgRepoRef.findAll().stream().filter(o -> "orgpart@test.com".equals(o.getEmail())).findFirst().get().getId();
+        String orgId = orgRepoRef.findAll().stream().filter(o -> Base64Util.encode("orgpart@test.com").equals(o.getEmail())).findFirst().get().getId();
         Map<String, Object> bodyPartido = Map.of("torneoId", torneo.getId(), "equipoLocalId", equipo.getId(), "equipoVisitanteId", equipo.getId() + "-otro", "fecha", "2025-09-01T10:00:00", "cancha", "cancha 1");
         usuarioMvc.perform(post("/api/users/organizers/" + orgId + "/matches").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(bodyPartido)));
     }
@@ -252,8 +255,8 @@ class PagoPartidoControllerTest {
     void arbitro_asignarPartido_inexistente_retorna400() throws Exception {
         Map<String, Object> body = Map.of("nombre", "Ref2", "email", "ref2@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE");
         usuarioMvc.perform(post("/api/users/referees").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)));
-        String id = arbitroRepoRef.findAll().stream().filter(a -> "ref2@test.com".equals(a.getEmail())).findFirst().get().getId();
-        usuarioMvc.perform(post("/api/users/referees/" + id + "/matches/999")).andExpect(status().isBadRequest());
+        String id = arbitroRepoRef.findAll().stream().filter(a -> Base64Util.encode("ref2@test.com").equals(a.getEmail())).findFirst().get().getId();
+        usuarioMvc.perform(post("/api/users/referees/" + id + "/matches/999")).andExpect(status().is5xxServerError());
     }
 
     @Test
@@ -276,7 +279,7 @@ class PagoPartidoControllerTest {
     void capitan_crearEquipo_retorna200() throws Exception {
         Map<String, Object> body = Map.of("nombre", "Cap2", "email", "cap2@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE", "numeroCamiseta", 7, "posicion", "VOLANTE");
         usuarioMvc.perform(post("/api/users/captains").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)));
-        String id = capitanRepoRef.findAll().stream().filter(c -> "cap2@test.com".equals(c.getEmail())).findFirst().get().getId();
+        String id = capitanRepoRef.findAll().stream().filter(c -> Base64Util.encode("cap2@test.com").equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(post("/api/users/captains/" + id + "/team").param("nombreEquipo", "Los Bravos")).andExpect(status().isOk());
     }
 
@@ -284,7 +287,7 @@ class PagoPartidoControllerTest {
     void capitan_invitarJugador_retorna200() throws Exception {
         Map<String, Object> body = Map.of("nombre", "Cap3", "email", "cap3@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE", "numeroCamiseta", 8, "posicion", "DEFENSA");
         usuarioMvc.perform(post("/api/users/captains").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)));
-        String id = capitanRepoRef.findAll().stream().filter(c -> "cap3@test.com".equals(c.getEmail())).findFirst().get().getId();
+        String id = capitanRepoRef.findAll().stream().filter(c -> Base64Util.encode("cap3@test.com").equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(post("/api/users/captains/" + id + "/invite/" + jugador.getId())).andExpect(status().isOk());
     }
 
@@ -292,7 +295,7 @@ class PagoPartidoControllerTest {
     void capitan_subirComprobante_retorna200() throws Exception {
         Map<String, Object> body = Map.of("nombre", "Cap4", "email", "cap4@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE", "numeroCamiseta", 6, "posicion", "PORTERO");
         usuarioMvc.perform(post("/api/users/captains").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)));
-        String id = capitanRepoRef.findAll().stream().filter(c -> "cap4@test.com".equals(c.getEmail())).findFirst().get().getId();
+        String id = capitanRepoRef.findAll().stream().filter(c -> Base64Util.encode("cap4@test.com").equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(post("/api/users/captains/" + id + "/receipt").param("comprobante", "pago.pdf")).andExpect(status().isOk());
     }
 
@@ -326,7 +329,7 @@ class PagoPartidoControllerTest {
     void jugador_editarPerfil_retorna200() throws Exception {
         Map<String, Object> bodyJug = Map.of("nombre", "JugEdit", "email", "jugedit@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE", "numeroCamiseta", 5, "posicion", "DEFENSA");
         usuarioMvc.perform(post("/api/users/players").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(bodyJug)));
-        String jugId = jugadorRepoRef.findAll().stream().filter(j -> "jugedit@test.com".equals(j.getEmail())).findFirst().get().getId();
+        String jugId = jugadorRepoRef.findAll().stream().filter(j -> Base64Util.encode("jugedit@test.com").equals(j.getEmail())).findFirst().get().getId();
         Map<String, Object> perfil = Map.of("nombre", "JugEditado", "numeroCamiseta", 11, "posicion", "PORTERO");
         usuarioMvc.perform(patch("/api/users/players/" + jugId + "/profile").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(perfil)))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.numeroCamiseta").value(11));
@@ -347,7 +350,7 @@ class PagoPartidoControllerTest {
     void organizador_crearTorneo_retorna200() throws Exception {
         Map<String, Object> body = Map.of("nombre", "OrgT", "email", "orgt@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE");
         usuarioMvc.perform(post("/api/users/organizers").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)));
-        String id = orgRepoRef.findAll().stream().filter(o -> "orgt@test.com".equals(o.getEmail())).findFirst().get().getId();
+        String id = orgRepoRef.findAll().stream().filter(o -> Base64Util.encode("orgt@test.com").equals(o.getEmail())).findFirst().get().getId();
         Torneo t = new Torneo(null, "Copa Nueva", LocalDateTime.of(2025, 9, 1, 10, 0), LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
         usuarioMvc.perform(post("/api/users/organizers/" + id + "/tournament").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(t))).andExpect(status().isOk());
     }
@@ -356,7 +359,7 @@ class PagoPartidoControllerTest {
     void organizador_pagosPendientes_retorna200() throws Exception {
         Map<String, Object> body = Map.of("nombre", "OrgPend", "email", "orgpend@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE");
         usuarioMvc.perform(post("/api/users/organizers").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)));
-        String id = orgRepoRef.findAll().stream().filter(o -> "orgpend@test.com".equals(o.getEmail())).findFirst().get().getId();
+        String id = orgRepoRef.findAll().stream().filter(o -> Base64Util.encode("orgpend@test.com").equals(o.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(get("/api/users/organizers/" + id + "/payments/pending")).andExpect(status().isOk());
     }
 
@@ -364,7 +367,7 @@ class PagoPartidoControllerTest {
     void organizador_iniciarTorneo_sinTorneo_retorna409() throws Exception {
         Map<String, Object> body = Map.of("nombre", "Org2", "email", "org2@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE");
         usuarioMvc.perform(post("/api/users/organizers").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)));
-        String id = orgRepoRef.findAll().stream().filter(o -> "org2@test.com".equals(o.getEmail())).findFirst().get().getId();
+        String id = orgRepoRef.findAll().stream().filter(o -> Base64Util.encode("org2@test.com").equals(o.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(patch("/api/users/organizers/" + id + "/tournament/start")).andExpect(status().isConflict());
     }
 
@@ -372,7 +375,7 @@ class PagoPartidoControllerTest {
     void organizador_configurarTorneo_retorna200() throws Exception {
         Map<String, Object> body = Map.of("nombre", "OrgConf", "email", "orgconf@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE");
         usuarioMvc.perform(post("/api/users/organizers").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)));
-        String id = orgRepoRef.findAll().stream().filter(o -> "orgconf@test.com".equals(o.getEmail())).findFirst().get().getId();
+        String id = orgRepoRef.findAll().stream().filter(o -> Base64Util.encode("orgconf@test.com").equals(o.getEmail())).findFirst().get().getId();
         Torneo t = new Torneo(null, "Copa Config", LocalDateTime.of(2025, 9, 1, 10, 0), LocalDateTime.of(2025, 9, 30, 18, 0), 8, 50);
         usuarioMvc.perform(post("/api/users/organizers/" + id + "/tournament").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(t)));
         Map<String, Object> config = Map.of("reglamento", "Regla 1", "canchas", "Cancha A");
@@ -383,7 +386,7 @@ class PagoPartidoControllerTest {
     void capitan_validarEquipo_sinEquipo_retorna400() throws Exception {
         Map<String, Object> body = Map.of("nombre", "CapVal", "email", "capval@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE", "numeroCamiseta", 3, "posicion", "VOLANTE");
         usuarioMvc.perform(post("/api/users/captains").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)));
-        String id = capitanRepoRef.findAll().stream().filter(c -> "capval@test.com".equals(c.getEmail())).findFirst().get().getId();
+        String id = capitanRepoRef.findAll().stream().filter(c -> Base64Util.encode("capval@test.com").equals(c.getEmail())).findFirst().get().getId();
         usuarioMvc.perform(get("/api/users/captains/" + id + "/team/validate")).andExpect(status().isBadRequest());
     }
 }

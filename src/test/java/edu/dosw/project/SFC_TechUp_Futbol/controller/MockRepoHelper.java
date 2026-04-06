@@ -125,6 +125,14 @@ class MockRepoHelper {
         when(repo.save(any())).thenAnswer(inv -> { AlineacionEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
         when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store.values()));
+        when(repo.findByPartidoIdAndEquipoId(anyString(), anyString())).thenAnswer(inv -> {
+            String pid = inv.getArgument(0); String eid = inv.getArgument(1);
+            return store.values().stream().filter(e -> pid.equals(e.getPartidoId()) && eid.equals(e.getEquipoId())).findFirst();
+        });
+        when(repo.findByPartidoId(anyString())).thenAnswer(inv -> {
+            String pid = inv.getArgument(0);
+            return store.values().stream().filter(e -> pid.equals(e.getPartidoId())).collect(java.util.stream.Collectors.toList());
+        });
         return repo;
     }
 }

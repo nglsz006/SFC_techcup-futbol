@@ -2,6 +2,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AutenticacionAdminException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Administrador;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository;
@@ -24,7 +25,7 @@ public class AutenticacionAdministradorService {
     }
 
     public String login(String email, String password) {
-        Administrador administrador = administradorRepository.findByEmail(email)
+        Administrador administrador = administradorRepository.findByEmail(Base64Util.encode(email))
                 .map(mapper::toDomain)
                 .orElseThrow(() -> new AutenticacionAdminException("Credenciales de administrador incorrectas."));
 

@@ -6,7 +6,6 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioResponse;
-import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.ArbitroMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.CapitanMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
@@ -16,6 +15,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.CapitanJpaRepos
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.UsuarioRegistradoJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.AccesoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import org.springframework.stereotype.Service;
@@ -59,7 +59,7 @@ public class AccesoServiceImpl implements AccesoService {
 
     @Override
     public UsuarioResponse registrar(RegistroRequest request) {
-        if (usuarioRepository.findByEmail(request.getEmail()).isPresent())
+        if (usuarioRepository.findByEmail(Base64Util.encode(request.getEmail())).isPresent())
             throw new IllegalStateException("Ya existe un usuario con ese correo.");
         UsuarioRegistrado usuario = AccesoMapper.toModelo(request);
         if (usuario.getId() == null) usuario.setId(edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil.generarId());
@@ -72,8 +72,9 @@ public class AccesoServiceImpl implements AccesoService {
     public LoginResponse login(LoginRequest request) {
         String email = request.getEmail();
         String password = request.getPassword();
+        String emailEncoded = Base64Util.encode(email);
 
-        var orgEntity = organizadorRepository.findByEmail(email);
+        var orgEntity = organizadorRepository.findByEmail(emailEncoded);
         if (orgEntity.isPresent()) {
             var org = organizadorMapper.toDomain(orgEntity.get());
             if (!PasswordUtil.verificar(password, org.getPassword()))
@@ -83,7 +84,7 @@ public class AccesoServiceImpl implements AccesoService {
                     org.getName(), email, org.getUserType());
         }
 
-        var arbEntity = arbitroRepository.findByEmail(email);
+        var arbEntity = arbitroRepository.findByEmail(emailEncoded);
         if (arbEntity.isPresent()) {
             var arb = arbitroMapper.toDomain(arbEntity.get());
             if (!PasswordUtil.verificar(password, arb.getPassword()))
@@ -93,7 +94,7 @@ public class AccesoServiceImpl implements AccesoService {
                     arb.getName(), email, arb.getUserType());
         }
 
-        var capEntity = capitanRepository.findByEmail(email);
+        var capEntity = capitanRepository.findByEmail(emailEncoded);
         if (capEntity.isPresent()) {
             var cap = capitanMapper.toDomain(capEntity.get());
             if (!PasswordUtil.verificar(password, cap.getPassword()))
@@ -103,7 +104,7 @@ public class AccesoServiceImpl implements AccesoService {
                     cap.getName(), email, cap.getUserType());
         }
 
-        UsuarioRegistrado usuario = usuarioRepository.findByEmail(email)
+        UsuarioRegistrado usuario = usuarioRepository.findByEmail(emailEncoded)
                 .map(usuarioMapper::toDomain)
                 .orElseThrow(() -> new IllegalArgumentException("Credenciales incorrectas."));
         if (!PasswordUtil.verificar(password, usuario.getPassword()))

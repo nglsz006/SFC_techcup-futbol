@@ -55,9 +55,17 @@ public class PagoServiceImpl implements PagoService {
     }
 
     @Override
-    public Pago aprobarPago(String pagoId) {
+    public Pago enviarARevision(String pagoId) {
         Pago pago = getPagoOrThrow(pagoId);
         pago.avanzar();
+        log.info("Pago enviado a revision: " + sanitize(pagoId));
+        return pagoMapper.toDomain(pagoRepository.save(pagoMapper.toEntity(pago)));
+    }
+
+    @Override
+    public Pago aprobarPago(String pagoId) {
+        Pago pago = getPagoOrThrow(pagoId);
+        if (pago.getEstado() == Pago.PagoEstado.PENDIENTE) pago.avanzar();
         pago.avanzar();
         log.info("Pago aprobado: " + sanitize(pagoId));
         return pagoMapper.toDomain(pagoRepository.save(pagoMapper.toEntity(pago)));
@@ -84,6 +92,16 @@ public class PagoServiceImpl implements PagoService {
     @Override
     public List<Pago> consultarPagosPendientes() {
         return pagoRepository.findByEstado(Pago.PagoEstado.PENDIENTE).stream().map(pagoMapper::toDomain).toList();
+    }
+
+    @Override
+    public List<Pago> consultarPagosPorEstado(Pago.PagoEstado estado) {
+        return pagoRepository.findByEstado(estado).stream().map(pagoMapper::toDomain).toList();
+    }
+
+    @Override
+    public boolean equipoHabilitado(String equipoId) {
+        return pagoRepository.existsByEquipoIdAndEstado(equipoId, Pago.PagoEstado.APROBADO);
     }
 
     private Pago getPagoOrThrow(String pagoId) {
