@@ -61,7 +61,7 @@ docker-compose up -d
 docker-compose down
 ```
 
-### Resetear todo incluyendo la base de datos
+### Resetear todo incluyendo la base de datos (NO USAR SI NO ES NECESARIO)
 ```bash
 docker-compose down -v
 ```
@@ -73,7 +73,6 @@ docker-compose down -v
 | Servicio | URL |
 |---|---|
 | Swagger UI | `https://localhost:8443/swagger-ui/index.html` |
-| API HTTPS | `https://localhost:8443/api/` |
 | Redirect HTTP → HTTPS | `http://localhost:8080` → redirige automáticamente |
 
 > El navegador mostrará advertencia de certificado no confiable por ser autofirmado — aceptar y continuar.
