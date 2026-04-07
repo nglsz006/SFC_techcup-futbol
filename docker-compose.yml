@@ -21,7 +21,7 @@ services:
     container_name: techcup-backend
     ports:
       - "8080:8080"
-      - "8090:8090"
+      - "8443:8443"
     environment:
       DB_URL: jdbc:postgresql://db:5432/${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
@@ -29,7 +29,8 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       SERVER_HTTP_PORT: ${SERVER_HTTP_PORT}
-      SPRING_PROFILES_ACTIVE: docker
+      SSL_PASSWORD: ${SSL_PASSWORD}
+      SPRING_PROFILES_ACTIVE: prod
     depends_on:
       db:
         condition: service_healthy
