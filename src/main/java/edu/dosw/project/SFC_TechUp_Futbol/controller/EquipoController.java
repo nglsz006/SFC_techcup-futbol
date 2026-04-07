@@ -1,6 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.EquipoResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.EquipoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.JugadorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Teams", description = "Team management: query and player association.")
 @RestController
@@ -21,6 +23,19 @@ public class EquipoController {
     public EquipoController(EquipoService service, JugadorService jugadorService) {
         this.service = service;
         this.jugadorService = jugadorService;
+    }
+
+    @PreAuthorize("hasRole('CAPITAN')")
+    @Operation(summary = "Create team", description = "Registers a new team in the system.")
+    @PostMapping
+    public EquipoResponse crearEquipo(@RequestBody Map<String, Object> body) {
+        Equipo equipo = new Equipo();
+        equipo.setNombre(body.getOrDefault("nombre", "").toString());
+        equipo.setEscudo(body.getOrDefault("escudo", "").toString());
+        equipo.setColorPrincipal(body.getOrDefault("colorPrincipal", "").toString());
+        equipo.setColorSecundario(body.getOrDefault("colorSecundario", "").toString());
+        equipo.setCapitanId(body.getOrDefault("capitanId", "").toString());
+        return new EquipoResponse(service.crear(equipo, body));
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -44,5 +59,16 @@ public class EquipoController {
         if (jugadorService.buscarJugadorPorId(jugadorId) == null)
             throw new IllegalArgumentException("Jugador no encontrado.");
         return new EquipoResponse(service.agregarJugador(equipoId, jugadorId));
+    }
+
+    @PreAuthorize("hasAnyRole('ORGANIZADOR', 'ADMINISTRADOR')")
+    @Operation(
+        summary = "Delete team",
+        description = "Deletes a team by ID. Only ORGANIZADOR or ADMINISTRADOR can perform this action."
+    )
+    @DeleteMapping("/{id}")
+    public Map<String, String> eliminarEquipo(@PathVariable String id) {
+        service.eliminar(id);
+        return Map.of("mensaje", "Equipo eliminado correctamente.");
     }
 }

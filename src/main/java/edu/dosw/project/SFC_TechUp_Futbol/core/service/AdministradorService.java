@@ -8,6 +8,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AdministradorValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.ArbitroMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
@@ -29,6 +30,7 @@ public class AdministradorService {
     private final ArbitroMapper arbitroMapper;
     private final UsuarioRegistradoJpaRepository usuarioRegistradoRepository;
     private final AuditoriaService auditoriaService;
+    private final AdministradorValidator administradorValidator;
 
     public AdministradorService(AdministradorJpaRepository administradorRepository,
                                 AdministradorMapper administradorMapper,
@@ -46,6 +48,8 @@ public class AdministradorService {
         this.arbitroMapper = arbitroMapper;
         this.usuarioRegistradoRepository = usuarioRegistradoRepository;
         this.auditoriaService = auditoriaService;
+        this.administradorValidator = new AdministradorValidator(
+                administradorRepository, organizadorRepository, arbitroRepository, usuarioRegistradoRepository);
     }
 
     public Administrador registrarAdministrador(RegistroAdministrativoRequest request) {
@@ -57,6 +61,8 @@ public class AdministradorService {
     }
 
     public Usuario registrarUsuarioAdministrativo(String administradorId, RegistroAdministrativoRequest request) {
+        administradorValidator.validarAdministradorId(administradorId);
+        administradorValidator.validarRegistro(request);
         String rol = request.getRol() == null ? "" : request.getRol().trim().toUpperCase();
         return switch (rol) {
             case "ORGANIZADOR" -> registrarOrganizador(administradorId, request);
@@ -65,7 +71,7 @@ public class AdministradorService {
         };
     }
 
-    public Organizador registrarOrganizador(String administradorId, RegistroAdministrativoRequest request) {
+    private Organizador registrarOrganizador(String administradorId, RegistroAdministrativoRequest request) {
         obtenerAdministradorAutorizado(administradorId);
         validarCorreoUnico(request.getEmail());
         Organizador organizador = new Organizador(
@@ -77,7 +83,7 @@ public class AdministradorService {
         return guardado;
     }
 
-    public Arbitro registrarArbitro(String administradorId, RegistroAdministrativoRequest request) {
+    private Arbitro registrarArbitro(String administradorId, RegistroAdministrativoRequest request) {
         obtenerAdministradorAutorizado(administradorId);
         validarCorreoUnico(request.getEmail());
         Arbitro arbitro = new Arbitro(

@@ -83,7 +83,7 @@ class AdministradorValidatorTest {
         OrganizadorEntity entity = new OrganizadorEntity();
         entity.setId(UUID.randomUUID().toString());
         entity.setName("Existente");
-        entity.setEmail("duplicado@escuelaing.edu.co");
+        entity.setEmail(edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util.encode("duplicado@escuelaing.edu.co"));
         entity.setPassword("password123");
         entity.setUserType(Usuario.TipoUsuario.ESTUDIANTE);
         organizadorRepository.save(entity);

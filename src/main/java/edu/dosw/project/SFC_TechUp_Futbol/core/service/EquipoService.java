@@ -1,9 +1,12 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.core.validator.ValidacionEquipo;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.PartidoJpaRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -20,6 +23,8 @@ public class EquipoService extends Subject {
 
     private final EquipoJpaRepository repository;
     private final EquipoMapper mapper;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private PartidoJpaRepository partidoRepository;
 
     public EquipoService(EquipoJpaRepository repository, EquipoMapper mapper) {
         this.repository = repository;
@@ -27,6 +32,7 @@ public class EquipoService extends Subject {
     }
 
     public Equipo crear(Equipo equipo, Map<String, Object> datos) {
+        new ValidacionEquipo().validar(datos);
         if (equipo.getId() == null) equipo.setId(IdGeneratorUtil.generarId());
         Equipo saved = mapper.toDomain(repository.save(mapper.toEntity(equipo)));
         log.info("Equipo creado con id: " + sanitize(saved.getId()));
@@ -50,6 +56,20 @@ public class EquipoService extends Subject {
         log.info("Jugador agregado al equipo");
         notificar("JUGADOR_AGREGADO", Map.of("equipoId", equipoId, "jugadorId", jugadorId));
         return mapper.toDomain(repository.save(mapper.toEntity(equipo)));
+    }
+
+    public void eliminar(String id) {
+        obtener(id);
+        if (partidoRepository != null) {
+            boolean tienePartidosActivos = partidoRepository
+                .findByEquipoLocalIdOrEquipoVisitanteId(id, id).stream()
+                .anyMatch(p -> p.getEstado() == Partido.PartidoEstado.PROGRAMADO
+                           || p.getEstado() == Partido.PartidoEstado.EN_CURSO);
+            if (tienePartidosActivos)
+                throw new IllegalStateException("No se puede eliminar un equipo con partidos programados o en curso.");
+        }
+        repository.deleteById(id);
+        log.info("Equipo eliminado con id: " + sanitize(id));
     }
 
     public Map<String, Object> validarComposicion(String equipoId) {

@@ -1,8 +1,10 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.TorneoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.PartidoJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
 
 import java.util.List;
@@ -16,6 +18,8 @@ public class TorneoService extends Subject {
 
     private final TorneoJpaRepository repository;
     private final TorneoMapper mapper;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private PartidoJpaRepository partidoRepository;
 
     public TorneoService(TorneoJpaRepository repository, TorneoMapper mapper) {
         this.repository = repository;
@@ -75,6 +79,20 @@ public class TorneoService extends Subject {
 
     public boolean puedeInscribirEquipos(String id) {
         return obtener(id).getEstadoObj().puedeInscribirEquipos();
+    }
+
+    public void eliminar(String id) {
+        Torneo torneo = obtener(id);
+        if (torneo.getEstado() == Torneo.EstadoTorneo.EN_CURSO)
+            throw new IllegalStateException("No se puede eliminar un torneo que está en curso.");
+        if (partidoRepository != null) {
+            boolean tienePartidosEnCurso = partidoRepository.findByTorneoId(id).stream()
+                .anyMatch(p -> p.getEstado() == Partido.PartidoEstado.EN_CURSO);
+            if (tienePartidosEnCurso)
+                throw new IllegalStateException("No se puede eliminar un torneo con partidos en curso.");
+        }
+        repository.deleteById(id);
+        log.info("Torneo eliminado con id: " + id);
     }
 
     public Torneo configurar(String id, String reglamento, String canchas, String horarios,

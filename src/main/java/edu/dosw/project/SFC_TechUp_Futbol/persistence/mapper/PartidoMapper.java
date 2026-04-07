@@ -1,9 +1,11 @@
 package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Sancion;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.GolEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.PartidoEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.SancionEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.TarjetaEntity;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +41,8 @@ public class PartidoMapper {
         entity.setEquipoLocal(equipoMapper.toEntity(partido.getEquipoLocal()));
         entity.setEquipoVisitante(equipoMapper.toEntity(partido.getEquipoVisitante()));
         entity.setGoles(golesAEntity(partido.getGoles(), entity));
+        entity.setTarjetas(tarjetasAEntity(partido.getTarjetas(), entity));
+        entity.setSanciones(sancionesAEntity(partido.getSanciones(), entity));
         return entity;
     }
 
@@ -58,6 +62,8 @@ public class PartidoMapper {
         partido.setEquipoLocal(equipoMapper.toDomain(entity.getEquipoLocal()));
         partido.setEquipoVisitante(equipoMapper.toDomain(entity.getEquipoVisitante()));
         partido.setGoles(golesADomain(entity.getGoles()));
+        partido.setTarjetas(tarjetasADomain(entity.getTarjetas()));
+        partido.setSanciones(sancionesADomain(entity.getSanciones()));
         return partido;
     }
 
@@ -121,6 +127,35 @@ public class PartidoMapper {
             tarjeta.setMinuto(tarjetaEntity.getMinuto());
             tarjeta.setJugador(jugadorMapper.toDomain(tarjetaEntity.getJugador()));
             lista.add(tarjeta);
+        }
+        return lista;
+    }
+
+    private List<SancionEntity> sancionesAEntity(List<Sancion> sanciones, PartidoEntity partidoEntity) {
+        List<SancionEntity> lista = new ArrayList<>();
+        if (sanciones == null) return lista;
+        for (Sancion sancion : sanciones) {
+            SancionEntity e = new SancionEntity();
+            e.setId(sancion.getId());
+            e.setTipoSancion(sancion.getTipoSancion());
+            e.setDescripcion(sancion.getDescripcion());
+            e.setJugador(jugadorMapper.toEntity(sancion.getJugador()));
+            e.setPartido(partidoEntity);
+            lista.add(e);
+        }
+        return lista;
+    }
+
+    private List<Sancion> sancionesADomain(List<SancionEntity> entities) {
+        List<Sancion> lista = new ArrayList<>();
+        if (entities == null) return lista;
+        for (SancionEntity e : entities) {
+            Sancion sancion = new Sancion();
+            sancion.setId(e.getId());
+            sancion.setTipoSancion(e.getTipoSancion());
+            sancion.setDescripcion(e.getDescripcion());
+            sancion.setJugador(jugadorMapper.toDomain(e.getJugador()));
+            lista.add(sancion);
         }
         return lista;
     }

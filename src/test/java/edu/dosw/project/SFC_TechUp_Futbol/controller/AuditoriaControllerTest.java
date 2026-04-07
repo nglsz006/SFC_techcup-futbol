@@ -101,7 +101,7 @@ class AuditoriaControllerTest {
         administradorService = new AdministradorService(
                 administradorRepository, adminMapper, organizadorRepository, orgMapper,
                 arbitroRepository, arbitroMapper, usuarioRegistradoRepository, auditoriaService);
-        autenticacionAdministradorService = new AutenticacionAdministradorService(administradorRepository, adminMapper);
+        autenticacionAdministradorService = new AutenticacionAdministradorService(administradorRepository, adminMapper, registroAuditoriaRepository, auditoriaMapper);
         AdministradorValidator administradorValidator = new AdministradorValidator(
                 administradorRepository, organizadorRepository, arbitroRepository, usuarioRegistradoRepository);
 
