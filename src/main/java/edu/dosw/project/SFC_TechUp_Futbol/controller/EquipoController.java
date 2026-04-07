@@ -60,4 +60,15 @@ public class EquipoController {
             throw new IllegalArgumentException("Jugador no encontrado.");
         return new EquipoResponse(service.agregarJugador(equipoId, jugadorId));
     }
+
+    @PreAuthorize("hasAnyRole('ORGANIZADOR', 'ADMINISTRADOR')")
+    @Operation(
+        summary = "Delete team",
+        description = "Deletes a team by ID. Only ORGANIZADOR or ADMINISTRADOR can perform this action."
+    )
+    @DeleteMapping("/{id}")
+    public Map<String, String> eliminarEquipo(@PathVariable String id) {
+        service.eliminar(id);
+        return Map.of("mensaje", "Equipo eliminado correctamente.");
+    }
 }

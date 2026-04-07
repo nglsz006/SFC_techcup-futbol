@@ -130,4 +130,15 @@ public class TorneoController {
     private void sumar(Map<String, Object> fila, String key, int valor) {
         fila.put(key, (int) fila.get(key) + valor);
     }
+
+    @PreAuthorize("hasAnyRole('ORGANIZADOR', 'ADMINISTRADOR')")
+    @Operation(
+        summary = "Delete tournament",
+        description = "Deletes a tournament by ID. Only ORGANIZADOR or ADMINISTRADOR can perform this action. Cannot delete a tournament that is currently IN PROGRESS."
+    )
+    @DeleteMapping("/{id}")
+    public Map<String, String> eliminarTorneo(@PathVariable String id) {
+        service.eliminar(id);
+        return Map.of("mensaje", "Torneo eliminado correctamente.");
+    }
 }

@@ -175,6 +175,17 @@ public class UsuarioController {
         return jugadorService.subirFoto(id, file);
     }
 
+    @PreAuthorize("hasAnyRole('ORGANIZADOR', 'ADMINISTRADOR')")
+    @Operation(
+        summary = "Delete player",
+        description = "Deletes a player by ID. Only ORGANIZADOR or ADMINISTRADOR can perform this action."
+    )
+    @DeleteMapping("/players/{id}")
+    public Map<String, String> eliminarJugador(@PathVariable String id) {
+        jugadorService.eliminar(id);
+        return Map.of("mensaje", "Jugador eliminado correctamente.");
+    }
+
     // ── Captains ─────────────────────────────────────────────────────────────
 
     @PreAuthorize("isAuthenticated()")
@@ -453,4 +464,5 @@ public class UsuarioController {
     public Pago rechazarPago(@PathVariable String id, @PathVariable String paymentId) {
         return pagoService.rechazarPago(paymentId);
     }
+
 }
