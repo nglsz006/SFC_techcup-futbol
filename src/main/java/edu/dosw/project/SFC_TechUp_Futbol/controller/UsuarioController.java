@@ -84,7 +84,7 @@ public class UsuarioController {
         return respuesta;
     }
 
-    // ── Players ──────────────────────────────────────────────────────────────
+//jugadores
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create player")
@@ -186,7 +186,7 @@ public class UsuarioController {
         return Map.of("mensaje", "Jugador eliminado correctamente.");
     }
 
-    // ── Captains ─────────────────────────────────────────────────────────────
+// capitanes
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create captain")
@@ -267,7 +267,7 @@ public class UsuarioController {
         return capitanService.buscarJugadores(posicion).stream().map(JugadorResponse::new).toList();
     }
 
-    // ── Referees ─────────────────────────────────────────────────────────────
+//arbitros
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create referee")
@@ -364,7 +364,7 @@ public class UsuarioController {
         return partidoService.registrarSancion(matchId, jugadorId, tipoSancion, descripcion);
     }
 
-    // ── Organizers ───────────────────────────────────────────────────────────
+// organizadores
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create organizer")
