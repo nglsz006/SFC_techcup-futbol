@@ -10,6 +10,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RolNoPermitidoException
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,14 +31,14 @@ class GestionAdministrativaTest {
 
     @BeforeEach
     void setUp() {
-        TorneoMapper torneoMapper = new TorneoMapper();
-        EquipoMapper equipoMapper = new EquipoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
-        AdministradorMapper adminMapper = new AdministradorMapper();
-        OrganizadorMapper orgMapper = new OrganizadorMapper(mock(TorneoJpaRepository.class), torneoMapper);
-        ArbitroMapper arbitroMapper = new ArbitroMapper(partidoMapper);
-        auditoriaMapper = new RegistroAuditoriaMapper();
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        AdministradorMapper adminMapper = TestMappers.administradorMapper();
+        OrganizadorMapper orgMapper = TestMappers.organizadorMapper(mock(TorneoJpaRepository.class), torneoMapper);
+        ArbitroMapper arbitroMapper = TestMappers.arbitroMapper(partidoMapper);
+        auditoriaMapper = TestMappers.registroAuditoriaMapper();
 
         Map<String, AdministradorEntity> adminStore = new HashMap<>();
         AdministradorJpaRepository adminRepo = mock(AdministradorJpaRepository.class);

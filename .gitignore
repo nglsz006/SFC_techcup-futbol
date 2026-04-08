@@ -34,3 +34,6 @@ build/
 
 ### SSL ###
 src/main/resources/keystore.p12
+
+### Local JVM config ###
+.mvn/jvm.config

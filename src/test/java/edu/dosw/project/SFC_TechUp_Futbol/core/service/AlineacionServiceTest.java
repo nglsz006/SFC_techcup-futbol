@@ -6,6 +6,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,11 +35,11 @@ class AlineacionServiceTest {
 
     @BeforeEach
     void setUp() {
-        AlineacionMapper alineacionMapper = new AlineacionMapper();
-        equipoMapper = new EquipoMapper();
-        torneoMapper = new TorneoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
+        AlineacionMapper alineacionMapper = TestMappers.alineacionMapper();
+        equipoMapper = TestMappers.equipoMapper();
+        torneoMapper = TestMappers.torneoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        partidoMapper = TestMappers.partidoMapper(jugadorMapper);
 
         Map<String, AlineacionEntity> alineacionStore = new HashMap<>();
         AlineacionJpaRepository alineacionRepo = mock(AlineacionJpaRepository.class);

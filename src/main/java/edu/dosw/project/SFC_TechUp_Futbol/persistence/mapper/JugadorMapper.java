@@ -3,44 +3,18 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.JugadorEntity;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class JugadorMapper {
+@Mapper(componentModel = "spring", imports = Base64Util.class)
+public interface JugadorMapper {
 
-    public JugadorEntity toEntity(Jugador jugador) {
-        if (jugador == null) {
-            return null;
-        }
-        JugadorEntity entity = new JugadorEntity();
-        entity.setId(jugador.getId());
-        entity.setName(jugador.getName());
-        entity.setEmail(Base64Util.encode(jugador.getEmail()));
-        entity.setPassword(jugador.getPassword());
-        entity.setUserType(jugador.getUserType());
-        entity.setJerseyNumber(jugador.getJerseyNumber());
-        entity.setPosition(jugador.getPosition());
-        entity.setAvailable(jugador.isAvailable());
-        entity.setPhoto(jugador.getPhoto());
-        entity.setEquipoId(jugador.getEquipo());
-        return entity;
-    }
+    @Mapping(target = "email", expression = "java(Base64Util.encode(jugador.getEmail()))")
+    @Mapping(target = "equipoId", expression = "java(jugador.getEquipo())")
+    JugadorEntity toEntity(Jugador jugador);
 
-    public Jugador toDomain(JugadorEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        Jugador jugador = new Jugador();
-        jugador.setId(entity.getId());
-        jugador.setName(entity.getName());
-        jugador.setEmail(Base64Util.decode(entity.getEmail()));
-        jugador.setPassword(entity.getPassword());
-        jugador.setUserType(entity.getUserType());
-        jugador.setJerseyNumber(entity.getJerseyNumber());
-        jugador.setPosition(entity.getPosition());
-        jugador.setAvailable(entity.isAvailable());
-        jugador.setPhoto(entity.getPhoto());
-        jugador.setEquipo(entity.getEquipoId());
-        return jugador;
-    }
+    @Mapping(target = "email", expression = "java(Base64Util.decode(entity.getEmail()))")
+    @Mapping(target = "equipo", source = "equipoId")
+    @Mapping(target = "sanciones", ignore = true)
+    Jugador toDomain(JugadorEntity entity);
 }

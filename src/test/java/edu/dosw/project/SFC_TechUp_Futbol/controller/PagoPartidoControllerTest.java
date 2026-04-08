@@ -8,6 +8,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PagoValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
@@ -43,13 +44,13 @@ class PagoPartidoControllerTest {
 
     @BeforeEach
     void setUp() {
-        TorneoMapper torneoMapper = new TorneoMapper();
-        EquipoMapper equipoMapper = new EquipoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
-        PagoMapper pagoMapper = new PagoMapper(equipoMapper);
-        AlineacionMapper alineacionMapper = new AlineacionMapper();
-        PerfilDeportivoMapper perfilMapper = new PerfilDeportivoMapper();
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        PagoMapper pagoMapper = TestMappers.pagoMapper(equipoMapper);
+        AlineacionMapper alineacionMapper = TestMappers.alineacionMapper();
+        PerfilDeportivoMapper perfilMapper = TestMappers.perfilDeportivoMapper();
 
         Map<String, EquipoEntity> equipoStore = new HashMap<>();
         EquipoJpaRepository equipoRepo = MockRepoHelper.equipoRepo(equipoStore);
@@ -85,7 +86,7 @@ class PagoPartidoControllerTest {
         Map<String, AlineacionEntity> alineacionStore = new HashMap<>();
         AlineacionJpaRepository alineacionRepo = MockRepoHelper.alineacionRepo(alineacionStore);
         AlineacionService alineacionService = new AlineacionService(alineacionRepo, alineacionMapper,
-                equipoRepo, new edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper(),
+                equipoRepo, TestMappers.equipoMapper(),
                 partidoRepo, partidoMapper);
         alineacionMvc = MockMvcBuilders
                 .standaloneSetup(new AlineacionController(alineacionService))
@@ -95,7 +96,7 @@ class PagoPartidoControllerTest {
 
         Map<String, ArbitroEntity> arbitroStore = new HashMap<>();
         arbitroRepoRef = MockRepoHelper.arbitroRepo(arbitroStore);
-        ArbitroMapper arbitroMapper = new ArbitroMapper(partidoMapper);
+        ArbitroMapper arbitroMapper = TestMappers.arbitroMapper(partidoMapper);
         ArbitroService arbitroService = new ArbitroService(arbitroRepoRef, arbitroMapper);
 
         Map<String, PartidoEntity> partidoStoreArbitro = new HashMap<>();
@@ -104,12 +105,12 @@ class PagoPartidoControllerTest {
 
         Map<String, CapitanEntity> capitanStore = new HashMap<>();
         capitanRepoRef = MockRepoHelper.capitanRepo(capitanStore);
-        CapitanMapper capitanMapper = new CapitanMapper(equipoRepo, equipoMapper);
+        CapitanMapper capitanMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
         CapitanService capitanService = new CapitanService(capitanRepoRef, capitanMapper, jugadorService);
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         orgRepoRef = MockRepoHelper.orgRepo(orgStore);
-        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepo, torneoMapper);
+        OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepo, torneoMapper);
         OrganizadorService organizadorService = new OrganizadorService(orgRepoRef, orgMapper, new TorneoService(torneoRepo, torneoMapper));
 
         Map<String, PagoEntity> pagoStoreOrg = new HashMap<>();
@@ -201,7 +202,7 @@ class PagoPartidoControllerTest {
 
     @Test
     void partido_crear_retorna200() throws Exception {
-        Equipo visitante2 = new EquipoMapper().toDomain(new EquipoMapper().toEntity(new Equipo(null, "Visitante2", "", "azul", "negro", null)));
+        Equipo visitante2 = TestMappers.equipoMapper().toDomain(TestMappers.equipoMapper().toEntity(new Equipo(null, "Visitante2", "", "azul", "negro", null)));
         Map<String, Object> bodyOrg = Map.of("nombre", "OrgPart", "email", "orgpart@test.com", "password", "pass", "tipoUsuario", "ESTUDIANTE");
         usuarioMvc.perform(post("/api/users/organizers").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(bodyOrg)));
         String orgId = orgRepoRef.findAll().stream().filter(o -> Base64Util.encode("orgpart@test.com").equals(o.getEmail())).findFirst().get().getId();

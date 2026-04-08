@@ -13,6 +13,8 @@ import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.UsuarioRegistradoEn
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.TorneoMapper;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import org.springframework.test.util.ReflectionTestUtils;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.ArbitroJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
@@ -36,8 +38,10 @@ class AdministradorValidatorTest {
     @BeforeEach
     void setUp() {
         TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
-        TorneoMapper torneoMapper = new TorneoMapper();
-        orgMapper = new OrganizadorMapper(torneoRepo, torneoMapper);
+        TorneoMapper torneoMapper = mock(TorneoMapper.class, CALLS_REAL_METHODS);
+        orgMapper = mock(OrganizadorMapper.class, CALLS_REAL_METHODS);
+        ReflectionTestUtils.setField(orgMapper, "torneoJpaRepository", torneoRepo);
+        ReflectionTestUtils.setField(orgMapper, "torneoMapper", torneoMapper);
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         organizadorRepository = mock(OrganizadorJpaRepository.class);

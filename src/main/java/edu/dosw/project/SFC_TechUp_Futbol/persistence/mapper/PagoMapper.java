@@ -4,57 +4,33 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.PagoEntity;
-import org.springframework.stereotype.Component;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-@Component
-public class PagoMapper {
+@Mapper(componentModel = "spring", uses = EquipoMapper.class, imports = Base64Util.class)
+public interface PagoMapper {
 
-    private final EquipoMapper equipoMapper;
+    @Mapping(target = "comprobante", expression = "java(Base64Util.encode(pago.getComprobante()))")
+    PagoEntity toEntity(Pago pago);
 
-    public PagoMapper(EquipoMapper equipoMapper) {
-        this.equipoMapper = equipoMapper;
+    @Mapping(target = "comprobante", expression = "java(Base64Util.decode(entity.getComprobante()))")
+    @Mapping(target = "state", ignore = true)
+    Pago toDomain(PagoEntity entity);
+
+    @AfterMapping
+    default void resolverPagoState(PagoEntity entity, @MappingTarget Pago pago) {
+        pago.setState(resolverEstado(entity.getEstado()));
     }
 
-    public PagoEntity toEntity(Pago pago) {
-        if (pago == null) {
-            return null;
-        }
-        PagoEntity entity = new PagoEntity();
-        entity.setId(pago.getId());
-        entity.setComprobante(Base64Util.encode(pago.getComprobante()));
-        entity.setFechaSubida(pago.getFechaSubida());
-        entity.setEstado(pago.getEstado());
-        entity.setEquipo(equipoMapper.toEntity(pago.getEquipo()));
-        return entity;
-    }
-
-    public Pago toDomain(PagoEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        Pago pago = new Pago();
-        pago.setId(entity.getId());
-        pago.setComprobante(Base64Util.decode(entity.getComprobante()));
-        pago.setFechaSubida(entity.getFechaSubida());
-        pago.setEstado(entity.getEstado());
-        pago.setState(resolverPagoState(entity.getEstado()));
-        pago.setEquipo(equipoMapper.toDomain(entity.getEquipo()));
-        return pago;
-    }
-
-    private PagoState resolverPagoState(Pago.PagoEstado estado) {
-        if (estado == null) {
-            return new PendienteState();
-        }
+    default PagoState resolverEstado(Pago.PagoEstado estado) {
+        if (estado == null) return new PendienteState();
         switch (estado) {
-            case EN_REVISION:
-                return new EnRevisionState();
-            case APROBADO:
-                return new AprobadoState();
-            case RECHAZADO:
-                return new RechazadoState();
-            default:
-                return new PendienteState();
+            case EN_REVISION: return new EnRevisionState();
+            case APROBADO: return new AprobadoState();
+            case RECHAZADO: return new RechazadoState();
+            default: return new PendienteState();
         }
     }
 }

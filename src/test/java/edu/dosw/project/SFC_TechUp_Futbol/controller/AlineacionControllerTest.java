@@ -3,6 +3,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Alineacion;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AlineacionService;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
@@ -27,11 +28,11 @@ class AlineacionControllerTest {
 
     @BeforeEach
     void setUp() {
-        TorneoMapper torneoMapper = new TorneoMapper();
-        EquipoMapper equipoMapper = new EquipoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
-        AlineacionMapper alineacionMapper = new AlineacionMapper();
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        AlineacionMapper alineacionMapper = TestMappers.alineacionMapper();
 
         Map<String, AlineacionEntity> store = new HashMap<>();
         AlineacionJpaRepository repo = MockRepoHelper.alineacionRepo(store);
@@ -84,11 +85,11 @@ class AlineacionControllerTest {
     @Test
     void registrarAlineacion_valida_retorna200() throws Exception {
         // crear equipo y partido reales en los stores
-        EquipoMapper equipoMapper = new EquipoMapper();
-        TorneoMapper torneoMapper = new TorneoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
-        AlineacionMapper alineacionMapper = new AlineacionMapper();
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        AlineacionMapper alineacionMapper = TestMappers.alineacionMapper();
 
         Map<String, EquipoEntity> equipoStore = new HashMap<>();
         EquipoJpaRepository equipoRepo = MockRepoHelper.equipoRepo(equipoStore);
@@ -120,11 +121,11 @@ class AlineacionControllerTest {
 
     @Test
     void obtenerAlineacion_existente_retorna200() throws Exception {
-        EquipoMapper equipoMapper = new EquipoMapper();
-        TorneoMapper torneoMapper = new TorneoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
-        AlineacionMapper alineacionMapper = new AlineacionMapper();
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        AlineacionMapper alineacionMapper = TestMappers.alineacionMapper();
 
         Map<String, EquipoEntity> equipoStore = new HashMap<>();
         EquipoJpaRepository equipoRepo = MockRepoHelper.equipoRepo(equipoStore);

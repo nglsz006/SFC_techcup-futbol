@@ -6,6 +6,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
@@ -38,13 +39,13 @@ class UsuarioControllerTest {
 
     @BeforeEach
     void setUp() {
-        TorneoMapper torneoMapper = new TorneoMapper();
-        EquipoMapper equipoMapper = new EquipoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
-        ArbitroMapper arbitroMapper = new ArbitroMapper(partidoMapper);
-        PagoMapper pagoMapper = new PagoMapper(equipoMapper);
-        PerfilDeportivoMapper perfilMapper = new PerfilDeportivoMapper();
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        ArbitroMapper arbitroMapper = TestMappers.arbitroMapper(partidoMapper);
+        PagoMapper pagoMapper = TestMappers.pagoMapper(equipoMapper);
+        PerfilDeportivoMapper perfilMapper = TestMappers.perfilDeportivoMapper();
 
         Map<String, TorneoEntity> torneoStore = new HashMap<>();
         TorneoJpaRepository torneoRepo = MockRepoHelper.torneoRepo(torneoStore);
@@ -68,11 +69,11 @@ class UsuarioControllerTest {
 
         Map<String, CapitanEntity> capitanStore = new HashMap<>();
         CapitanJpaRepository capitanRepo = MockRepoHelper.capitanRepo(capitanStore);
-        CapitanMapper capitanMapper = new CapitanMapper(equipoRepo, equipoMapper);
+        CapitanMapper capitanMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
         capitanService = new CapitanService(capitanRepo, capitanMapper, jugadorService);
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
-        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepo, torneoMapper);
+        OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepo, torneoMapper);
         OrganizadorJpaRepository orgRepo = MockRepoHelper.orgRepo(orgStore);
         organizadorService = new OrganizadorService(orgRepo, orgMapper, torneoService);
 

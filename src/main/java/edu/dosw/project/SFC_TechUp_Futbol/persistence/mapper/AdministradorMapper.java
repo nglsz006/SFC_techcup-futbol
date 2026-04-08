@@ -3,32 +3,17 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Administrador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.AdministradorEntity;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class AdministradorMapper {
+@Mapper(componentModel = "spring", imports = Base64Util.class)
+public interface AdministradorMapper {
 
-    public AdministradorEntity toEntity(Administrador administrador) {
-        if (administrador == null) return null;
-        AdministradorEntity entity = new AdministradorEntity();
-        entity.setId(administrador.getId());
-        entity.setName(administrador.getName());
-        entity.setEmail(Base64Util.encode(administrador.getEmail()));
-        entity.setPassword(administrador.getPassword());
-        entity.setUserType(administrador.getUserType());
-        entity.setActivo(administrador.isActivo());
-        return entity;
-    }
+    @Mapping(target = "email", expression = "java(Base64Util.encode(administrador.getEmail()))")
+    @Mapping(target = "activo", source = "activo")
+    AdministradorEntity toEntity(Administrador administrador);
 
-    public Administrador toDomain(AdministradorEntity entity) {
-        if (entity == null) return null;
-        Administrador administrador = new Administrador();
-        administrador.setId(entity.getId());
-        administrador.setName(entity.getName());
-        administrador.setEmail(Base64Util.decode(entity.getEmail()));
-        administrador.setPassword(entity.getPassword());
-        administrador.setUserType(entity.getUserType());
-        administrador.setActivo(entity.isActivo());
-        return administrador;
-    }
+    @Mapping(target = "email", expression = "java(Base64Util.decode(entity.getEmail()))")
+    @Mapping(target = "activo", source = "activo")
+    Administrador toDomain(AdministradorEntity entity);
 }

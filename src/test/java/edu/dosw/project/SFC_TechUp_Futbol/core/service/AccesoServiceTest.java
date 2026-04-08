@@ -21,6 +21,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.PartidoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.TorneoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.UsuarioRegistradoJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.ArbitroJpaRepository;
@@ -71,14 +72,14 @@ class AccesoServiceTest {
         TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
         EquipoJpaRepository equipoRepo = mock(EquipoJpaRepository.class);
 
-        UsuarioRegistradoMapper usuarioMapper = new UsuarioRegistradoMapper();
-        TorneoMapper torneoMapper = new TorneoMapper();
-        EquipoMapper equipoMapper = new EquipoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
-        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepo, torneoMapper);
-        ArbitroMapper arbMapper = new ArbitroMapper(partidoMapper);
-        CapitanMapper capMapper = new CapitanMapper(equipoRepo, equipoMapper);
+        UsuarioRegistradoMapper usuarioMapper = TestMappers.usuarioRegistradoMapper();
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepo, torneoMapper);
+        ArbitroMapper arbMapper = TestMappers.arbitroMapper(partidoMapper);
+        CapitanMapper capMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
 
         accesoService = new AccesoServiceImpl(repo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, new JwtService());
     }
