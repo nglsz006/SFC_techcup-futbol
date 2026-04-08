@@ -201,17 +201,17 @@ class ModelStateTest {
     }
 
     @Test
-    void torneoFinalizado_iniciar_retornaMismo() {
+    void torneoFinalizado_iniciar_lanzaExcepcion() {
         Torneo torneo = new Torneo("uuid-1", "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
         EstadoTorneoInterface estado = new TorneoFinalizado();
-        assertInstanceOf(TorneoFinalizado.class, estado.iniciar(torneo));
+        assertThrows(IllegalStateException.class, () -> estado.iniciar(torneo));
     }
 
     @Test
-    void torneoFinalizado_finalizar_retornaMismo() {
+    void torneoFinalizado_finalizar_lanzaExcepcion() {
         Torneo torneo = new Torneo("uuid-1", "Copa", LocalDateTime.now(), LocalDateTime.now().plusDays(5), 8, 50);
         EstadoTorneoInterface estado = new TorneoFinalizado();
-        assertInstanceOf(TorneoFinalizado.class, estado.finalizar(torneo));
+        assertThrows(IllegalStateException.class, () -> estado.finalizar(torneo));
     }
 
     @Test

@@ -3,8 +3,6 @@ package edu.dosw.project.SFC_TechUp_Futbol.controller;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroAdministrativoRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.RegistroAdministrativoResponse;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.Administrador;
-import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AdministradorService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
@@ -42,13 +40,6 @@ public class AdministradorController {
     public Map<String, String> login(@RequestBody LoginRequest request) {
         administradorValidator.validarCredenciales(request);
         String token = autenticacionAdministradorService.login(request.getEmail(), request.getPassword());
-        Administrador administrador = administradorService.obtenerAdministradorPorEmail(request.getEmail());
-        auditoriaService.registrarEvento(
-                administrador.getId(),
-                administrador.getEmail(),
-                TipoAccionAuditoria.LOGIN_ADMIN,
-                "Inicio de sesion del administrador."
-        );
         return Map.of("token", token);
     }
 

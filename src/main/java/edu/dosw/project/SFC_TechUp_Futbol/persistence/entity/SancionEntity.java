@@ -22,6 +22,10 @@ public class SancionEntity {
     @JoinColumn(name = "jugador_id")
     private JugadorEntity jugador;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "partido_id")
+    private PartidoEntity partido;
+
     public SancionEntity() {}
 
     public String getId() { return id; }
@@ -35,4 +39,7 @@ public class SancionEntity {
 
     public JugadorEntity getJugador() { return jugador; }
     public void setJugador(JugadorEntity jugador) { this.jugador = jugador; }
+
+    public PartidoEntity getPartido() { return partido; }
+    public void setPartido(PartidoEntity partido) { this.partido = partido; }
 }

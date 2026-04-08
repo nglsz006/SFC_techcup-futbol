@@ -1,5 +1,6 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.validator;
 
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Sancion;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,12 @@ public class PartidoValidator {
 
     public void validarGoleador(String jugadorId, int minuto) {
         if (jugadorId == null || jugadorId.isBlank()) throw new IllegalArgumentException("El id del jugador es obligatorio.");
+        if (minuto < 1 || minuto > 120) throw new IllegalArgumentException("El minuto debe estar entre 1 y 120.");
+    }
+
+    public void validarTarjeta(String jugadorId, Partido.Tarjeta.TipoTarjeta tipo, int minuto) {
+        if (jugadorId == null || jugadorId.isBlank()) throw new IllegalArgumentException("El id del jugador es obligatorio.");
+        if (tipo == null) throw new IllegalArgumentException("El tipo de tarjeta es obligatorio.");
         if (minuto < 1 || minuto > 120) throw new IllegalArgumentException("El minuto debe estar entre 1 y 120.");
     }
 

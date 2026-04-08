@@ -65,6 +65,13 @@ public class JugadorService {
         return jugadorRepository.findById(id).map(mapper::toDomain).orElse(null);
     }
 
+    public void eliminar(String id) {
+        Jugador jugador = getOrThrow(id);
+        if (jugador.getEquipo() != null && !jugador.getEquipo().isBlank())
+            throw new IllegalStateException("No se puede eliminar un jugador que pertenece a un equipo.");
+        jugadorRepository.deleteById(id);
+    }
+
     public List<Jugador> getJugadores() {
         return jugadorRepository.findAll().stream().map(mapper::toDomain).toList();
     }

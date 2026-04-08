@@ -45,6 +45,14 @@ public class TorneoController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Check if enrollment is open", description = "Returns whether the tournament accepts team enrollments.")
+    @GetMapping("/{id}/enrollment")
+    public Map<String, Object> inscripcionHabilitada(@PathVariable String id) {
+        boolean habilitada = service.puedeInscribirEquipos(id);
+        return Map.of("torneoId", id, "inscripcionHabilitada", habilitada);
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Standings table", description = "Calculates and returns the tournament standings based on finished matches.")
     @GetMapping("/{id}/positions")
     public List<Map<String, Object>> tablaPosiciones(@PathVariable String id) {
@@ -121,5 +129,16 @@ public class TorneoController {
 
     private void sumar(Map<String, Object> fila, String key, int valor) {
         fila.put(key, (int) fila.get(key) + valor);
+    }
+
+    @PreAuthorize("hasAnyRole('ORGANIZADOR', 'ADMINISTRADOR')")
+    @Operation(
+        summary = "Delete tournament",
+        description = "Deletes a tournament by ID. Only ORGANIZADOR or ADMINISTRADOR can perform this action. Cannot delete a tournament that is currently IN PROGRESS."
+    )
+    @DeleteMapping("/{id}")
+    public Map<String, String> eliminarTorneo(@PathVariable String id) {
+        service.eliminar(id);
+        return Map.of("mensaje", "Torneo eliminado correctamente.");
     }
 }

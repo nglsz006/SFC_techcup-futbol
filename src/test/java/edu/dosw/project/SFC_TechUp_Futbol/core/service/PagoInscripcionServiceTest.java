@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class PagoServiceTest {
+class PagoInscripcionServiceTest {
 
     private PagoServiceImpl service;
     private Equipo equipo;
@@ -38,9 +38,8 @@ class PagoServiceTest {
             return e;
         });
         when(equipoRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(equipoStore.get(inv.<String>getArgument(0))));
-        when(equipoRepo.findAll()).thenAnswer(inv -> new ArrayList<>(equipoStore.values()));
 
-        Equipo eq = new Equipo(null, "Los Tigres", "", "rojo", "blanco", "uuid-capitan-1");
+        Equipo eq = new Equipo(null, "Los Tigres", "", "rojo", "blanco", "cap-1");
         EquipoEntity savedEntity = equipoRepo.save(equipoMapper.toEntity(eq));
         equipo = equipoMapper.toDomain(savedEntity);
 
@@ -76,7 +75,7 @@ class PagoServiceTest {
     }
 
     @Test
-    void subirComprobante_equipoExistente_retornaPago() {
+    void subirComprobante_equipoExistente_retornaPagoEnPendiente() {
         Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
         assertNotNull(pago.getId());
         assertEquals(Pago.PagoEstado.PENDIENTE, pago.getEstado());
@@ -84,37 +83,68 @@ class PagoServiceTest {
 
     @Test
     void subirComprobante_equipoInexistente_lanzaExcepcion() {
-        assertThrows(RecursoNoEncontradoException.class, () -> service.subirComprobante("uuid-inexistente", "comprobante.jpg"));
+        assertThrows(RecursoNoEncontradoException.class, () ->
+                service.subirComprobante("equipo-inexistente", "comprobante.jpg"));
     }
 
     @Test
-    void subirComprobante_equipoYaInscrito_lanzaExcepcion() {
+    void subirComprobante_comprobanteVacio_noEsValidadoEnServicio() {
+        Pago pago = service.subirComprobante(equipo.getId(), "");
+        assertNotNull(pago.getId());
+    }
+
+    @Test
+    void subirComprobante_equipoYaAprobado_lanzaReglaNegocio() {
         Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
         service.aprobarPago(pago.getId());
-        assertThrows(ReglaNegocioException.class, () -> service.subirComprobante(equipo.getId(), "comprobante2.jpg"));
+        assertThrows(ReglaNegocioException.class, () ->
+                service.subirComprobante(equipo.getId(), "comprobante2.jpg"));
     }
 
     @Test
-    void aprobarPago_pendiente_cambiaAAprobado() {
+    void enviarARevision_desdePendiente_cambiaAEnRevision() {
+        Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
+        Pago enRevision = service.enviarARevision(pago.getId());
+        assertEquals(Pago.PagoEstado.EN_REVISION, enRevision.getEstado());
+    }
+
+    @Test
+    void enviarARevision_pagoInexistente_lanzaExcepcion() {
+        assertThrows(RecursoNoEncontradoException.class, () ->
+                service.enviarARevision("pago-inexistente"));
+    }
+
+    @Test
+    void aprobarPago_desdePendiente_cambiaAAprobado() {
         Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
         Pago aprobado = service.aprobarPago(pago.getId());
         assertEquals(Pago.PagoEstado.APROBADO, aprobado.getEstado());
     }
 
     @Test
-    void aprobarPago_inexistente_lanzaExcepcion() {
-        assertThrows(RecursoNoEncontradoException.class, () -> service.aprobarPago("uuid-inexistente"));
+    void aprobarPago_pagoInexistente_lanzaExcepcion() {
+        assertThrows(RecursoNoEncontradoException.class, () ->
+                service.aprobarPago("pago-inexistente"));
     }
 
     @Test
-    void rechazarPago_desdeEnRevision_cambiaArechazado() {
+    void rechazarPago_desdeEnRevision_cambiaARechazado() {
+        Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
+        service.enviarARevision(pago.getId());
+        Pago rechazado = service.rechazarPago(pago.getId());
+        assertEquals(Pago.PagoEstado.RECHAZADO, rechazado.getEstado());
+    }
+
+    @Test
+    void rechazarPago_desdePendiente_lanzaExcepcion() {
         Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
         assertThrows(IllegalStateException.class, () -> service.rechazarPago(pago.getId()));
     }
 
     @Test
-    void rechazarPago_inexistente_lanzaExcepcion() {
-        assertThrows(RecursoNoEncontradoException.class, () -> service.rechazarPago("uuid-inexistente"));
+    void rechazarPago_pagoInexistente_lanzaExcepcion() {
+        assertThrows(RecursoNoEncontradoException.class, () ->
+                service.rechazarPago("pago-inexistente"));
     }
 
     @Test
@@ -125,7 +155,8 @@ class PagoServiceTest {
 
     @Test
     void consultarPago_inexistente_lanzaExcepcion() {
-        assertThrows(RecursoNoEncontradoException.class, () -> service.consultarPago("uuid-inexistente"));
+        assertThrows(RecursoNoEncontradoException.class, () ->
+                service.consultarPago("pago-inexistente"));
     }
 
     @Test
@@ -135,8 +166,65 @@ class PagoServiceTest {
     }
 
     @Test
+    void consultarPagosPorEquipo_sinPagos_retornaListaVacia() {
+        assertTrue(service.consultarPagosPorEquipo(equipo.getId()).isEmpty());
+    }
+
+    @Test
     void consultarPagosPendientes_retornaLista() {
         service.subirComprobante(equipo.getId(), "comprobante.jpg");
         assertFalse(service.consultarPagosPendientes().isEmpty());
+    }
+
+    @Test
+    void consultarPagosPorEstado_enRevision_retornaLista() {
+        Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
+        service.enviarARevision(pago.getId());
+        List<Pago> enRevision = service.consultarPagosPorEstado(Pago.PagoEstado.EN_REVISION);
+        assertFalse(enRevision.isEmpty());
+        assertEquals(Pago.PagoEstado.EN_REVISION, enRevision.get(0).getEstado());
+    }
+
+    @Test
+    void consultarPagosPorEstado_aprobado_retornaLista() {
+        Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
+        service.aprobarPago(pago.getId());
+        List<Pago> aprobados = service.consultarPagosPorEstado(Pago.PagoEstado.APROBADO);
+        assertFalse(aprobados.isEmpty());
+    }
+
+    @Test
+    void equipoHabilitado_sinPagoAprobado_retornaFalse() {
+        assertFalse(service.equipoHabilitado(equipo.getId()));
+    }
+
+    @Test
+    void equipoHabilitado_conPagoAprobado_retornaTrue() {
+        Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
+        service.aprobarPago(pago.getId());
+        assertTrue(service.equipoHabilitado(equipo.getId()));
+    }
+
+    @Test
+    void flujoCompleto_registro_revision_aprobacion() {
+        Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
+        assertEquals(Pago.PagoEstado.PENDIENTE, pago.getEstado());
+
+        Pago enRevision = service.enviarARevision(pago.getId());
+        assertEquals(Pago.PagoEstado.EN_REVISION, enRevision.getEstado());
+
+        Pago aprobado = service.aprobarPago(pago.getId());
+        assertEquals(Pago.PagoEstado.APROBADO, aprobado.getEstado());
+
+        assertTrue(service.equipoHabilitado(equipo.getId()));
+    }
+
+    @Test
+    void flujoCompleto_registro_revision_rechazo() {
+        Pago pago = service.subirComprobante(equipo.getId(), "comprobante.jpg");
+        service.enviarARevision(pago.getId());
+        Pago rechazado = service.rechazarPago(pago.getId());
+        assertEquals(Pago.PagoEstado.RECHAZADO, rechazado.getEstado());
+        assertFalse(service.equipoHabilitado(equipo.getId()));
     }
 }

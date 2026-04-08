@@ -2,6 +2,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
+import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.PartidoMapper;
@@ -12,7 +13,9 @@ import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.PartidoJpaRepos
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @org.springframework.stereotype.Service
@@ -28,6 +31,7 @@ public class PartidoServiceImpl implements PartidoService {
     private final EquipoMapper equipoMapper;
     private final JugadorJpaRepository jugadorRepository;
     private final JugadorMapper jugadorMapper;
+    private final PartidoValidator partidoValidator;
 
     public PartidoServiceImpl(PartidoJpaRepository partidoRepository, PartidoMapper partidoMapper,
                               TorneoJpaRepository torneoRepository, TorneoMapper torneoMapper,
@@ -41,11 +45,13 @@ public class PartidoServiceImpl implements PartidoService {
         this.equipoMapper = equipoMapper;
         this.jugadorRepository = jugadorRepository;
         this.jugadorMapper = jugadorMapper;
+        this.partidoValidator = new PartidoValidator();
     }
 
     @Override
     public Partido crearPartido(String torneoId, String equipoLocalId, String equipoVisitanteId,
                                 LocalDateTime fecha, String cancha) {
+        partidoValidator.validarCrearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
         Torneo torneo = torneoRepository.findById(torneoId)
                 .map(torneoMapper::toDomain)
                 .orElseThrow(() -> new RuntimeException("Torneo no encontrado."));
@@ -58,6 +64,9 @@ public class PartidoServiceImpl implements PartidoService {
 
         if (local.getId().equals(visitante.getId()))
             throw new IllegalArgumentException("El equipo local y visitante no pueden ser el mismo.");
+
+        if (torneo.getEstado() == Torneo.EstadoTorneo.FINALIZADO)
+            throw new IllegalStateException("No se pueden crear partidos en un torneo finalizado.");
 
         Partido partido = new Partido();
         partido.setId(IdGeneratorUtil.generarId());
@@ -82,6 +91,7 @@ public class PartidoServiceImpl implements PartidoService {
     @Override
     public Partido registrarResultado(String partidoId, int golesLocal, int golesVisitante) {
         Partido partido = getPartidoOrThrow(partidoId);
+        partidoValidator.validarResultado(golesLocal, golesVisitante);
         partido.registrarResultado(golesLocal, golesVisitante);
         log.info("Resultado registrado");
         return partidoMapper.toDomain(partidoRepository.save(partidoMapper.toEntity(partido)));
@@ -97,6 +107,7 @@ public class PartidoServiceImpl implements PartidoService {
 
     @Override
     public Partido registrarGoleador(String partidoId, String jugadorId, int minuto) {
+        partidoValidator.validarGoleador(jugadorId, minuto);
         Partido partido = getPartidoOrThrow(partidoId);
         validarPartidoEnCurso(partido);
 
@@ -121,6 +132,27 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
+    public Partido registrarTarjeta(String partidoId, String jugadorId, Partido.Tarjeta.TipoTarjeta tipo, int minuto) {
+        partidoValidator.validarTarjeta(jugadorId, tipo, minuto);
+        Partido partido = getPartidoOrThrow(partidoId);
+        validarPartidoEnCurso(partido);
+
+        Jugador jugador = jugadorRepository.findById(jugadorId)
+                .map(jugadorMapper::toDomain)
+                .orElseThrow(() -> new RuntimeException("Jugador no encontrado."));
+
+        Partido.Tarjeta tarjeta = new Partido.Tarjeta();
+        tarjeta.setId(IdGeneratorUtil.generarId());
+        tarjeta.setJugador(jugador);
+        tarjeta.setTipo(tipo);
+        tarjeta.setMinuto(minuto);
+        partido.getTarjetas().add(tarjeta);
+
+        log.info("Tarjeta registrada");
+        return partidoMapper.toDomain(partidoRepository.save(partidoMapper.toEntity(partido)));
+    }
+
+    @Override
     public Partido registrarSancion(String partidoId, String jugadorId, Sancion.TipoSancion tipoSancion, String descripcion) {
         Partido partido = getPartidoOrThrow(partidoId);
         validarPartidoEnCurso(partido);
@@ -134,6 +166,7 @@ public class PartidoServiceImpl implements PartidoService {
         sancion.setJugador(jugador);
         sancion.setTipoSancion(tipoSancion);
         sancion.setDescripcion(descripcion);
+        partidoValidator.validarSancion(sancion);
         partido.getSanciones().add(sancion);
         jugador.agregarSancion(sancion);
 
@@ -147,6 +180,16 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
+    public Map<String, Object> consultarEventos(String partidoId) {
+        Partido partido = getPartidoOrThrow(partidoId);
+        Map<String, Object> eventos = new HashMap<>();
+        eventos.put("goles", partido.getGoles());
+        eventos.put("tarjetas", partido.getTarjetas());
+        eventos.put("sanciones", partido.getSanciones());
+        return eventos;
+    }
+
+    @Override
     public List<Partido> consultarPartidosPorTorneo(String torneoId) {
         return partidoRepository.findByTorneoId(torneoId).stream().map(partidoMapper::toDomain).toList();
     }
@@ -154,6 +197,11 @@ public class PartidoServiceImpl implements PartidoService {
     @Override
     public List<Partido> consultarPartidosPorEquipo(String equipoId) {
         return partidoRepository.findByEquipoLocalIdOrEquipoVisitanteId(equipoId, equipoId).stream().map(partidoMapper::toDomain).toList();
+    }
+
+    @Override
+    public List<Partido> consultarPartidosPorEstado(Partido.PartidoEstado estado) {
+        return partidoRepository.findByEstado(estado).stream().map(partidoMapper::toDomain).toList();
     }
 
     private void validarPartidoEnCurso(Partido partido) {

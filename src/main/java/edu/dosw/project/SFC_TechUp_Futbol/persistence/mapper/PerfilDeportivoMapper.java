@@ -1,6 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.PerfilDeportivo;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.PerfilDeportivoEntity;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class PerfilDeportivoMapper {
         entity.setFoto(perfil.getFoto());
         entity.setEdad(perfil.getEdad());
         entity.setGenero(perfil.getGenero());
-        entity.setIdentificacion(perfil.getIdentificacion());
+        entity.setIdentificacion(Base64Util.encode(perfil.getIdentificacion()));
         entity.setSemestre(perfil.getSemestre());
         return entity;
     }
@@ -36,7 +37,7 @@ public class PerfilDeportivoMapper {
         perfil.setFoto(entity.getFoto());
         perfil.setEdad(entity.getEdad());
         perfil.setGenero(entity.getGenero());
-        perfil.setIdentificacion(entity.getIdentificacion());
+        perfil.setIdentificacion(Base64Util.decode(entity.getIdentificacion()));
         perfil.setSemestre(entity.getSemestre());
         return perfil;
     }

@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.service.PartidoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,18 +23,21 @@ public class PartidoController {
         this.partidoValidator = partidoValidator;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get match by ID")
     @GetMapping("/{id}")
     public Partido consultarPartido(@PathVariable String id) {
         return partidoService.consultarPartido(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get matches by tournament")
     @GetMapping("/tournament/{tournamentId}")
     public List<Partido> consultarPorTorneo(@PathVariable String tournamentId) {
         return partidoService.consultarPartidosPorTorneo(tournamentId);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get matches by team")
     @GetMapping("/team/{teamId}")
     public List<Partido> consultarPorEquipo(@PathVariable String teamId) {

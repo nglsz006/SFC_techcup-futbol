@@ -44,7 +44,8 @@ class ServiciosExtrasTest {
         });
         when(alineacionRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(alineacionStore.get(inv.<String>getArgument(0))));
         when(alineacionRepo.findAll()).thenAnswer(inv -> new ArrayList<>(alineacionStore.values()));
-        alineacionService = new AlineacionService(alineacionRepo, alineacionMapper);
+        alineacionService = new AlineacionService(alineacionRepo, alineacionMapper,
+                mock(EquipoJpaRepository.class), equipoMapper, mock(PartidoJpaRepository.class), partidoMapper);
 
         Map<String, ArbitroEntity> arbitroStore = new HashMap<>();
         ArbitroJpaRepository arbitroRepository = mock(ArbitroJpaRepository.class);

@@ -28,6 +28,7 @@ public class Partido {
     private List<Gol> goles = new ArrayList<>();
     @JsonIgnore
     private List<Sancion> sanciones = new ArrayList<>();
+    private List<Tarjeta> tarjetas = new ArrayList<>();
 
     private PartidoState state;
 
@@ -72,6 +73,9 @@ public class Partido {
 
     public List<Sancion> getSanciones() { return sanciones; }
     public void setSanciones(List<Sancion> sanciones) { this.sanciones = sanciones; }
+
+    public List<Tarjeta> getTarjetas() { return tarjetas; }
+    public void setTarjetas(List<Tarjeta> tarjetas) { this.tarjetas = tarjetas; }
 
     public PartidoState getState() { return state; }
     public void setState(PartidoState state) { this.state = state; }
