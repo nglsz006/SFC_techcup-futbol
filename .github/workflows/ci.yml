@@ -5,7 +5,6 @@ on:
     branches:
       - develop
       - main
-      - feature/pipelineCI
   pull_request:
     branches:
       - develop
