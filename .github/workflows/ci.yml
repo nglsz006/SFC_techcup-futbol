@@ -84,7 +84,7 @@ jobs:
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
-          name: techcup-backend-${{ github.ref_name }}-run${{ github.run_number }}
+          name: techcup-backend-run${{ github.run_number }}-${{ github.sha }}
           path: target/SFC_TechUp_Futbol-*.jar
           retention-days: 7
 
@@ -92,7 +92,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: jacoco-report-run${{ github.run_number }}
+          name: jacoco-report-run${{ github.run_number }}-${{ github.sha }}
           path: target/site/jacoco/
           retention-days: 7
 
