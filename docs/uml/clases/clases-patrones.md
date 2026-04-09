@@ -1,12 +1,12 @@
-# Clases — Parte 3: Patrones de Diseño y Seguridad
+# Clases — Parte 3: Patrones de Diseno y Seguridad
 
-Acá se muestra cómo el sistema maneja dos cosas importantes: los cambios de estado y las notificaciones, y cómo protege el acceso.
+Aca se muestra como el sistema maneja dos cosas importantes: los cambios de estado y las notificaciones, y como protege el acceso.
 
-**Patrón State** — En lugar de tener un montón de condiciones `if` para saber qué se puede hacer en cada momento, cada objeto sabe en qué estado está y qué acciones permite. Por ejemplo, un partido en estado `PROGRAMADO` no puede registrar goles, pero uno `EN_CURSO` sí. Lo mismo pasa con los pagos y los torneos.
+**Patron State** — En lugar de tener un monton de condiciones para saber que se puede hacer en cada momento, cada objeto sabe en que estado esta y que acciones permite. Por ejemplo, un partido en estado `PROGRAMADO` no puede registrar goles, pero uno `EN_CURSO` si. Lo mismo pasa con los pagos y los torneos.
 
-**Patrón Observer** — Cuando pasa algo importante en el sistema (como que se crea un torneo o inicia un partido), el `Subject` avisa automáticamente a todos los que están escuchando. `NotificadorTorneo` y `LoggerObserver` son los que reciben esos avisos.
+**Patron Observer** — Cuando pasa algo importante en el sistema, como que se crea un torneo o inicia un partido, el `Subject` avisa automaticamente a todos los que estan escuchando. `NotificadorTorneo` y `LoggerObserver` son los que reciben esos avisos.
 
-**Seguridad** — El `JwtService` genera y valida los tokens JWT que identifican a cada usuario. El `JwtFilter` revisa en cada petición que el token sea válido antes de dejar pasar. El `OAuth2Service` maneja el login con Google y devuelve solo el token, sin exponer datos personales.
+**Seguridad** — El `JwtService` genera y valida los tokens JWT que identifican a cada usuario. El `JwtFilter` revisa en cada peticion que el token sea valido antes de dejar pasar. El `OAuth2Service` maneja el login con Google y devuelve solo el token, sin exponer datos personales.
 
 ---
 

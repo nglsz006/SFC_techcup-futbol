@@ -1,8 +1,8 @@
-# Componentes — Administración y Auditoría
+# Componentes — Administracion y Auditoria
 
-Acá se muestra cómo funciona la parte administrativa del sistema. El administrador es el único que puede registrar organizadores y árbitros, y tiene acceso al historial de auditoría.
+Aca se muestra como funciona la parte administrativa del sistema. El administrador es el unico que puede registrar organizadores y arbitros, y tiene acceso al historial de auditoria.
 
-El `AutenticacionAdministradorService` maneja la sesión del administrador con un token propio (diferente al JWT de los demás usuarios). Cada acción importante que hace el administrador — como registrar un organizador o un árbitro — queda registrada automáticamente en el `RegistroAuditoria` gracias al `AuditoriaService`. El `AuditoriaValidator` verifica que los filtros de búsqueda del historial sean válidos.
+El `AutenticacionAdministradorService` maneja la sesion del administrador con un token propio diferente al JWT de los demas usuarios. Cada accion importante que hace el administrador, como registrar un organizador o un arbitro, queda registrada automaticamente en el `RegistroAuditoria` gracias al `AuditoriaService`. El `AuditoriaValidator` verifica que los filtros de busqueda del historial sean validos.
 
 ---
 

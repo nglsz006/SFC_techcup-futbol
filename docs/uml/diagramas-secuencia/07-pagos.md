@@ -1,5 +1,9 @@
 # Diagrama de Secuencia — Pagos
 
+Aca se muestra como funciona el proceso de pago de inscripcion. El capitan sube el comprobante de pago de su equipo. El sistema verifica que el equipo exista y que no tenga ya un pago aprobado. Si todo esta bien, crea el pago en estado PENDIENTE. El organizador puede consultar los pagos pendientes, aprobarlos (pasan a APROBADO) o rechazarlos (pasan a RECHAZADO). Todo esto usa el patron State para controlar que transiciones son validas.
+
+---
+
 ```mermaid
 sequenceDiagram
     actor Cliente

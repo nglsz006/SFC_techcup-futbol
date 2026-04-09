@@ -1,5 +1,9 @@
 # Diagrama de Secuencia — Capitanes
 
+Aca se muestra todo lo que puede hacer un capitan. Puede registrarse como capitan, crear su equipo, invitar jugadores verificando que esten disponibles, definir la alineacion con minimo 7 titulares, y buscar jugadores por posicion para armar su equipo.
+
+---
+
 ```mermaid
 sequenceDiagram
     actor Cliente
