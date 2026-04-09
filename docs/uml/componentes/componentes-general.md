@@ -29,11 +29,11 @@ graph TD
     end
 
     subgraph Services["Services"]
-        SVC[AccesoServiceImpl\nJugadorService\nCapitanService\nOrganizadorService\nArbitroService\nTorneoService\nPartidoServiceImpl\nPagoServiceImpl\nAlineacionService\nAdministradorService\nAuditoriaService\nPerfilDeportivoServiceImpl\nOAuth2Service]
+        SVC[AccesoServiceImpl\nJugadorService\nCapitanService\nOrganizadorService\nArbitroService\nTorneoService\nPartidoServiceImpl\nPagoServiceImpl\nAlineacionService\nAdministradorService\nAuditoriaService\nPerfilDeportivoServiceImpl\nOAuth2Service\nEquipoService]
     end
 
     subgraph Validators["Validators"]
-        VAL[AccesoValidator\nJugadorValidator\nPartidoValidator\nPagoValidator\nValidacionTorneo\nValidacionEquipo\nValidacionAlineacion\nPerfilDeportivoValidator\nAdministradorValidator\nAuditoriaValidator]
+        VAL[AccesoValidator\nRegistroValidator\nJugadorValidator\nPartidoValidator\nSancionValidator\nPagoValidator\nValidacionTorneo\nValidacionEquipo\nValidacionAlineacion\nPerfilDeportivoValidator\nAdministradorValidator\nAuditoriaValidator]
     end
 
     subgraph Patterns["Patrones"]

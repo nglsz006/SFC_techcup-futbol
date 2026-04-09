@@ -31,6 +31,8 @@ graph TD
         ALV[ValidacionAlineacion]
         EV[ValidacionEquipo]
         PDV[PerfilDeportivoValidator]
+        SV[SancionValidator]
+        RV[RegistroValidator]
     end
 
     subgraph Patterns["Patrones"]

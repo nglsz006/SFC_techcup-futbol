@@ -4,8 +4,10 @@
 sequenceDiagram
     actor Cliente
     participant UsuarioController
+    participant TorneoController
     participant OrganizadorService
     participant TorneoService
+    participant PartidoService
     participant TorneoRepository
     participant Subject
     participant NotificadorTorneo
@@ -67,4 +69,31 @@ sequenceDiagram
     TorneoRepository-->>TorneoService: Torneo
     TorneoService-->>UsuarioController: Torneo
     UsuarioController-->>Cliente: 200 OK Torneo
+
+    %% Tabla de posiciones
+    Cliente->>TorneoController: GET /api/tournaments/{id}/positions
+    TorneoController->>PartidoService: consultarPartidosPorTorneo(id)
+    PartidoService-->>TorneoController: List~Partido~
+    TorneoController->>TorneoController: calcular puntos por partido FINALIZADO
+    TorneoController-->>Cliente: 200 OK List tabla posiciones ordenada por puntos
+
+    %% Llave eliminatoria
+    Cliente->>TorneoController: GET /api/tournaments/{id}/bracket
+    TorneoController->>PartidoService: consultarPartidosPorTorneo(id)
+    PartidoService-->>TorneoController: List~Partido~
+    TorneoController-->>Cliente: 200 OK List partidos con marcador y estado
+
+    %% Estadisticas
+    Cliente->>TorneoController: GET /api/tournaments/{id}/statistics
+    TorneoController->>PartidoService: consultarPartidosPorTorneo(id)
+    PartidoService-->>TorneoController: List~Partido~
+    TorneoController->>TorneoController: calcular totales y promedios
+    TorneoController-->>Cliente: 200 OK totalPartidos, goles, promedios, estados
+
+    %% Eliminar torneo
+    Cliente->>TorneoController: DELETE /api/tournaments/{id}
+    TorneoController->>TorneoService: eliminar(id)
+    TorneoService->>TorneoRepository: deleteById(id)
+    TorneoService-->>TorneoController: void
+    TorneoController-->>Cliente: 200 OK mensaje
 ```

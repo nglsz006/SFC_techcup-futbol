@@ -4,9 +4,11 @@
 sequenceDiagram
     actor Cliente
     participant UsuarioController
+    participant EquipoController
     participant CapitanService
     participant EquipoService
     participant EquipoRepository
+    participant JugadorService
     participant Subject
 
     %% Crear capitan
@@ -56,10 +58,29 @@ sequenceDiagram
     UsuarioController-->>Cliente: 200 OK resultado
 
     %% Listar equipos
-    Cliente->>UsuarioController: GET /api/teams
-    UsuarioController->>EquipoService: listar()
+    Cliente->>EquipoController: GET /api/teams
+    EquipoController->>EquipoService: listar()
     EquipoService->>EquipoRepository: findAll()
     EquipoRepository-->>EquipoService: List~Equipo~
-    EquipoService-->>UsuarioController: List~Equipo~
-    UsuarioController-->>Cliente: 200 OK List~Equipo~
+    EquipoService-->>EquipoController: List~Equipo~
+    EquipoController-->>Cliente: 200 OK List~Equipo~
+
+    %% Agregar jugador a equipo
+    Cliente->>EquipoController: POST /api/teams/{equipoId}/jugadores/{jugadorId}
+    EquipoController->>JugadorService: buscarJugadorPorId(jugadorId)
+    alt jugador no encontrado
+        JugadorService-->>EquipoController: null
+        EquipoController-->>Cliente: 400 Bad Request
+    end
+    EquipoController->>EquipoService: agregarJugador(equipoId, jugadorId)
+    EquipoService->>EquipoRepository: save(equipo)
+    EquipoService-->>EquipoController: Equipo
+    EquipoController-->>Cliente: 200 OK Equipo
+
+    %% Eliminar equipo
+    Cliente->>EquipoController: DELETE /api/teams/{id}
+    EquipoController->>EquipoService: eliminar(id)
+    EquipoService->>EquipoRepository: deleteById(id)
+    EquipoService-->>EquipoController: void
+    EquipoController-->>Cliente: 200 OK mensaje
 ```
