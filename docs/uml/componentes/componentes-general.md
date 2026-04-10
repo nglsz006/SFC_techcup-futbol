@@ -1,6 +1,6 @@
 # Componentes — Arquitectura General
 
-Acá se ve el sistema completo de un vistazo. Toda petición que llega del cliente pasa primero por el filtro JWT que verifica que el usuario tenga un token válido. Si lo tiene, la petición llega al controlador correspondiente. El controlador le pasa el trabajo al servicio, que contiene la lógica del negocio. El servicio usa los validadores para verificar que los datos estén bien, los patrones de diseño para manejar estados y notificaciones, y los repositorios para acceder a la base de datos PostgreSQL a través de la capa de persistencia JPA.
+Aca se ve el sistema completo de un vistazo. Toda peticion que llega del cliente pasa primero por el filtro JWT que verifica que el usuario tenga un token valido. Si lo tiene, la peticion llega al controlador correspondiente. El controlador le pasa el trabajo al servicio, que contiene la logica del negocio. El servicio usa los validadores para verificar que los datos esten bien, los patrones de diseno para manejar estados y notificaciones, y los repositorios para acceder a la base de datos PostgreSQL a traves de la capa de persistencia JPA con mappers de MapStruct.
 
 ---
 
@@ -29,11 +29,11 @@ graph TD
     end
 
     subgraph Services["Services"]
-        SVC[AccesoServiceImpl\nJugadorService\nCapitanService\nOrganizadorService\nArbitroService\nTorneoService\nPartidoServiceImpl\nPagoServiceImpl\nAlineacionService\nAdministradorService\nAuditoriaService\nPerfilDeportivoServiceImpl\nOAuth2Service]
+        SVC[AccesoServiceImpl\nJugadorService\nCapitanService\nOrganizadorService\nArbitroService\nTorneoService\nPartidoServiceImpl\nPagoServiceImpl\nAlineacionService\nAdministradorService\nAuditoriaService\nPerfilDeportivoServiceImpl\nOAuth2Service\nEquipoService]
     end
 
     subgraph Validators["Validators"]
-        VAL[AccesoValidator\nJugadorValidator\nPartidoValidator\nPagoValidator\nValidacionTorneo\nValidacionEquipo\nValidacionAlineacion\nPerfilDeportivoValidator\nAdministradorValidator\nAuditoriaValidator]
+        VAL[AccesoValidator\nRegistroValidator\nJugadorValidator\nPartidoValidator\nSancionValidator\nPagoValidator\nValidacionTorneo\nValidacionEquipo\nValidacionAlineacion\nPerfilDeportivoValidator\nAdministradorValidator\nAuditoriaValidator]
     end
 
     subgraph Patterns["Patrones"]
@@ -46,7 +46,7 @@ graph TD
 
     subgraph Persistence["JPA"]
         ENT[Entities]
-        MAP[Mappers]
+        MAP[Mappers MapStruct]
         JPA[JPA Repositories]
     end
 

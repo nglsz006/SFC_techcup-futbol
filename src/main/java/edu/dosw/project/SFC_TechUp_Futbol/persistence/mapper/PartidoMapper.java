@@ -7,170 +7,125 @@ import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.GolEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.PartidoEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.SancionEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.TarjetaEntity;
-import org.springframework.stereotype.Component;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Component
-public class PartidoMapper {
+@Mapper(componentModel = "spring", uses = { TorneoMapper.class, EquipoMapper.class, JugadorMapper.class })
+public abstract class PartidoMapper {
 
-    private final TorneoMapper torneoMapper;
-    private final EquipoMapper equipoMapper;
-    private final JugadorMapper jugadorMapper;
+    @Autowired
+    protected JugadorMapper jugadorMapper;
 
-    public PartidoMapper(TorneoMapper torneoMapper, EquipoMapper equipoMapper, JugadorMapper jugadorMapper) {
-        this.torneoMapper = torneoMapper;
-        this.equipoMapper = equipoMapper;
-        this.jugadorMapper = jugadorMapper;
+    @Mapping(target = "goles", ignore = true)
+    @Mapping(target = "tarjetas", ignore = true)
+    @Mapping(target = "sanciones", ignore = true)
+    public abstract PartidoEntity toEntity(Partido partido);
+
+    @Mapping(target = "goles", ignore = true)
+    @Mapping(target = "tarjetas", ignore = true)
+    @Mapping(target = "sanciones", ignore = true)
+    @Mapping(target = "state", ignore = true)
+    public abstract Partido toDomain(PartidoEntity entity);
+
+    @AfterMapping
+    protected void mapGolesYEstadoToEntity(Partido partido, @MappingTarget PartidoEntity entity) {
+        List<GolEntity> goles = new ArrayList<>();
+        if (partido.getGoles() != null) {
+            for (Partido.Gol gol : partido.getGoles()) {
+                GolEntity g = new GolEntity();
+                g.setId(gol.getId() != null ? gol.getId() : UUID.randomUUID().toString());
+                g.setMinuto(gol.getMinuto());
+                g.setJugador(jugadorMapper.toEntity(gol.getJugador()));
+                g.setPartido(entity);
+                goles.add(g);
+            }
+        }
+        entity.setGoles(goles);
+
+        List<TarjetaEntity> tarjetas = new ArrayList<>();
+        if (partido.getTarjetas() != null) {
+            for (Partido.Tarjeta t : partido.getTarjetas()) {
+                TarjetaEntity te = new TarjetaEntity();
+                te.setId(t.getId() != null ? t.getId() : UUID.randomUUID().toString());
+                te.setTipo(t.getTipo());
+                te.setMinuto(t.getMinuto());
+                te.setJugador(jugadorMapper.toEntity(t.getJugador()));
+                te.setPartido(entity);
+                tarjetas.add(te);
+            }
+        }
+        entity.setTarjetas(tarjetas);
+
+        List<SancionEntity> sanciones = new ArrayList<>();
+        if (partido.getSanciones() != null) {
+            for (Sancion s : partido.getSanciones()) {
+                SancionEntity se = new SancionEntity();
+                se.setId(s.getId());
+                se.setTipoSancion(s.getTipoSancion());
+                se.setDescripcion(s.getDescripcion());
+                se.setJugador(jugadorMapper.toEntity(s.getJugador()));
+                se.setPartido(entity);
+                sanciones.add(se);
+            }
+        }
+        entity.setSanciones(sanciones);
     }
 
-    public PartidoEntity toEntity(Partido partido) {
-        if (partido == null) {
-            return null;
+    @AfterMapping
+    protected void mapGolesYEstadoToDomain(PartidoEntity entity, @MappingTarget Partido partido) {
+        List<Partido.Gol> goles = new ArrayList<>();
+        if (entity.getGoles() != null) {
+            for (GolEntity g : entity.getGoles()) {
+                Partido.Gol gol = new Partido.Gol();
+                gol.setId(g.getId());
+                gol.setMinuto(g.getMinuto());
+                gol.setJugador(jugadorMapper.toDomain(g.getJugador()));
+                goles.add(gol);
+            }
         }
-        PartidoEntity entity = new PartidoEntity();
-        entity.setId(partido.getId());
-        entity.setFecha(partido.getFecha());
-        entity.setCancha(partido.getCancha());
-        entity.setMarcadorLocal(partido.getMarcadorLocal());
-        entity.setMarcadorVisitante(partido.getMarcadorVisitante());
-        entity.setEstado(partido.getEstado());
-        entity.setTorneo(torneoMapper.toEntity(partido.getTorneo()));
-        entity.setEquipoLocal(equipoMapper.toEntity(partido.getEquipoLocal()));
-        entity.setEquipoVisitante(equipoMapper.toEntity(partido.getEquipoVisitante()));
-        entity.setGoles(golesAEntity(partido.getGoles(), entity));
-        entity.setTarjetas(tarjetasAEntity(partido.getTarjetas(), entity));
-        entity.setSanciones(sancionesAEntity(partido.getSanciones(), entity));
-        return entity;
+        partido.setGoles(goles);
+
+        List<Partido.Tarjeta> tarjetas = new ArrayList<>();
+        if (entity.getTarjetas() != null) {
+            for (TarjetaEntity te : entity.getTarjetas()) {
+                Partido.Tarjeta t = new Partido.Tarjeta();
+                t.setId(te.getId());
+                t.setTipo(te.getTipo());
+                t.setMinuto(te.getMinuto());
+                t.setJugador(jugadorMapper.toDomain(te.getJugador()));
+                tarjetas.add(t);
+            }
+        }
+        partido.setTarjetas(tarjetas);
+
+        List<Sancion> sanciones = new ArrayList<>();
+        if (entity.getSanciones() != null) {
+            for (SancionEntity se : entity.getSanciones()) {
+                Sancion s = new Sancion();
+                s.setId(se.getId());
+                s.setTipoSancion(se.getTipoSancion());
+                s.setDescripcion(se.getDescripcion());
+                s.setJugador(jugadorMapper.toDomain(se.getJugador()));
+                sanciones.add(s);
+            }
+        }
+        partido.setSanciones(sanciones);
+        partido.setState(resolverEstado(entity.getEstado()));
     }
 
-    public Partido toDomain(PartidoEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        Partido partido = new Partido();
-        partido.setId(entity.getId());
-        partido.setFecha(entity.getFecha());
-        partido.setCancha(entity.getCancha());
-        partido.setMarcadorLocal(entity.getMarcadorLocal());
-        partido.setMarcadorVisitante(entity.getMarcadorVisitante());
-        partido.setEstado(entity.getEstado());
-        partido.setState(resolverPartidoState(entity.getEstado()));
-        partido.setTorneo(torneoMapper.toDomain(entity.getTorneo()));
-        partido.setEquipoLocal(equipoMapper.toDomain(entity.getEquipoLocal()));
-        partido.setEquipoVisitante(equipoMapper.toDomain(entity.getEquipoVisitante()));
-        partido.setGoles(golesADomain(entity.getGoles()));
-        partido.setTarjetas(tarjetasADomain(entity.getTarjetas()));
-        partido.setSanciones(sancionesADomain(entity.getSanciones()));
-        return partido;
-    }
-
-    private List<GolEntity> golesAEntity(List<Partido.Gol> goles, PartidoEntity partidoEntity) {
-        List<GolEntity> lista = new ArrayList<>();
-        if (goles == null) {
-            return lista;
-        }
-        for (Partido.Gol gol : goles) {
-            GolEntity golEntity = new GolEntity();
-            golEntity.setId(gol.getId() != null ? gol.getId() : UUID.randomUUID().toString());
-            golEntity.setMinuto(gol.getMinuto());
-            golEntity.setJugador(jugadorMapper.toEntity(gol.getJugador()));
-            golEntity.setPartido(partidoEntity);
-            lista.add(golEntity);
-        }
-        return lista;
-    }
-
-    private List<Partido.Gol> golesADomain(List<GolEntity> entities) {
-        List<Partido.Gol> lista = new ArrayList<>();
-        if (entities == null) {
-            return lista;
-        }
-        for (GolEntity golEntity : entities) {
-            Partido.Gol gol = new Partido.Gol();
-            gol.setId(golEntity.getId());
-            gol.setMinuto(golEntity.getMinuto());
-            gol.setJugador(jugadorMapper.toDomain(golEntity.getJugador()));
-            lista.add(gol);
-        }
-        return lista;
-    }
-
-    private List<TarjetaEntity> tarjetasAEntity(List<Partido.Tarjeta> tarjetas, PartidoEntity partidoEntity) {
-        List<TarjetaEntity> lista = new ArrayList<>();
-        if (tarjetas == null) {
-            return lista;
-        }
-        for (Partido.Tarjeta tarjeta : tarjetas) {
-            TarjetaEntity tarjetaEntity = new TarjetaEntity();
-            tarjetaEntity.setId(tarjeta.getId() != null ? tarjeta.getId() : UUID.randomUUID().toString());
-            tarjetaEntity.setTipo(tarjeta.getTipo());
-            tarjetaEntity.setMinuto(tarjeta.getMinuto());
-            tarjetaEntity.setJugador(jugadorMapper.toEntity(tarjeta.getJugador()));
-            tarjetaEntity.setPartido(partidoEntity);
-            lista.add(tarjetaEntity);
-        }
-        return lista;
-    }
-
-    private List<Partido.Tarjeta> tarjetasADomain(List<TarjetaEntity> entities) {
-        List<Partido.Tarjeta> lista = new ArrayList<>();
-        if (entities == null) {
-            return lista;
-        }
-        for (TarjetaEntity tarjetaEntity : entities) {
-            Partido.Tarjeta tarjeta = new Partido.Tarjeta();
-            tarjeta.setId(tarjetaEntity.getId());
-            tarjeta.setTipo(tarjetaEntity.getTipo());
-            tarjeta.setMinuto(tarjetaEntity.getMinuto());
-            tarjeta.setJugador(jugadorMapper.toDomain(tarjetaEntity.getJugador()));
-            lista.add(tarjeta);
-        }
-        return lista;
-    }
-
-    private List<SancionEntity> sancionesAEntity(List<Sancion> sanciones, PartidoEntity partidoEntity) {
-        List<SancionEntity> lista = new ArrayList<>();
-        if (sanciones == null) return lista;
-        for (Sancion sancion : sanciones) {
-            SancionEntity e = new SancionEntity();
-            e.setId(sancion.getId());
-            e.setTipoSancion(sancion.getTipoSancion());
-            e.setDescripcion(sancion.getDescripcion());
-            e.setJugador(jugadorMapper.toEntity(sancion.getJugador()));
-            e.setPartido(partidoEntity);
-            lista.add(e);
-        }
-        return lista;
-    }
-
-    private List<Sancion> sancionesADomain(List<SancionEntity> entities) {
-        List<Sancion> lista = new ArrayList<>();
-        if (entities == null) return lista;
-        for (SancionEntity e : entities) {
-            Sancion sancion = new Sancion();
-            sancion.setId(e.getId());
-            sancion.setTipoSancion(e.getTipoSancion());
-            sancion.setDescripcion(e.getDescripcion());
-            sancion.setJugador(jugadorMapper.toDomain(e.getJugador()));
-            lista.add(sancion);
-        }
-        return lista;
-    }
-
-    private PartidoState resolverPartidoState(Partido.PartidoEstado estado) {
-        if (estado == null) {
-            return new ProgramadoState();
-        }
+    protected PartidoState resolverEstado(Partido.PartidoEstado estado) {
+        if (estado == null) return new ProgramadoState();
         switch (estado) {
-            case EN_CURSO:
-                return new EnCursoState();
-            case FINALIZADO:
-                return new FinalizadoPartidoState();
-            default:
-                return new ProgramadoState();
+            case EN_CURSO: return new EnCursoState();
+            case FINALIZADO: return new FinalizadoPartidoState();
+            default: return new ProgramadoState();
         }
     }
 }

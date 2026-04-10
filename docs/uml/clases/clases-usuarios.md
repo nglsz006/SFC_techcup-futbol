@@ -1,10 +1,10 @@
 # Clases — Parte 1: Usuarios y Equipos
 
-Acá se muestra quiénes pueden usar el sistema y cómo están organizados. Todos los actores del sistema — jugadores, capitanes, árbitros, organizadores y administradores — comparten una base común llamada `Usuario`, que tiene los datos básicos como nombre, correo y contraseña. Cada uno agrega sus propias características encima de esa base.
+Aca se muestra quienes pueden usar el sistema y como estan organizados. Todos los actores del sistema comparten una base comun llamada `Usuario`, que tiene los datos basicos como nombre, correo y contrasena. Cada tipo de usuario agrega sus propias caracteristicas encima de esa base.
 
-Por ejemplo, un `Jugador` tiene número de camiseta y posición en la cancha. Un `Capitán` es un jugador especial que además lidera un equipo. Un `Organizador` gestiona un torneo. Un `Árbitro` tiene asignados los partidos que va a dirigir.
+Un `Jugador` tiene numero de camiseta, posicion en la cancha y puede tener sanciones. Un `Capitan` es un jugador especial que ademas lidera un equipo. Un `Organizador` gestiona un torneo. Un `Arbitro` tiene asignados los partidos que va a dirigir. Un `Administrador` es quien registra a los organizadores y arbitros, y puede activarse o desactivarse. Un `UsuarioRegistrado` es quien se registra directamente en la plataforma o con Google.
 
-El `Equipo` agrupa entre 7 y 12 jugadores bajo un capitán, y tiene nombre, escudo y colores. Cada jugador puede tener un `PerfilDeportivo` con información más detallada como edad, dorsal, género y semestre.
+El `Equipo` agrupa entre 7 y 12 jugadores bajo un capitan, y tiene nombre, escudo y colores. Cada jugador puede tener un `PerfilDeportivo` con informacion mas detallada como edad, dorsal, genero y semestre.
 
 ---
 

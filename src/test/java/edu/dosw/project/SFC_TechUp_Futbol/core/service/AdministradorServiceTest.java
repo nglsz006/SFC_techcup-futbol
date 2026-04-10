@@ -10,6 +10,9 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import org.springframework.test.util.ReflectionTestUtils;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +32,7 @@ class AdministradorServiceTest {
     void setUp() {
         Map<String, AdministradorEntity> adminStore = new HashMap<>();
         AdministradorJpaRepository adminRepo = mock(AdministradorJpaRepository.class);
-        AdministradorMapper adminMapper = new AdministradorMapper();
+        AdministradorMapper adminMapper = TestMappers.administradorMapper();
         when(adminRepo.save(any())).thenAnswer(inv -> {
             AdministradorEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());
@@ -46,8 +49,8 @@ class AdministradorServiceTest {
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         OrganizadorJpaRepository orgRepo = mock(OrganizadorJpaRepository.class);
         TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
-        TorneoMapper torneoMapper = new TorneoMapper();
-        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepo, torneoMapper);
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepo, torneoMapper);
         when(orgRepo.save(any())).thenAnswer(inv -> {
             OrganizadorEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());
@@ -62,11 +65,10 @@ class AdministradorServiceTest {
 
         Map<String, ArbitroEntity> arbitroStore = new HashMap<>();
         ArbitroJpaRepository arbitroRepo = mock(ArbitroJpaRepository.class);
-        EquipoMapper equipoMapper = new EquipoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        TorneoMapper torneoMapper2 = new TorneoMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper2, equipoMapper, jugadorMapper);
-        ArbitroMapper arbitroMapper = new ArbitroMapper(partidoMapper);
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        ArbitroMapper arbitroMapper = TestMappers.arbitroMapper(partidoMapper);
         when(arbitroRepo.save(any())).thenAnswer(inv -> {
             ArbitroEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());
@@ -80,12 +82,12 @@ class AdministradorServiceTest {
         when(arbitroRepo.findAll()).thenAnswer(inv -> new ArrayList<>(arbitroStore.values()));
 
         UsuarioRegistradoJpaRepository usuarioRepo = mock(UsuarioRegistradoJpaRepository.class);
-        UsuarioRegistradoMapper usuarioMapper = new UsuarioRegistradoMapper();
+        UsuarioRegistradoMapper usuarioMapper = TestMappers.usuarioRegistradoMapper();
         when(usuarioRepo.findByEmail(anyString())).thenReturn(Optional.empty());
 
         List<RegistroAuditoriaEntity> auditoriaList = new ArrayList<>();
         auditoriaRepository = mock(RegistroAuditoriaJpaRepository.class);
-        auditoriaMapper = new RegistroAuditoriaMapper();
+        auditoriaMapper = TestMappers.registroAuditoriaMapper();
         when(auditoriaRepository.save(any())).thenAnswer(inv -> {
             RegistroAuditoriaEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());

@@ -3,6 +3,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.*;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AccesoValidator;
@@ -36,19 +37,19 @@ class ControllerTest {
 
     @BeforeEach
     void setUp() {
-        TorneoMapper torneoMapper = new TorneoMapper();
-        EquipoMapper equipoMapper = new EquipoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
-        AdministradorMapper adminMapper = new AdministradorMapper();
-        RegistroAuditoriaMapper auditoriaMapper = new RegistroAuditoriaMapper();
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        AdministradorMapper adminMapper = TestMappers.administradorMapper();
+        RegistroAuditoriaMapper auditoriaMapper = TestMappers.registroAuditoriaMapper();
 
         Map<String, UsuarioRegistradoEntity> usuarioStore = new HashMap<>();
         UsuarioRegistradoJpaRepository usuarioRepo = MockRepoHelper.usuarioRepo(usuarioStore);
-        UsuarioRegistradoMapper usuarioMapper = new UsuarioRegistradoMapper();
+        UsuarioRegistradoMapper usuarioMapper = TestMappers.usuarioRegistradoMapper();
 
         TorneoJpaRepository torneoRepoAcceso = mock(TorneoJpaRepository.class);
-        OrganizadorMapper orgMapperAcceso = new OrganizadorMapper(torneoRepoAcceso, torneoMapper);
+        OrganizadorMapper orgMapperAcceso = TestMappers.organizadorMapper(torneoRepoAcceso, torneoMapper);
         OrganizadorJpaRepository orgRepoAcceso = mock(OrganizadorJpaRepository.class);
         when(orgRepoAcceso.findByEmail(anyString())).thenReturn(Optional.empty());
         ArbitroJpaRepository arbRepoAcceso = mock(ArbitroJpaRepository.class);
@@ -56,8 +57,8 @@ class ControllerTest {
         CapitanJpaRepository capRepoAcceso = mock(CapitanJpaRepository.class);
         when(capRepoAcceso.findByEmail(anyString())).thenReturn(Optional.empty());
         EquipoJpaRepository equipoRepoAcceso = mock(EquipoJpaRepository.class);
-        ArbitroMapper arbMapperAcceso = new ArbitroMapper(partidoMapper);
-        CapitanMapper capMapperAcceso = new CapitanMapper(equipoRepoAcceso, equipoMapper);
+        ArbitroMapper arbMapperAcceso = TestMappers.arbitroMapper(partidoMapper);
+        CapitanMapper capMapperAcceso = TestMappers.capitanMapper(equipoRepoAcceso, equipoMapper);
 
         AccesoServiceImpl accesoService = new AccesoServiceImpl(usuarioRepo, usuarioMapper, orgRepoAcceso, orgMapperAcceso, arbRepoAcceso, arbMapperAcceso, capRepoAcceso, capMapperAcceso, new edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService());
         accesoMvc = MockMvcBuilders
@@ -98,28 +99,28 @@ class ControllerTest {
 
         Map<String, ArbitroEntity> arbitroStore = new HashMap<>();
         ArbitroJpaRepository arbitroRepo = MockRepoHelper.arbitroRepo(arbitroStore);
-        ArbitroMapper arbitroMapper = new ArbitroMapper(partidoMapper);
+        ArbitroMapper arbitroMapper = TestMappers.arbitroMapper(partidoMapper);
         ArbitroService arbitroService = new ArbitroService(arbitroRepo, arbitroMapper);
 
         Map<String, CapitanEntity> capitanStore = new HashMap<>();
         CapitanJpaRepository capitanRepo = MockRepoHelper.capitanRepo(capitanStore);
-        CapitanMapper capitanMapper = new CapitanMapper(equipoRepo2, equipoMapper);
+        CapitanMapper capitanMapper = TestMappers.capitanMapper(equipoRepo2, equipoMapper);
         CapitanService capitanService = new CapitanService(capitanRepo, capitanMapper, jugadorService);
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         TorneoJpaRepository torneoRepoOrg = MockRepoHelper.torneoRepo(new HashMap<>(torneoStore));
-        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepo2, torneoMapper);
+        OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepo2, torneoMapper);
         OrganizadorJpaRepository orgRepo = MockRepoHelper.orgRepo(orgStore);
         OrganizadorService organizadorService = new OrganizadorService(orgRepo, orgMapper, torneoService);
 
         Map<String, PagoEntity> pagoStore = new HashMap<>();
         PagoJpaRepository pagoRepo = MockRepoHelper.pagoRepo(pagoStore);
-        PagoMapper pagoMapper = new PagoMapper(equipoMapper);
+        PagoMapper pagoMapper = TestMappers.pagoMapper(equipoMapper);
         PagoServiceImpl pagoService = new PagoServiceImpl(pagoRepo, pagoMapper, equipoRepo2, equipoMapper);
 
         Map<String, PerfilDeportivoEntity> perfilStore = new HashMap<>();
         PerfilDeportivoJpaRepository perfilRepo = MockRepoHelper.perfilRepo(perfilStore);
-        PerfilDeportivoMapper perfilMapper = new PerfilDeportivoMapper();
+        PerfilDeportivoMapper perfilMapper = TestMappers.perfilDeportivoMapper();
         PerfilDeportivoService perfilService = new PerfilDeportivoServiceImpl(perfilRepo, perfilMapper, jugadorRepo2);
 
         usuarioMvc = MockMvcBuilders
@@ -281,7 +282,7 @@ class ControllerTest {
         Equipo e = equipoService2.crear(new Equipo(null, "Los Pumas", "", "verde", "blanco", null),
                 Map.of("nombre", "Los Pumas", "colorPrincipal", "verde"));
         edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper jm =
-                new edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper();
+                TestMappers.jugadorMapper();
         // crear jugador directo en el repo compartido via usuarioMvc
         Map<String, Object> jBody = new HashMap<>();
         jBody.put("nombre", "JugPuma"); jBody.put("email", "jugpuma@test.com");

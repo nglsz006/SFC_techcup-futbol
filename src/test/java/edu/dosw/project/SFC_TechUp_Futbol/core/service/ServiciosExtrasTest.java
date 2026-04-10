@@ -5,6 +5,9 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.service.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import org.springframework.test.util.ReflectionTestUtils;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,11 +31,11 @@ class ServiciosExtrasTest {
 
     @BeforeEach
     void setUp() {
-        TorneoMapper torneoMapper = new TorneoMapper();
-        EquipoMapper equipoMapper = new EquipoMapper();
-        jugadorMapper = new JugadorMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
-        AlineacionMapper alineacionMapper = new AlineacionMapper();
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        AlineacionMapper alineacionMapper = TestMappers.alineacionMapper();
 
         Map<String, AlineacionEntity> alineacionStore = new HashMap<>();
         AlineacionJpaRepository alineacionRepo = mock(AlineacionJpaRepository.class);
@@ -49,7 +52,7 @@ class ServiciosExtrasTest {
 
         Map<String, ArbitroEntity> arbitroStore = new HashMap<>();
         ArbitroJpaRepository arbitroRepository = mock(ArbitroJpaRepository.class);
-        ArbitroMapper arbitroMapper = new ArbitroMapper(partidoMapper);
+        ArbitroMapper arbitroMapper = TestMappers.arbitroMapper(partidoMapper);
         when(arbitroRepository.save(any())).thenAnswer(inv -> {
             ArbitroEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());
@@ -75,7 +78,7 @@ class ServiciosExtrasTest {
         Map<String, CapitanEntity> capitanStore = new HashMap<>();
         CapitanJpaRepository capitanRepository = mock(CapitanJpaRepository.class);
         EquipoJpaRepository equipoRepo = mock(EquipoJpaRepository.class);
-        CapitanMapper capitanMapper = new CapitanMapper(equipoRepo, equipoMapper);
+        CapitanMapper capitanMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
         when(capitanRepository.save(any())).thenAnswer(inv -> {
             CapitanEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());
@@ -100,7 +103,7 @@ class ServiciosExtrasTest {
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         OrganizadorJpaRepository orgRepository = mock(OrganizadorJpaRepository.class);
-        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepository, torneoMapper);
+        OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepository, torneoMapper);
         when(orgRepository.save(any())).thenAnswer(inv -> {
             OrganizadorEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());

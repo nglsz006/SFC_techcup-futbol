@@ -9,6 +9,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AutenticacionAdministradorService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AdministradorValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.AuditoriaValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
@@ -34,14 +35,14 @@ class AuditoriaControllerTest {
     @BeforeEach
     void setUp() {
         TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
-        TorneoMapper torneoMapper = new TorneoMapper();
-        EquipoMapper equipoMapper = new EquipoMapper();
-        JugadorMapper jugadorMapper = new JugadorMapper();
-        PartidoMapper partidoMapper = new PartidoMapper(torneoMapper, equipoMapper, jugadorMapper);
-        AdministradorMapper adminMapper = new AdministradorMapper();
-        OrganizadorMapper orgMapper = new OrganizadorMapper(torneoRepo, torneoMapper);
-        ArbitroMapper arbitroMapper = new ArbitroMapper(partidoMapper);
-        RegistroAuditoriaMapper auditoriaMapper = new RegistroAuditoriaMapper();
+        TorneoMapper torneoMapper = TestMappers.torneoMapper();
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
+        AdministradorMapper adminMapper = TestMappers.administradorMapper();
+        OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepo, torneoMapper);
+        ArbitroMapper arbitroMapper = TestMappers.arbitroMapper(partidoMapper);
+        RegistroAuditoriaMapper auditoriaMapper = TestMappers.registroAuditoriaMapper();
 
         Map<String, AdministradorEntity> adminStore = new HashMap<>();
         AdministradorJpaRepository administradorRepository = mock(AdministradorJpaRepository.class);

@@ -8,6 +8,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtFilter;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.UsuarioRegistradoEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.UsuarioRegistradoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.UsuarioRegistradoJpaRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +39,7 @@ class OAuth2AuthTest {
     @BeforeEach
     void setUp() {
         jwtService = new JwtService();
-        mapper = new UsuarioRegistradoMapper();
+        mapper = TestMappers.usuarioRegistradoMapper();
         Map<String, UsuarioRegistradoEntity> store = new HashMap<>();
         repo = mock(UsuarioRegistradoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> {

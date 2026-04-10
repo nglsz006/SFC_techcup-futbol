@@ -4,46 +4,34 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.Organizador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.OrganizadorEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
-import org.springframework.stereotype.Component;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Component
-public class OrganizadorMapper {
+@Mapper(componentModel = "spring", uses = TorneoMapper.class, imports = Base64Util.class)
+public abstract class OrganizadorMapper {
 
-    private final TorneoJpaRepository torneoJpaRepository;
-    private final TorneoMapper torneoMapper;
+    @Autowired
+    protected TorneoJpaRepository torneoJpaRepository;
 
-    public OrganizadorMapper(TorneoJpaRepository torneoJpaRepository, TorneoMapper torneoMapper) {
-        this.torneoJpaRepository = torneoJpaRepository;
-        this.torneoMapper = torneoMapper;
-    }
-    public OrganizadorEntity toEntity(Organizador organizador) {
-        if (organizador == null) {
-            return null;
-        }
-        OrganizadorEntity entity = new OrganizadorEntity();
-        entity.setId(organizador.getId());
-        entity.setName(organizador.getName());
-        entity.setEmail(Base64Util.encode(organizador.getEmail()));
-        entity.setPassword(organizador.getPassword());
-        entity.setUserType(organizador.getUserType());
-        if (organizador.getCurrentTournament() != null) {
-            entity.setTorneoId(organizador.getCurrentTournament().getId());
-        }
-        return entity;
-    }
+    @Autowired
+    protected TorneoMapper torneoMapper;
 
-    public Organizador toDomain(OrganizadorEntity entity) {
-        if (entity == null) return null;
-        Organizador organizador = new Organizador();
-        organizador.setId(entity.getId());
-        organizador.setName(entity.getName());
-        organizador.setEmail(Base64Util.decode(entity.getEmail()));
-        organizador.setPassword(entity.getPassword());
-        organizador.setUserType(entity.getUserType());
+    @Mapping(target = "email", expression = "java(Base64Util.encode(organizador.getEmail()))")
+    @Mapping(target = "torneoId", expression = "java(organizador.getCurrentTournament() != null ? organizador.getCurrentTournament().getId() : null)")
+    public abstract OrganizadorEntity toEntity(Organizador organizador);
+
+    @Mapping(target = "email", expression = "java(Base64Util.decode(entity.getEmail()))")
+    @Mapping(target = "currentTournament", ignore = true)
+    public abstract Organizador toDomain(OrganizadorEntity entity);
+
+    @AfterMapping
+    protected void resolverTorneo(OrganizadorEntity entity, @MappingTarget Organizador organizador) {
         if (entity.getTorneoId() != null) {
             torneoJpaRepository.findById(entity.getTorneoId())
                     .ifPresent(t -> organizador.setCurrentTournament(torneoMapper.toDomain(t)));
         }
-        return organizador;
     }
 }

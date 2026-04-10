@@ -3,25 +3,28 @@ package edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Arbitro;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.ArbitroEntity;
-import org.springframework.stereotype.Component;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Component
-public class ArbitroMapper {
+@Mapper(componentModel = "spring", imports = Base64Util.class)
+public abstract class ArbitroMapper {
 
-    private final PartidoMapper partidoMapper;
+    @Autowired
+    protected PartidoMapper partidoMapper;
 
-    public ArbitroMapper(PartidoMapper partidoMapper) {
-        this.partidoMapper = partidoMapper;
-    }
+    @Mapping(target = "email", expression = "java(Base64Util.encode(arbitro.getEmail()))")
+    @Mapping(target = "assignedMatches", ignore = true)
+    public abstract ArbitroEntity toEntity(Arbitro arbitro);
 
-    public ArbitroEntity toEntity(Arbitro arbitro) {
-        if (arbitro == null) return null;
-        ArbitroEntity entity = new ArbitroEntity();
-        entity.setId(arbitro.getId());
-        entity.setName(arbitro.getName());
-        entity.setEmail(Base64Util.encode(arbitro.getEmail()));
-        entity.setPassword(arbitro.getPassword());
-        entity.setUserType(arbitro.getUserType());
+    @Mapping(target = "email", expression = "java(Base64Util.decode(entity.getEmail()))")
+    @Mapping(target = "assignedMatches", ignore = true)
+    public abstract Arbitro toDomain(ArbitroEntity entity);
+
+    @AfterMapping
+    protected void mapAssignedMatchesToEntity(Arbitro arbitro, @MappingTarget ArbitroEntity entity) {
         if (arbitro.getAssignedMatches() != null) {
             entity.setAssignedMatches(
                 arbitro.getAssignedMatches().stream()
@@ -29,17 +32,10 @@ public class ArbitroMapper {
                     .toList()
             );
         }
-        return entity;
     }
 
-    public Arbitro toDomain(ArbitroEntity entity) {
-        if (entity == null) return null;
-        Arbitro arbitro = new Arbitro();
-        arbitro.setId(entity.getId());
-        arbitro.setName(entity.getName());
-        arbitro.setEmail(Base64Util.decode(entity.getEmail()));
-        arbitro.setPassword(entity.getPassword());
-        arbitro.setUserType(entity.getUserType());
+    @AfterMapping
+    protected void mapAssignedMatchesToDomain(ArbitroEntity entity, @MappingTarget Arbitro arbitro) {
         if (entity.getAssignedMatches() != null) {
             arbitro.setAssignedMatches(
                 entity.getAssignedMatches().stream()
@@ -47,6 +43,5 @@ public class ArbitroMapper {
                     .toList()
             );
         }
-        return arbitro;
     }
 }

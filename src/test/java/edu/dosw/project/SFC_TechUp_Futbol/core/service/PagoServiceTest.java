@@ -8,6 +8,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.EquipoEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.PagoEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.PagoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.PagoJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ class PagoServiceTest {
 
     @BeforeEach
     void setUp() {
-        equipoMapper = new EquipoMapper();
+        equipoMapper = TestMappers.equipoMapper();
 
         Map<String, EquipoEntity> equipoStore = new HashMap<>();
         EquipoJpaRepository equipoRepo = mock(EquipoJpaRepository.class);
@@ -46,7 +47,7 @@ class PagoServiceTest {
 
         Map<String, PagoEntity> pagoStore = new HashMap<>();
         PagoJpaRepository pagoRepo = mock(PagoJpaRepository.class);
-        PagoMapper pagoMapper = new PagoMapper(equipoMapper);
+        PagoMapper pagoMapper = TestMappers.pagoMapper(equipoMapper);
         when(pagoRepo.save(any())).thenAnswer(inv -> {
             PagoEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());

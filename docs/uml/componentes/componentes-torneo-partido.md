@@ -1,8 +1,10 @@
 # Componentes — Torneo y Partido
 
-Acá se muestra cómo funciona la gestión del torneo y los partidos. El organizador crea y gestiona el torneo, y el árbitro maneja los partidos.
+Aca se muestra como funciona la gestion del torneo y los partidos. El organizador crea y gestiona el torneo, y el arbitro maneja los partidos.
 
-Cuando se crea un torneo, el `TorneoService` lo guarda y notifica a los observers (como `NotificadorTorneo`) usando el patrón Observer. El torneo pasa por estados: creado → en curso → finalizado, controlados por el patrón State. Lo mismo pasa con los partidos: programado → en curso → finalizado. El `PartidoValidator` se asegura de que los datos sean correctos antes de crear o modificar un partido.
+Cuando se crea un torneo, el `TorneoService` lo guarda y notifica a los observers usando el patron Observer. El torneo pasa por estados: creado, en curso y finalizado, controlados por el patron State. Lo mismo pasa con los partidos: programado, en curso y finalizado. El `PartidoValidator` se asegura de que los datos sean correctos antes de crear o modificar un partido.
+
+El `TorneoController` expone ademas endpoints para consultar la tabla de posiciones, la llave eliminatoria y las estadisticas del torneo, calculadas a partir de los partidos finalizados.
 
 ---
 
@@ -45,6 +47,7 @@ graph TD
     UC -->|crear torneo| OS
     UC -->|crear partido| PS
     TC -->|consultar torneo| TS
+    TC -->|tabla posiciones / bracket / estadisticas| PS
     PC -->|consultar partido| PS
     OS --> OR
     OS --> TS

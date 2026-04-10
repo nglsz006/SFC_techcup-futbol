@@ -1,11 +1,17 @@
 # Diagrama de Secuencia — Torneos
 
+Aca se muestra todo el ciclo de vida de un torneo. El organizador lo crea con nombre, fechas, cantidad de equipos y costo. Al crearlo, el sistema notifica a los observers. Luego puede iniciarlo (pasa a EN_CURSO) o finalizarlo (pasa a FINALIZADO), y en cada cambio se notifica tambien. Ademas puede configurar el reglamento, canchas, horarios y cierre de inscripciones mientras el torneo no este en curso ni finalizado. Cualquier usuario autenticado puede consultar un torneo, ver la tabla de posiciones calculada con los partidos finalizados, ver la llave eliminatoria con todos los partidos y sus marcadores, y ver estadisticas generales del torneo.
+
+---
+
 ```mermaid
 sequenceDiagram
     actor Cliente
     participant UsuarioController
+    participant TorneoController
     participant OrganizadorService
     participant TorneoService
+    participant PartidoService
     participant TorneoRepository
     participant Subject
     participant NotificadorTorneo
@@ -67,4 +73,31 @@ sequenceDiagram
     TorneoRepository-->>TorneoService: Torneo
     TorneoService-->>UsuarioController: Torneo
     UsuarioController-->>Cliente: 200 OK Torneo
+
+    %% Tabla de posiciones
+    Cliente->>TorneoController: GET /api/tournaments/{id}/positions
+    TorneoController->>PartidoService: consultarPartidosPorTorneo(id)
+    PartidoService-->>TorneoController: List~Partido~
+    TorneoController->>TorneoController: calcular puntos por partido FINALIZADO
+    TorneoController-->>Cliente: 200 OK List tabla posiciones ordenada por puntos
+
+    %% Llave eliminatoria
+    Cliente->>TorneoController: GET /api/tournaments/{id}/bracket
+    TorneoController->>PartidoService: consultarPartidosPorTorneo(id)
+    PartidoService-->>TorneoController: List~Partido~
+    TorneoController-->>Cliente: 200 OK List partidos con marcador y estado
+
+    %% Estadisticas
+    Cliente->>TorneoController: GET /api/tournaments/{id}/statistics
+    TorneoController->>PartidoService: consultarPartidosPorTorneo(id)
+    PartidoService-->>TorneoController: List~Partido~
+    TorneoController->>TorneoController: calcular totales y promedios
+    TorneoController-->>Cliente: 200 OK totalPartidos, goles, promedios, estados
+
+    %% Eliminar torneo
+    Cliente->>TorneoController: DELETE /api/tournaments/{id}
+    TorneoController->>TorneoService: eliminar(id)
+    TorneoService->>TorneoRepository: deleteById(id)
+    TorneoService-->>TorneoController: void
+    TorneoController-->>Cliente: 200 OK mensaje
 ```

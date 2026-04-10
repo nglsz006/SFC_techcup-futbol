@@ -1,5 +1,9 @@
 # Diagrama de Secuencia — Organizadores
 
+Aca se muestra todo lo que puede hacer un organizador. Puede registrarse, crear un torneo, iniciarlo y ver los pagos pendientes de los equipos. Al crear el torneo, el sistema lo notifica a los observers. Al iniciarlo, el torneo pasa a EN_CURSO y se notifica tambien.
+
+---
+
 ```mermaid
 sequenceDiagram
     actor Cliente

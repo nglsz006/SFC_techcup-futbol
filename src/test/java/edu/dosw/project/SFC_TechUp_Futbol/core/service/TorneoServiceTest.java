@@ -3,6 +3,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.TorneoEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.TorneoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ class TorneoServiceTest {
 
     @BeforeEach
     void setUp() {
-        TorneoMapper mapper = new TorneoMapper();
+        TorneoMapper mapper = TestMappers.torneoMapper();
         Map<String, TorneoEntity> store = new HashMap<>();
         TorneoJpaRepository repo = mock(TorneoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> {

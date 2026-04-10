@@ -5,6 +5,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.RegistroAuditoria;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.TipoAccionAuditoria;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.RegistroAuditoriaEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.RegistroAuditoriaMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.RegistroAuditoriaJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AuditoriaService;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ class AuditoriaServiceTest {
     void setUp() {
         List<RegistroAuditoriaEntity> store = new ArrayList<>();
         RegistroAuditoriaJpaRepository repo = mock(RegistroAuditoriaJpaRepository.class);
-        RegistroAuditoriaMapper mapper = new RegistroAuditoriaMapper();
+        RegistroAuditoriaMapper mapper = TestMappers.registroAuditoriaMapper();
         when(repo.save(any())).thenAnswer(inv -> {
             RegistroAuditoriaEntity e = inv.getArgument(0);
             if (e.getId() == null) e.setId(UUID.randomUUID().toString());

@@ -1,4 +1,8 @@
-# Diagrama de Secuencia — Árbitros
+# Diagrama de Secuencia — Arbitros
+
+Aca se muestra todo lo que puede hacer un arbitro. El administrador lo registra en el sistema. Luego se le puede asignar un partido. El arbitro puede consultar sus partidos asignados, iniciarlos y finalizarlos.
+
+---
 
 ```mermaid
 sequenceDiagram
@@ -28,7 +32,7 @@ sequenceDiagram
     UsuarioController->>ArbitroService: save(arbitro con partido asignado)
     ArbitroService->>ArbitroRepository: save(arbitro)
     ArbitroService-->>UsuarioController: void
-    UsuarioController-->>Cliente: 200 OK "Arbitro asignado al partido correctamente"
+    UsuarioController-->>Cliente: 200 OK Arbitro asignado al partido correctamente
 
     %% Consultar partidos asignados
     Cliente->>UsuarioController: GET /api/users/referees/{id}/matches
@@ -36,7 +40,7 @@ sequenceDiagram
     ArbitroService->>ArbitroRepository: findById(id)
     alt arbitro no encontrado
         ArbitroRepository-->>ArbitroService: Optional.empty()
-        ArbitroService-->>UsuarioController: List vacía
+        ArbitroService-->>UsuarioController: List vacia
         UsuarioController-->>Cliente: 200 OK []
     end
     ArbitroService->>ArbitroService: arbitro.getAssignedMatches()

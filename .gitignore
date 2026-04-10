@@ -40,3 +40,9 @@ build/
 
 ### SSL ###
 src/main/resources/keystore.p12
+
+### Local JVM config ###
+.mvn/jvm.config
+
+### Local temp files ###
+test_output.txt

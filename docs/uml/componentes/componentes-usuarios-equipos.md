@@ -1,8 +1,8 @@
 # Componentes — Usuarios, Equipos y Pagos
 
-Acá se muestra cómo se gestionan los jugadores, capitanes, árbitros, equipos, pagos y alineaciones.
+Aca se muestra como se gestionan los jugadores, capitanes, arbitros, equipos, pagos y alineaciones.
 
-El capitán puede crear su equipo, invitar jugadores y subir el comprobante de pago. El `JugadorValidator` verifica que el jugador esté disponible antes de ser invitado. El `PagoServiceImpl` maneja el ciclo de vida del pago usando el patrón State: pendiente → en revisión → aprobado o rechazado. El `PerfilDeportivoServiceImpl` gestiona la información deportiva de cada jugador.
+El capitan puede crear su equipo, invitar jugadores y subir el comprobante de pago. El `JugadorValidator` verifica que el jugador este disponible antes de ser invitado. El `PagoServiceImpl` maneja el ciclo de vida del pago usando el patron State: pendiente, en revision, aprobado o rechazado. El `PerfilDeportivoServiceImpl` gestiona la informacion deportiva de cada jugador. El `SancionValidator` verifica que las sanciones registradas en los partidos sean validas. El `RegistroValidator` verifica que el correo sea del dominio correcto segun el tipo de usuario al momento del registro.
 
 ---
 
@@ -31,6 +31,8 @@ graph TD
         ALV[ValidacionAlineacion]
         EV[ValidacionEquipo]
         PDV[PerfilDeportivoValidator]
+        SV[SancionValidator]
+        RV[RegistroValidator]
     end
 
     subgraph Patterns["Patrones"]
@@ -75,4 +77,5 @@ graph TD
     PDS --> PDR
     PDS --> JR
     PDS --> PDV
+    UC --> RV
 ```

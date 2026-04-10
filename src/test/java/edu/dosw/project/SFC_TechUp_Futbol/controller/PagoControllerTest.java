@@ -3,6 +3,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.PagoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PagoValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.*;
@@ -23,8 +24,8 @@ class PagoControllerTest {
 
     @BeforeEach
     void setUp() {
-        EquipoMapper equipoMapper = new EquipoMapper();
-        PagoMapper pagoMapper = new PagoMapper(equipoMapper);
+        EquipoMapper equipoMapper = TestMappers.equipoMapper();
+        PagoMapper pagoMapper = TestMappers.pagoMapper(equipoMapper);
 
         Map<String, EquipoEntity> equipoStore = new HashMap<>();
         EquipoJpaRepository equipoRepo = MockRepoHelper.equipoRepo(equipoStore);

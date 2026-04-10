@@ -6,6 +6,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.EquipoEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.TorneoEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.TorneoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,8 +27,8 @@ class ServiceTest {
 
     @BeforeEach
     void setUp() {
-        torneoMapper = new TorneoMapper();
-        equipoMapper = new EquipoMapper();
+        torneoMapper = TestMappers.torneoMapper();
+        equipoMapper = TestMappers.equipoMapper();
 
         Map<String, TorneoEntity> torneoStore = new HashMap<>();
         TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
