@@ -1,5 +1,3 @@
 @echo off
-for /f "usebackq tokens=1,2 delims==" %%A in (".env") do (
-    if not "%%A:~0,1%%"=="#" set "%%A=%%B"
-)
+powershell -Command "Get-Content .env | Where-Object { $_ -notmatch '^#' -and $_ -match '=' } | ForEach-Object { $parts = $_ -split '=', 2; [System.Environment]::SetEnvironmentVariable($parts[0].Trim(), $parts[1].Trim(), 'Process') }"
 mvnw.cmd spring-boot:run
