@@ -15,8 +15,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    profiles:
-      - local
 
   backend:
     build: .
@@ -33,6 +31,9 @@ services:
       SERVER_HTTP_PORT: ${SERVER_HTTP_PORT}
       SSL_PASSWORD: ${SSL_PASSWORD}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   postgres_data:
