@@ -21,7 +21,7 @@ public class AccesoMapper {
         return new UsuarioResponse(
             usuario.getId(),
             usuario.getName(),
-            usuario.getEmail(),
+            Base64Util.decode(usuario.getEmail()),
             usuario.getUserType()
         );
     }
@@ -30,7 +30,7 @@ public class AccesoMapper {
         return new LoginResponse(
             token,
             usuario.getName(),
-            usuario.getEmail(),
+            Base64Util.decode(usuario.getEmail()),
             usuario.getUserType()
         );
     }
