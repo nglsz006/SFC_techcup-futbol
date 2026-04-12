@@ -95,12 +95,14 @@ docker-compose up
 ## Mas comandos necesarios
 ```bash
 # levantar el contenedor solo con backend
-# para ambiente qa
+# para ambiente prod
 docker compose --env-file .env.prod up --build --no-deps backend
 
-# para ambiente prod
+# para ambiente qa
 docker compose --env-file .env.qa up --build --no-deps backend
 
 el --no-deps permite que solo se levante el backend y no el contenedor de la base
 de datos local de docker, en caso de hacer pruebas de manera local
 se levanta como se menciono en el video.
+=======
+
