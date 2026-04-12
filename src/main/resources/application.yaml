@@ -1,3 +1,4 @@
+# Configuración base (compartida por todos los perfiles)
 spring:
   datasource:
     url: ${DB_URL}
@@ -27,6 +28,43 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+server:
+  port: 8443
+  http:
+    port: ${SERVER_HTTP_PORT}
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: ${SSL_PASSWORD}
+    key-store-type: PKCS12
+    key-alias: techcup
+
+---
+spring:
+  config:
+    activate:
+      on-profile: qa
+server:
+  port: 8443
+  http:
+    port: ${SERVER_HTTP_PORT}
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: ${SSL_PASSWORD}
+    key-store-type: PKCS12
+    key-alias: techcup
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
 server:
   port: 8443
   http:
