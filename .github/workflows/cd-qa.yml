@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - feature/despliegeQA
   workflow_dispatch:
 
 jobs:
