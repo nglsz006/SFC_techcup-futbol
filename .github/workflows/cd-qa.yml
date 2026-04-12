@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - develop
-      - feature/despliegueQA
+      - feature/despliegeQA
   workflow_dispatch:
 
 permissions:
