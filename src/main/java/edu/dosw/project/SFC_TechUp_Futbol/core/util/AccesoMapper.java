@@ -11,7 +11,7 @@ public class AccesoMapper {
         return new UsuarioRegistrado(
             null,
             request.getNombre(),
-            Base64Util.encode(request.getEmail()),
+            request.getEmail(),
             PasswordUtil.cifrar(request.getPassword()),
             request.getTipoUsuario()
         );
