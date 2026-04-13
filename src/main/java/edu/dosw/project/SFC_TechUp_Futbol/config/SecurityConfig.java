@@ -10,6 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -27,34 +31,47 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/access/register",
-                                "/api/access/login",
-                                "/api/access/oauth2/**",
-                                "/api/admin/login",
-                                "/oauth2/**",
-                                "/login/oauth2/**",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-                        .requestMatchers("/api/admin/users/**").hasRole("ADMINISTRADOR")
-                        .requestMatchers("/api/admin/audit/**").hasRole("ADMINISTRADOR")
-                        .requestMatchers(HttpMethod.PUT, "/api/users/organizers/*/payments/*/approve").hasRole("ORGANIZADOR")
-                        .requestMatchers(HttpMethod.PUT, "/api/users/organizers/*/payments/*/reject").hasRole("ORGANIZADOR")
-                        .requestMatchers(HttpMethod.PUT, "/api/users/referees/*/matches/*/start").hasRole("ARBITRO")
-                        .requestMatchers(HttpMethod.PUT, "/api/users/referees/*/matches/*/result").hasRole("ARBITRO")
-                        .requestMatchers(HttpMethod.PUT, "/api/users/referees/*/matches/*/end").hasRole("ARBITRO")
-                        .requestMatchers(HttpMethod.POST, "/api/users/organizers/*/tournament").hasRole("ORGANIZADOR")
-                        .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oAuth2SuccessHandler)
-                )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/api/access/register",
+                    "/api/access/login",
+                    "/api/access/oauth2/**",
+                    "/api/admin/login",
+                    "/oauth2/**",
+                    "/login/oauth2/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**"
+                ).permitAll()
+                .requestMatchers("/api/admin/users/**").hasRole("ADMINISTRADOR")
+                .requestMatchers("/api/admin/audit/**").hasRole("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.PUT, "/api/users/organizers/*/payments/*/approve").hasRole("ORGANIZADOR")
+                .requestMatchers(HttpMethod.PUT, "/api/users/organizers/*/payments/*/reject").hasRole("ORGANIZADOR")
+                .requestMatchers(HttpMethod.PUT, "/api/users/referees/*/matches/*/start").hasRole("ARBITRO")
+                .requestMatchers(HttpMethod.PUT, "/api/users/referees/*/matches/*/result").hasRole("ARBITRO")
+                .requestMatchers(HttpMethod.PUT, "/api/users/referees/*/matches/*/end").hasRole("ARBITRO")
+                .requestMatchers(HttpMethod.POST, "/api/users/organizers/*/tournament").hasRole("ORGANIZADOR")
+                .anyRequest().authenticated()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .successHandler(oAuth2SuccessHandler)
+            )
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }
