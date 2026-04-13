@@ -5,8 +5,12 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.JugadorValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.UsuarioValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.CapitanEntity;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.JugadorEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.CapitanMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.CapitanJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.JugadorJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,13 +21,18 @@ public class CapitanService {
     private final CapitanJpaRepository capitanRepository;
     private final CapitanMapper mapper;
     private final JugadorService jugadorService;
+    private final JugadorJpaRepository jugadorRepository;
+    private final JugadorMapper jugadorMapper;
     private final JugadorValidator jugadorValidator = new JugadorValidator();
     private final UsuarioValidator usuarioValidator = new UsuarioValidator();
 
-    public CapitanService(CapitanJpaRepository capitanRepository, CapitanMapper mapper, JugadorService jugadorService) {
+    public CapitanService(CapitanJpaRepository capitanRepository, CapitanMapper mapper, JugadorService jugadorService,
+                          JugadorJpaRepository jugadorRepository, JugadorMapper jugadorMapper) {
         this.capitanRepository = capitanRepository;
         this.mapper = mapper;
         this.jugadorService = jugadorService;
+        this.jugadorRepository = jugadorRepository;
+        this.jugadorMapper = jugadorMapper;
     }
 
     public Capitan save(Capitan capitan) {
@@ -66,6 +75,46 @@ public class CapitanService {
 
     public List<Capitan> getCapitanes() {
         return capitanRepository.findAll().stream().map(mapper::toDomain).toList();
+    }
+
+    public String toggleRol(String usuarioId) {
+        // Si es capitán, convertir a jugador
+        if (capitanRepository.existsById(usuarioId)) {
+            CapitanEntity capitan = capitanRepository.findById(usuarioId).get();
+            capitanRepository.deleteById(usuarioId);
+            JugadorEntity jugador = new JugadorEntity();
+            jugador.setId(capitan.getId());
+            jugador.setName(capitan.getName());
+            jugador.setEmail(capitan.getEmail());
+            jugador.setPassword(capitan.getPassword());
+            jugador.setUserType(capitan.getUserType());
+            jugador.setJerseyNumber(capitan.getJerseyNumber());
+            jugador.setPosition(capitan.getPosition());
+            jugador.setAvailable(capitan.isAvailable());
+            jugador.setPhoto(capitan.getPhoto());
+            jugador.setEquipoId(capitan.getEquipoId());
+            jugadorRepository.save(jugador);
+            return "Rol cambiado a JUGADOR";
+        }
+        // Si es jugador, convertir a capitán
+        if (jugadorRepository.existsById(usuarioId)) {
+            JugadorEntity jugador = jugadorRepository.findById(usuarioId).get();
+            jugadorRepository.deleteById(usuarioId);
+            CapitanEntity capitan = new CapitanEntity();
+            capitan.setId(jugador.getId());
+            capitan.setName(jugador.getName());
+            capitan.setEmail(jugador.getEmail());
+            capitan.setPassword(jugador.getPassword());
+            capitan.setUserType(jugador.getUserType());
+            capitan.setJerseyNumber(jugador.getJerseyNumber());
+            capitan.setPosition(jugador.getPosition());
+            capitan.setAvailable(jugador.isAvailable());
+            capitan.setPhoto(jugador.getPhoto());
+            capitan.setEquipoId(jugador.getEquipoId());
+            capitanRepository.save(capitan);
+            return "Rol cambiado a CAPITAN";
+        }
+        throw new IllegalArgumentException("Usuario no encontrado");
     }
 
     private Capitan getOrThrow(String id) {

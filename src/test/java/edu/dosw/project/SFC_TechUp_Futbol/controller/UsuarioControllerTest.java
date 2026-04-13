@@ -70,7 +70,7 @@ class UsuarioControllerTest {
         Map<String, CapitanEntity> capitanStore = new HashMap<>();
         CapitanJpaRepository capitanRepo = MockRepoHelper.capitanRepo(capitanStore);
         CapitanMapper capitanMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
-        capitanService = new CapitanService(capitanRepo, capitanMapper, jugadorService);
+        capitanService = new CapitanService(capitanRepo, capitanMapper, jugadorService, jugadorRepo, jugadorMapper);
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepo, torneoMapper);
@@ -203,6 +203,28 @@ class UsuarioControllerTest {
         String jugId = crearJugadorYObtenerId("jugdisp@test.com", 8, "PORTERO");
         mvc.perform(patch("/api/users/players/" + jugId + "/availability"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void toggleRol_jugadorACapitan_retorna200() throws Exception {
+        String jugId = crearJugadorYObtenerId("jugtoggle@test.com", 11, "DELANTERO");
+        mvc.perform(patch("/api/users/players/" + jugId + "/profile/toggle-role"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.mensaje").value("Rol cambiado a CAPITAN"));
+    }
+
+    @Test
+    void toggleRol_capitanAJugador_retorna200() throws Exception {
+        String capId = crearCapitan("captoggle@test.com");
+        mvc.perform(patch("/api/users/players/" + capId + "/profile/toggle-role"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.mensaje").value("Rol cambiado a JUGADOR"));
+    }
+
+    @Test
+    void toggleRol_idInexistente_retorna400() throws Exception {
+        mvc.perform(patch("/api/users/players/id-inexistente/profile/toggle-role"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

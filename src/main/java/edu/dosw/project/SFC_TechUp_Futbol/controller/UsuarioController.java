@@ -267,6 +267,13 @@ public class UsuarioController {
         return capitanService.buscarJugadores(posicion).stream().map(JugadorResponse::new).toList();
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Toggle role between player and captain")
+    @PatchMapping("/players/{id}/profile/toggle-role")
+    public Map<String, String> toggleRol(@PathVariable String id) {
+        return Map.of("mensaje", capitanService.toggleRol(id));
+    }
+
 //arbitros
 
     @PreAuthorize("isAuthenticated()")
