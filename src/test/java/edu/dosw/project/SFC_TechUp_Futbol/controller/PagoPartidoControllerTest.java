@@ -106,7 +106,7 @@ class PagoPartidoControllerTest {
         Map<String, CapitanEntity> capitanStore = new HashMap<>();
         capitanRepoRef = MockRepoHelper.capitanRepo(capitanStore);
         CapitanMapper capitanMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
-        CapitanService capitanService = new CapitanService(capitanRepoRef, capitanMapper, jugadorService);
+        CapitanService capitanService = new CapitanService(capitanRepoRef, capitanMapper, jugadorService, jugadorRepoRef, jugadorMapper);
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         orgRepoRef = MockRepoHelper.orgRepo(orgStore);

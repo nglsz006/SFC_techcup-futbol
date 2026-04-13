@@ -73,6 +73,8 @@ class ServiciosExtrasTest {
         });
         when(jugadorRepo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(jugadorStore.get(inv.<String>getArgument(0))));
         when(jugadorRepo.findAll()).thenAnswer(inv -> new ArrayList<>(jugadorStore.values()));
+        when(jugadorRepo.existsById(anyString())).thenAnswer(inv -> jugadorStore.containsKey(inv.<String>getArgument(0)));
+        doAnswer(inv -> { jugadorStore.remove(inv.<String>getArgument(0)); return null; }).when(jugadorRepo).deleteById(anyString());
         jugadorService = new JugadorService(jugadorRepo, jugadorMapper);
 
         Map<String, CapitanEntity> capitanStore = new HashMap<>();
@@ -87,7 +89,9 @@ class ServiciosExtrasTest {
         });
         when(capitanRepository.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(capitanStore.get(inv.<String>getArgument(0))));
         when(capitanRepository.findAll()).thenAnswer(inv -> new ArrayList<>(capitanStore.values()));
-        capitanService = new CapitanService(capitanRepository, capitanMapper, jugadorService);
+        when(capitanRepository.existsById(anyString())).thenAnswer(inv -> capitanStore.containsKey(inv.<String>getArgument(0)));
+        doAnswer(inv -> { capitanStore.remove(inv.<String>getArgument(0)); return null; }).when(capitanRepository).deleteById(anyString());
+        capitanService = new CapitanService(capitanRepository, capitanMapper, jugadorService, jugadorRepo, jugadorMapper);
 
         Map<String, TorneoEntity> torneoStore = new HashMap<>();
         TorneoJpaRepository torneoRepository = mock(TorneoJpaRepository.class);

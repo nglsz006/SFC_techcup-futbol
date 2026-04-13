@@ -105,7 +105,7 @@ class ControllerTest {
         Map<String, CapitanEntity> capitanStore = new HashMap<>();
         CapitanJpaRepository capitanRepo = MockRepoHelper.capitanRepo(capitanStore);
         CapitanMapper capitanMapper = TestMappers.capitanMapper(equipoRepo2, equipoMapper);
-        CapitanService capitanService = new CapitanService(capitanRepo, capitanMapper, jugadorService);
+        CapitanService capitanService = new CapitanService(capitanRepo, capitanMapper, jugadorService, jugadorRepo2, jugadorMapper);
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         TorneoJpaRepository torneoRepoOrg = MockRepoHelper.torneoRepo(new HashMap<>(torneoStore));
