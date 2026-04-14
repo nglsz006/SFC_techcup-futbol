@@ -86,6 +86,7 @@ class PartidoServiceTest {
                     (e.getEquipoVisitante() != null && vid.equals(e.getEquipoVisitante().getId()))
             ).collect(Collectors.toList());
         });
+        when(partidoRepo.findByTorneoIdAndFase(anyString(), any())).thenReturn(new ArrayList<>());
 
         service = new PartidoServiceImpl(partidoRepo, partidoMapper, torneoRepo, torneoMapper, equipoRepo, equipoMapper, jugadorRepo, jugadorMapper);
 

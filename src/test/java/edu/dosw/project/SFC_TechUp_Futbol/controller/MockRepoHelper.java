@@ -87,6 +87,10 @@ class MockRepoHelper {
             String lid = inv.getArgument(0); String vid = inv.getArgument(1);
             return store.values().stream().filter(e -> (e.getEquipoLocal() != null && lid.equals(e.getEquipoLocal().getId())) || (e.getEquipoVisitante() != null && vid.equals(e.getEquipoVisitante().getId()))).collect(Collectors.toList());
         });
+        when(repo.findByTorneoIdAndFase(anyString(), any())).thenAnswer(inv -> {
+            String tid = inv.getArgument(0); Partido.Fase fase = inv.getArgument(1);
+            return store.values().stream().filter(e -> e.getTorneo() != null && tid.equals(e.getTorneo().getId()) && fase == e.getFase()).collect(Collectors.toList());
+        });
         return repo;
     }
 

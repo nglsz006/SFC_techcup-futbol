@@ -3,6 +3,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.*;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PartidoValidator;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.PartidoEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.PartidoMapper;
@@ -100,8 +101,10 @@ public class PartidoServiceImpl implements PartidoService {
     public Partido finalizarPartido(String partidoId) {
         Partido partido = getPartidoOrThrow(partidoId);
         partido.finalizar();
+        Partido saved = partidoMapper.toDomain(partidoRepository.save(partidoMapper.toEntity(partido)));
+        if (partido.getFase() != null) avanzarGanador(partido);
         log.info("Partido finalizado");
-        return partidoMapper.toDomain(partidoRepository.save(partidoMapper.toEntity(partido)));
+        return saved;
     }
 
     @Override
@@ -211,37 +214,119 @@ public class PartidoServiceImpl implements PartidoService {
         if (torneo.getEstado() == Torneo.EstadoTorneo.FINALIZADO)
             throw new IllegalStateException("No se pueden generar llaves en un torneo finalizado.");
 
-        List<Equipo> equipos = equipoRepository.findAll().stream()
-                .map(equipoMapper::toDomain).collect(Collectors.toList());
+        // Tomar top 8 de la tabla de posiciones
+        List<Equipo> equipos = calcularTabla(torneoId);
         if (equipos.size() < 2)
             throw new IllegalStateException("Se necesitan al menos 2 equipos para generar llaves.");
+        if (equipos.size() > 8) equipos = equipos.subList(0, 8);
 
+        // Mezclar aleatoriamente para cuartos
         Collections.shuffle(equipos);
         List<Partido> partidos = new ArrayList<>();
-        String[] fases = {"FASE_INICIAL", "CUARTOS", "SEMIFINAL", "FINAL"};
-        int fase = 0;
-
-        while (equipos.size() > 1) {
-            List<Equipo> siguienteRonda = new ArrayList<>();
-            String nombreFase = fase < fases.length ? fases[fase] : "FASE_" + fase;
-            for (int i = 0; i + 1 < equipos.size(); i += 2) {
-                Partido partido = new Partido();
-                partido.setId(IdGeneratorUtil.generarId());
-                partido.setTorneo(torneo);
-                partido.setEquipoLocal(equipos.get(i));
-                partido.setEquipoVisitante(equipos.get(i + 1));
-                partido.setCancha(nombreFase);
-                partido.setFecha(LocalDateTime.now().plusDays(fase + 1));
-                partidos.add(partidoMapper.toDomain(partidoRepository.save(partidoMapper.toEntity(partido))));
-                siguienteRonda.add(equipos.get(i));
-            }
-            if (equipos.size() % 2 != 0) siguienteRonda.add(equipos.get(equipos.size() - 1));
-            equipos = siguienteRonda;
-            fase++;
-            if (equipos.size() == 1) break;
+        for (int i = 0; i + 1 < equipos.size(); i += 2) {
+            Partido partido = new Partido();
+            partido.setId(IdGeneratorUtil.generarId());
+            partido.setTorneo(torneo);
+            partido.setEquipoLocal(equipos.get(i));
+            partido.setEquipoVisitante(equipos.get(i + 1));
+            partido.setFase(Partido.Fase.CUARTOS);
+            partido.setFecha(LocalDateTime.now().plusDays(1));
+            partidos.add(partidoMapper.toDomain(partidoRepository.save(partidoMapper.toEntity(partido))));
         }
-        log.info("Llaves generadas para torneo: " + torneoId);
+        log.info("Llaves de cuartos generadas para torneo: " + torneoId);
         return partidos;
+    }
+
+    private List<Equipo> calcularTabla(String torneoId) {
+        List<PartidoEntity> partidos = partidoRepository.findByTorneoId(torneoId);
+        Map<String, Integer> puntos = new LinkedHashMap<>();
+        Map<String, Equipo> equiposMap = new LinkedHashMap<>();
+
+        for (PartidoEntity p : partidos) {
+            if (p.getEstado() != Partido.PartidoEstado.FINALIZADO) continue;
+            Equipo local = equipoMapper.toDomain(p.getEquipoLocal());
+            Equipo visitante = equipoMapper.toDomain(p.getEquipoVisitante());
+            puntos.putIfAbsent(local.getId(), 0);
+            puntos.putIfAbsent(visitante.getId(), 0);
+            equiposMap.putIfAbsent(local.getId(), local);
+            equiposMap.putIfAbsent(visitante.getId(), visitante);
+            int gl = p.getMarcadorLocal(), gv = p.getMarcadorVisitante();
+            if (gl > gv) puntos.merge(local.getId(), 3, Integer::sum);
+            else if (gl < gv) puntos.merge(visitante.getId(), 3, Integer::sum);
+            else { puntos.merge(local.getId(), 1, Integer::sum); puntos.merge(visitante.getId(), 1, Integer::sum); }
+        }
+        return puntos.entrySet().stream()
+                .sorted((a, b) -> b.getValue() - a.getValue())
+                .map(e -> equiposMap.get(e.getKey()))
+                .collect(Collectors.toList());
+    }
+
+    private void avanzarGanador(Partido partido) {
+        if (partido.getTorneo() == null) return;
+        String torneoId = partido.getTorneo().getId();
+        Equipo ganador = partido.getMarcadorLocal() >= partido.getMarcadorVisitante()
+                ? partido.getEquipoLocal() : partido.getEquipoVisitante();
+
+        if (partido.getFase() == Partido.Fase.CUARTOS) {
+            List<PartidoEntity> cuartos = partidoRepository.findByTorneoIdAndFase(torneoId, Partido.Fase.CUARTOS);
+            long finalizados = cuartos.stream().filter(p -> p.getEstado() == Partido.PartidoEstado.FINALIZADO).count();
+            // Cada 2 cuartos finalizados se crea una semifinal
+            if (finalizados % 2 == 0) {
+                List<PartidoEntity> semis = partidoRepository.findByTorneoIdAndFase(torneoId, Partido.Fase.SEMIFINAL);
+                // Buscar el otro ganador del par
+                int par = (int) ((finalizados / 2) - 1);
+                PartidoEntity otroCuarto = cuartos.stream()
+                        .filter(p -> p.getEstado() == Partido.PartidoEstado.FINALIZADO)
+                        .filter(p -> !p.getId().equals(partido.getId()))
+                        .skip(par)
+                        .findFirst().orElse(null);
+                if (otroCuarto != null) {
+                    Equipo otroGanador = otroCuarto.getMarcadorLocal() >= otroCuarto.getMarcadorVisitante()
+                            ? equipoMapper.toDomain(otroCuarto.getEquipoLocal())
+                            : equipoMapper.toDomain(otroCuarto.getEquipoVisitante());
+                    Torneo torneo = torneoRepository.findById(torneoId).map(torneoMapper::toDomain).orElse(null);
+                    Partido semi = new Partido();
+                    semi.setId(IdGeneratorUtil.generarId());
+                    semi.setTorneo(torneo);
+                    semi.setEquipoLocal(ganador);
+                    semi.setEquipoVisitante(otroGanador);
+                    semi.setFase(Partido.Fase.SEMIFINAL);
+                    semi.setFecha(LocalDateTime.now().plusDays(2));
+                    partidoRepository.save(partidoMapper.toEntity(semi));
+                    log.info("Partido de semifinal creado");
+                }
+            }
+        } else if (partido.getFase() == Partido.Fase.SEMIFINAL) {
+            List<PartidoEntity> semis = partidoRepository.findByTorneoIdAndFase(torneoId, Partido.Fase.SEMIFINAL);
+            long finalizados = semis.stream().filter(p -> p.getEstado() == Partido.PartidoEstado.FINALIZADO).count();
+            if (finalizados == 2) {
+                PartidoEntity otraSemi = semis.stream()
+                        .filter(p -> p.getEstado() == Partido.PartidoEstado.FINALIZADO)
+                        .filter(p -> !p.getId().equals(partido.getId()))
+                        .findFirst().orElse(null);
+                if (otraSemi != null) {
+                    Equipo otroGanador = otraSemi.getMarcadorLocal() >= otraSemi.getMarcadorVisitante()
+                            ? equipoMapper.toDomain(otraSemi.getEquipoLocal())
+                            : equipoMapper.toDomain(otraSemi.getEquipoVisitante());
+                    Torneo torneo = torneoRepository.findById(torneoId).map(torneoMapper::toDomain).orElse(null);
+                    Partido final_ = new Partido();
+                    final_.setId(IdGeneratorUtil.generarId());
+                    final_.setTorneo(torneo);
+                    final_.setEquipoLocal(ganador);
+                    final_.setEquipoVisitante(otroGanador);
+                    final_.setFase(Partido.Fase.FINAL);
+                    final_.setFecha(LocalDateTime.now().plusDays(3));
+                    partidoRepository.save(partidoMapper.toEntity(final_));
+                    log.info("Partido de final creado");
+                }
+            }
+        } else if (partido.getFase() == Partido.Fase.FINAL) {
+            torneoRepository.findById(torneoId).ifPresent(t -> {
+                t.setCampeonId(ganador.getId());
+                torneoRepository.save(t);
+                log.info("Campeon registrado: " + ganador.getId());
+            });
+        }
     }
 
     @Override

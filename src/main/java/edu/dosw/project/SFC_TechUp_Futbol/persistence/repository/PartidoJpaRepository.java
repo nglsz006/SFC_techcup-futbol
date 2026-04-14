@@ -10,4 +10,5 @@ public interface PartidoJpaRepository extends JpaRepository<PartidoEntity, Strin
     List<PartidoEntity> findByTorneoId(String torneoId);
     List<PartidoEntity> findByEstado(Partido.PartidoEstado estado);
     List<PartidoEntity> findByEquipoLocalIdOrEquipoVisitanteId(String equipoLocalId, String equipoVisitanteId);
+    List<PartidoEntity> findByTorneoIdAndFase(String torneoId, Partido.Fase fase);
 }

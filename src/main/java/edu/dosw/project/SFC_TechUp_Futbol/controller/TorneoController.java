@@ -84,20 +84,27 @@ public class TorneoController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Elimination bracket", description = "Returns all tournament matches with their status, score and date to display the bracket.")
+    @Operation(summary = "Elimination bracket", description = "Returns tournament matches grouped by phase.")
     @GetMapping("/{id}/bracket")
-    public List<Map<String, Object>> llaveEliminatoria(@PathVariable String id) {
+    public Map<String, List<Map<String, Object>>> llaveEliminatoria(@PathVariable String id) {
         List<Partido> partidos = partidoService.consultarPartidosPorTorneo(id);
-        return partidos.stream().map(p -> {
+        Map<String, List<Map<String, Object>>> bracket = new LinkedHashMap<>();
+        for (Partido p : partidos) {
+            if (p.getFase() == null) continue;
+            String fase = p.getFase().name();
+            bracket.putIfAbsent(fase, new ArrayList<>());
             Map<String, Object> entry = new LinkedHashMap<>();
             entry.put("partidoId", p.getId());
             entry.put("local", p.getEquipoLocal() != null ? p.getEquipoLocal().getNombre() : "TBD");
+            entry.put("localId", p.getEquipoLocal() != null ? p.getEquipoLocal().getId() : null);
             entry.put("visitante", p.getEquipoVisitante() != null ? p.getEquipoVisitante().getNombre() : "TBD");
+            entry.put("visitanteId", p.getEquipoVisitante() != null ? p.getEquipoVisitante().getId() : null);
             entry.put("marcador", p.getMarcadorLocal() + " - " + p.getMarcadorVisitante());
             entry.put("estado", p.getEstado());
             entry.put("fecha", p.getFecha());
-            return entry;
-        }).collect(Collectors.toList());
+            bracket.get(fase).add(entry);
+        }
+        return bracket;
     }
 
     @PreAuthorize("isAuthenticated()")
