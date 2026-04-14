@@ -8,13 +8,15 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioRespons
 public class AccesoMapper {
 
     public static UsuarioRegistrado toModelo(RegistroRequest request) {
-        return new UsuarioRegistrado(
+        UsuarioRegistrado usuario = new UsuarioRegistrado(
             null,
             request.getNombre(),
             request.getEmail(),
             PasswordUtil.cifrar(request.getPassword()),
             request.getTipoUsuario()
         );
+        usuario.setCarrera(request.getCarrera());
+        return usuario;
     }
 
     public static UsuarioResponse toUsuarioResponse(UsuarioRegistrado usuario) {

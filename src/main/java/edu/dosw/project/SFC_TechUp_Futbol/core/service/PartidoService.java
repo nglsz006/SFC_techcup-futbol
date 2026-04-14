@@ -20,4 +20,6 @@ public interface PartidoService {
     List<Partido> consultarPartidosPorTorneo(String torneoId);
     List<Partido> consultarPartidosPorEquipo(String equipoId);
     List<Partido> consultarPartidosPorEstado(Partido.PartidoEstado estado);
+    List<Partido> generarLlaves(String torneoId);
+    List<Map<String, Object>> maximosGoleadores(String torneoId);
 }

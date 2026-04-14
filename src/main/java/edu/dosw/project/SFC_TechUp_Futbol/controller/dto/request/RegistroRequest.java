@@ -7,6 +7,7 @@ public class RegistroRequest {
     private String email;
     private String password;
     private Usuario.TipoUsuario tipoUsuario;
+    private Usuario.Carrera carrera;
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -19,4 +20,7 @@ public class RegistroRequest {
 
     public Usuario.TipoUsuario getTipoUsuario() { return tipoUsuario; }
     public void setTipoUsuario(Usuario.TipoUsuario tipoUsuario) { this.tipoUsuario = tipoUsuario; }
+
+    public Usuario.Carrera getCarrera() { return carrera; }
+    public void setCarrera(Usuario.Carrera carrera) { this.carrera = carrera; }
 }

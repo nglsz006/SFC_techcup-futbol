@@ -15,4 +15,7 @@ public interface PerfilDeportivoService {
                                  String identificacion, Integer semestre);
 
     PerfilDeportivo consultarPerfil(String jugadorId);
+
+    List<PerfilDeportivo> buscarJugadores(Jugador.Posicion posicion, Integer semestre, Integer edad,
+                                          PerfilDeportivo.Genero genero, String nombre, String identificacion);
 }

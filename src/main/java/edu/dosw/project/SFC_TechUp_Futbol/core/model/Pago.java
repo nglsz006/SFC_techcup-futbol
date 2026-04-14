@@ -9,12 +9,17 @@ import java.time.LocalDate;
 public class Pago {
 
     public enum PagoEstado { PENDIENTE, EN_REVISION, APROBADO, RECHAZADO }
+    public enum MedioPago { NEQUI }
+
+    private static final double MONTO_INSCRIPCION = 130000.0;
 
     private String id;
     @JsonIgnore
     private String comprobante;
     private LocalDate fechaSubida;
     private PagoEstado estado;
+    private MedioPago medioPago;
+    private double monto;
     @JsonIgnore
     private Equipo equipo;
     private String equipoNombre;
@@ -24,6 +29,8 @@ public class Pago {
         this.estado = PagoEstado.PENDIENTE;
         this.state = new PendienteState();
         this.fechaSubida = LocalDate.now();
+        this.monto = MONTO_INSCRIPCION;
+        this.medioPago = MedioPago.NEQUI;
     }
 
     public void avanzar() { state.avanzar(this); }
@@ -51,5 +58,11 @@ public class Pago {
 
     public PagoState getState() { return state; }
     public void setState(PagoState state) { this.state = state; }
+
+    public MedioPago getMedioPago() { return medioPago; }
+    public void setMedioPago(MedioPago medioPago) { this.medioPago = medioPago; }
+
+    public double getMonto() { return monto; }
+    public void setMonto(double monto) { this.monto = monto; }
 }
 

@@ -17,6 +17,7 @@ class AccesoValidatorTest {
         req.setEmail("juan@escuelaing.edu.co");
         req.setPassword("12345678");
         req.setTipoUsuario(Usuario.TipoUsuario.ESTUDIANTE);
+        req.setCarrera(Usuario.Carrera.INGENIERIA_SISTEMAS);
         return req;
     }
 

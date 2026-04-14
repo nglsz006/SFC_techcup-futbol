@@ -78,6 +78,7 @@ public class TorneoController {
             else { sumar(local, "pts", 1); sumar(visitante, "pts", 1); sumar(local, "pe", 1); sumar(visitante, "pe", 1); }
         }
         return tabla.values().stream()
+                .peek(f -> f.put("dg", (int) f.get("gf") - (int) f.get("gc")))
                 .sorted((a, b) -> (int) b.get("pts") - (int) a.get("pts"))
                 .collect(Collectors.toList());
     }
@@ -129,6 +130,20 @@ public class TorneoController {
 
     private void sumar(Map<String, Object> fila, String key, int valor) {
         fila.put(key, (int) fila.get(key) + valor);
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "Generate bracket", description = "Automatically generates matches for the tournament bracket in random order.")
+    @PostMapping("/{id}/generate-bracket")
+    public List<Partido> generarLlaves(@PathVariable String id) {
+        return partidoService.generarLlaves(id);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Top scorers", description = "Returns the top scorers of the tournament sorted by goals.")
+    @GetMapping("/{id}/top-scorers")
+    public List<Map<String, Object>> maximosGoleadores(@PathVariable String id) {
+        return partidoService.maximosGoleadores(id);
     }
 
     @PreAuthorize("hasAnyRole('ORGANIZADOR', 'ADMINISTRADOR')")

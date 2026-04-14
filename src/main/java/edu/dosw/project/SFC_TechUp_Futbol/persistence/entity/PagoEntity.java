@@ -24,6 +24,13 @@ public class PagoEntity {
     @Column(nullable = false)
     private Pago.PagoEstado estado;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "medio_pago")
+    private Pago.MedioPago medioPago;
+
+    @Column
+    private double monto;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipo_id", nullable = false)
@@ -32,6 +39,8 @@ public class PagoEntity {
     public PagoEntity() {
         this.estado = Pago.PagoEstado.PENDIENTE;
         this.fechaSubida = LocalDate.now();
+        this.monto = 130000.0;
+        this.medioPago = Pago.MedioPago.NEQUI;
     }
 
     public String getId() {
@@ -73,4 +82,10 @@ public class PagoEntity {
     public void setEquipo(EquipoEntity equipo) {
         this.equipo = equipo;
     }
+
+    public Pago.MedioPago getMedioPago() { return medioPago; }
+    public void setMedioPago(Pago.MedioPago medioPago) { this.medioPago = medioPago; }
+
+    public double getMonto() { return monto; }
+    public void setMonto(double monto) { this.monto = monto; }
 }

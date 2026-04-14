@@ -57,6 +57,6 @@ class ValidacionEquipoTest {
 
     @Test
     void validarComposicion_valido_noLanzaExcepcion() {
-        assertDoesNotThrow(() -> validacion.validarComposicionEquipo(List.of(1,2,3,4,5,6,7)));
+        assertDoesNotThrow(() -> validacion.validarComposicionEquipo(List.of(1,2,3,4,5,6,7,8)));
     }
 }

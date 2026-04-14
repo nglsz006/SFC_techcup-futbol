@@ -29,6 +29,10 @@ public abstract class UsuarioEntity {
     @Column(name = "user_type", nullable = false)
     private Usuario.TipoUsuario userType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "carrera")
+    private Usuario.Carrera carrera;
+
     public UsuarioEntity() {}
 
     public String getId() {
@@ -69,5 +73,13 @@ public abstract class UsuarioEntity {
 
     public void setUserType(Usuario.TipoUsuario userType) {
         this.userType = userType;
+    }
+
+    public Usuario.Carrera getCarrera() {
+        return carrera;
+    }
+
+    public void setCarrera(Usuario.Carrera carrera) {
+        this.carrera = carrera;
     }
 }
