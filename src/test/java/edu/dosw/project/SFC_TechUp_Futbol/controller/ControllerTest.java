@@ -132,21 +132,21 @@ class ControllerTest {
 
     @Test
     void registro_valido_retorna200() throws Exception {
-        Map<String, Object> body = Map.of("nombre", "Ana", "email", "ana@escuelaing.edu.co", "password", "12345678", "tipoUsuario", "ESTUDIANTE");
+        Map<String, Object> body = Map.of("nombre", "Ana", "email", "ana@escuelaing.edu.co", "password", "12345678", "tipoUsuario", "ESTUDIANTE", "carrera", "INGENIERIA_SISTEMAS");
         accesoMvc.perform(post("/api/access/register").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.email").value("ana@escuelaing.edu.co"));
     }
 
     @Test
     void registro_correoInvalido_retorna400() throws Exception {
-        Map<String, Object> body = Map.of("nombre", "Ana", "email", "correo-invalido", "password", "12345678", "tipoUsuario", "ESTUDIANTE");
+        Map<String, Object> body = Map.of("nombre", "Ana", "email", "correo-invalido", "password", "12345678", "tipoUsuario", "ESTUDIANTE", "carrera", "INGENIERIA_SISTEMAS");
         accesoMvc.perform(post("/api/access/register").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(body)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void login_credencialesCorrectas_retornaToken() throws Exception {
-        Map<String, Object> reg = Map.of("nombre", "Pedro", "email", "pedro@escuelaing.edu.co", "password", "12345678", "tipoUsuario", "ESTUDIANTE");
+        Map<String, Object> reg = Map.of("nombre", "Pedro", "email", "pedro@escuelaing.edu.co", "password", "12345678", "tipoUsuario", "ESTUDIANTE", "carrera", "INGENIERIA_SISTEMAS");
         accesoMvc.perform(post("/api/access/register").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(reg)));
         Map<String, String> login = Map.of("email", "pedro@escuelaing.edu.co", "password", "12345678");
         accesoMvc.perform(post("/api/access/login").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(login)))
@@ -155,7 +155,7 @@ class ControllerTest {
 
     @Test
     void login_passwordIncorrecta_retorna400() throws Exception {
-        Map<String, Object> reg = Map.of("nombre", "Luis", "email", "luis@escuelaing.edu.co", "password", "12345678", "tipoUsuario", "ESTUDIANTE");
+        Map<String, Object> reg = Map.of("nombre", "Luis", "email", "luis@escuelaing.edu.co", "password", "12345678", "tipoUsuario", "ESTUDIANTE", "carrera", "INGENIERIA_SISTEMAS");
         accesoMvc.perform(post("/api/access/register").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(reg)));
         Map<String, String> login = Map.of("email", "luis@escuelaing.edu.co", "password", "wrongpass");
         accesoMvc.perform(post("/api/access/login").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(login)))

@@ -261,6 +261,22 @@ public class UsuarioController {
     }
 
     @PreAuthorize("hasRole('CAPITAN')")
+    @Operation(summary = "Search players by filters")
+    @GetMapping("/captains/{id}/search-players/advanced")
+    public List<PerfilDeportivo> buscarJugadoresAvanzado(
+            @PathVariable String id,
+            @RequestParam(required = false) String posicion,
+            @RequestParam(required = false) Integer semestre,
+            @RequestParam(required = false) Integer edad,
+            @RequestParam(required = false) String genero,
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String identificacion) {
+        Jugador.Posicion pos = posicion != null ? Jugador.Posicion.valueOf(posicion) : null;
+        PerfilDeportivo.Genero gen = genero != null ? PerfilDeportivo.Genero.valueOf(genero) : null;
+        return perfilDeportivoService.buscarJugadores(pos, semestre, edad, gen, nombre, identificacion);
+    }
+
+    @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Search players by position")
     @GetMapping("/captains/{id}/search-players")
     public List<JugadorResponse> buscarJugadores(@PathVariable String id, @RequestParam String posicion) {

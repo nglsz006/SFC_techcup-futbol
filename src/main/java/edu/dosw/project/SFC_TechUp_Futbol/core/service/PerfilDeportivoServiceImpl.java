@@ -83,6 +83,25 @@ public class PerfilDeportivoServiceImpl implements PerfilDeportivoService {
     }
 
     @Override
+    public List<PerfilDeportivo> buscarJugadores(Jugador.Posicion posicion, Integer semestre, Integer edad,
+                                                  PerfilDeportivo.Genero genero, String nombre, String identificacion) {
+        return perfilRepository.findAll().stream()
+                .filter(p -> posicion == null || p.getPosiciones().contains(posicion))
+                .filter(p -> semestre == null || semestre.equals(p.getSemestre()))
+                .filter(p -> edad == null || edad == p.getEdad())
+                .filter(p -> genero == null || genero == p.getGenero())
+                .filter(p -> identificacion == null || identificacion.isBlank() || identificacion.equals(p.getIdentificacion()))
+                .filter(p -> {
+                    if (nombre == null || nombre.isBlank()) return true;
+                    return jugadorRepository.findById(p.getJugadorId())
+                            .map(j -> j.getName() != null && j.getName().toLowerCase().contains(nombre.toLowerCase()))
+                            .orElse(false);
+                })
+                .map(perfilMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public PerfilDeportivo consultarPerfil(String jugadorId) {
         return perfilRepository.findByJugadorId(jugadorId)
                 .map(perfilMapper::toDomain)

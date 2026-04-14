@@ -8,6 +8,11 @@ public abstract class Usuario {
         ESTUDIANTE, GRADUADO, PROFESOR, PERSONAL_ADMIN, FAMILIAR
     }
 
+    public enum Carrera {
+        INGENIERIA_SISTEMAS, IA, CIBERSEGURIDAD, ESTADISTICA,
+        MAESTRIA_GESTION_INFORMACION, MAESTRIA_INFORMATICA, MAESTRIA_CIENCIA_DATOS
+    }
+
     private String id;
     private String name;
     private String email;
@@ -15,6 +20,7 @@ public abstract class Usuario {
     @JsonIgnore
     private String password;
     private TipoUsuario userType;
+    private Carrera carrera;
 
     public Usuario() {
 
@@ -66,6 +72,14 @@ public abstract class Usuario {
 
     public void setUserType(TipoUsuario userType) {
         this.userType = userType;
+    }
+
+    public Carrera getCarrera() {
+        return carrera;
+    }
+
+    public void setCarrera(Carrera carrera) {
+        this.carrera = carrera;
     }
 }
 

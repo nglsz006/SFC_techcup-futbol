@@ -13,10 +13,9 @@ import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.PartidoJpaRepos
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 public class PartidoServiceImpl implements PartidoService {
@@ -202,6 +201,74 @@ public class PartidoServiceImpl implements PartidoService {
     @Override
     public List<Partido> consultarPartidosPorEstado(Partido.PartidoEstado estado) {
         return partidoRepository.findByEstado(estado).stream().map(partidoMapper::toDomain).toList();
+    }
+
+    @Override
+    public List<Partido> generarLlaves(String torneoId) {
+        Torneo torneo = torneoRepository.findById(torneoId)
+                .map(torneoMapper::toDomain)
+                .orElseThrow(() -> new IllegalArgumentException("Torneo no encontrado."));
+        if (torneo.getEstado() == Torneo.EstadoTorneo.FINALIZADO)
+            throw new IllegalStateException("No se pueden generar llaves en un torneo finalizado.");
+
+        List<Equipo> equipos = equipoRepository.findAll().stream()
+                .map(equipoMapper::toDomain).collect(Collectors.toList());
+        if (equipos.size() < 2)
+            throw new IllegalStateException("Se necesitan al menos 2 equipos para generar llaves.");
+
+        Collections.shuffle(equipos);
+        List<Partido> partidos = new ArrayList<>();
+        String[] fases = {"FASE_INICIAL", "CUARTOS", "SEMIFINAL", "FINAL"};
+        int fase = 0;
+
+        while (equipos.size() > 1) {
+            List<Equipo> siguienteRonda = new ArrayList<>();
+            String nombreFase = fase < fases.length ? fases[fase] : "FASE_" + fase;
+            for (int i = 0; i + 1 < equipos.size(); i += 2) {
+                Partido partido = new Partido();
+                partido.setId(IdGeneratorUtil.generarId());
+                partido.setTorneo(torneo);
+                partido.setEquipoLocal(equipos.get(i));
+                partido.setEquipoVisitante(equipos.get(i + 1));
+                partido.setCancha(nombreFase);
+                partido.setFecha(LocalDateTime.now().plusDays(fase + 1));
+                partidos.add(partidoMapper.toDomain(partidoRepository.save(partidoMapper.toEntity(partido))));
+                siguienteRonda.add(equipos.get(i));
+            }
+            if (equipos.size() % 2 != 0) siguienteRonda.add(equipos.get(equipos.size() - 1));
+            equipos = siguienteRonda;
+            fase++;
+            if (equipos.size() == 1) break;
+        }
+        log.info("Llaves generadas para torneo: " + torneoId);
+        return partidos;
+    }
+
+    @Override
+    public List<Map<String, Object>> maximosGoleadores(String torneoId) {
+        List<Partido> partidos = consultarPartidosPorTorneo(torneoId);
+        Map<String, Integer> golesPorJugador = new LinkedHashMap<>();
+        Map<String, String> nombresPorJugador = new LinkedHashMap<>();
+
+        for (Partido p : partidos) {
+            for (Partido.Gol gol : p.getGoles()) {
+                if (gol.getJugador() == null) continue;
+                String jugadorId = gol.getJugador().getId();
+                golesPorJugador.merge(jugadorId, 1, Integer::sum);
+                nombresPorJugador.putIfAbsent(jugadorId, gol.getJugadorNombre());
+            }
+        }
+
+        return golesPorJugador.entrySet().stream()
+                .sorted((a, b) -> b.getValue() - a.getValue())
+                .map(e -> {
+                    Map<String, Object> entry = new LinkedHashMap<>();
+                    entry.put("jugadorId", e.getKey());
+                    entry.put("nombre", nombresPorJugador.get(e.getKey()));
+                    entry.put("goles", e.getValue());
+                    return entry;
+                })
+                .collect(Collectors.toList());
     }
 
     private void validarPartidoEnCurso(Partido partido) {

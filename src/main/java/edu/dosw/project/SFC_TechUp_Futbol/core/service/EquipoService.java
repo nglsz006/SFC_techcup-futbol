@@ -2,11 +2,16 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Partido;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.ValidacionEquipo;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.JugadorEntity;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.EquipoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.EquipoJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.JugadorJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.PartidoJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.TorneoJpaRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +30,10 @@ public class EquipoService extends Subject {
     private final EquipoMapper mapper;
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     private PartidoJpaRepository partidoRepository;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private JugadorJpaRepository jugadorRepository;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private TorneoJpaRepository torneoRepository;
 
     public EquipoService(EquipoJpaRepository repository, EquipoMapper mapper) {
         this.repository = repository;
@@ -51,6 +60,11 @@ public class EquipoService extends Subject {
     }
 
     public Equipo agregarJugador(String equipoId, String jugadorId) {
+        if (torneoRepository != null) {
+            boolean torneoEnCurso = !torneoRepository.findByEstado(Torneo.EstadoTorneo.EN_CURSO).isEmpty();
+            if (torneoEnCurso)
+                throw new IllegalStateException("No se pueden realizar cambios de jugadores mientras el torneo está en curso.");
+        }
         Equipo equipo = obtener(equipoId);
         equipo.agregarJugador(jugadorId);
         log.info("Jugador agregado al equipo");
@@ -75,14 +89,46 @@ public class EquipoService extends Subject {
     public Map<String, Object> validarComposicion(String equipoId) {
         Equipo equipo = obtener(equipoId);
         int total = equipo.getJugadores().size();
-        boolean valido = total >= 7 && total <= 12;
+        boolean valido = total >= 8 && total <= 12;
         Map<String, Object> resultado = new java.util.LinkedHashMap<>();
         resultado.put("equipoId", equipoId);
         resultado.put("nombre", equipo.getNombre());
         resultado.put("totalJugadores", total);
         resultado.put("valido", valido);
-        if (total < 7) resultado.put("error", "El equipo necesita al menos " + (7 - total) + " jugador(es) más.");
+        if (total < 8) resultado.put("error", "El equipo necesita al menos " + (8 - total) + " jugador(es) más.");
         if (total > 12) resultado.put("error", "El equipo excede el máximo de 12 jugadores.");
+
+        if (jugadorRepository != null && total > 0) {
+            List<JugadorEntity> jugadores = equipo.getJugadores().stream()
+                    .map(id -> jugadorRepository.findById(id).orElse(null))
+                    .filter(j -> j != null)
+                    .toList();
+
+            // Validar que todos sean de tipos permitidos
+            List<Usuario.TipoUsuario> tiposPermitidos = List.of(
+                    Usuario.TipoUsuario.ESTUDIANTE, Usuario.TipoUsuario.PROFESOR,
+                    Usuario.TipoUsuario.PERSONAL_ADMIN, Usuario.TipoUsuario.GRADUADO,
+                    Usuario.TipoUsuario.FAMILIAR);
+            boolean todosPermitidos = jugadores.stream()
+                    .allMatch(j -> j.getUserType() != null && tiposPermitidos.contains(j.getUserType()));
+            if (!todosPermitidos) {
+                resultado.put("errorTipoUsuario", "Todos los miembros deben ser estudiantes, profesores, personal administrativo, graduados o familiares.");
+                resultado.put("valido", false);
+            }
+
+            // Validar que más de la mitad sean de carreras prioritarias
+            List<Usuario.Carrera> carrerasPrioritarias = List.of(
+                    Usuario.Carrera.INGENIERIA_SISTEMAS, Usuario.Carrera.IA,
+                    Usuario.Carrera.CIBERSEGURIDAD, Usuario.Carrera.ESTADISTICA);
+            long mitadPrioritaria = jugadores.stream()
+                    .filter(j -> j.getCarrera() != null && carrerasPrioritarias.contains(j.getCarrera()))
+                    .count();
+            if (total > 0 && mitadPrioritaria <= total / 2) {
+                resultado.put("errorCarrera", "Más de la mitad de los miembros deben ser de Ingeniería de Sistemas, IA, Ciberseguridad o Estadística.");
+                resultado.put("valido", false);
+            }
+        }
+
         return resultado;
     }
 }

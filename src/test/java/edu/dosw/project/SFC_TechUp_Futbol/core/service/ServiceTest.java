@@ -122,7 +122,7 @@ class ServiceTest {
     void validarComposicion_sieteJugadores_retornaValido() {
         Equipo equipo = new Equipo(null, "Suficientes", "", "rojo", "blanco", "uuid-capitan-1");
         equipoService.crear(equipo, Map.of("nombre", "Suficientes", "colorPrincipal", "rojo"));
-        for (int i = 1; i <= 7; i++) equipoService.agregarJugador(equipo.getId(), "uuid-j" + i);
+        for (int i = 1; i <= 8; i++) equipoService.agregarJugador(equipo.getId(), "uuid-j" + i);
         var resultado = equipoService.validarComposicion(equipo.getId());
         assertEquals(true, resultado.get("valido"));
     }

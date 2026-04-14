@@ -22,8 +22,8 @@ public class ValidacionEquipo implements Validacion {
     }
 
     public void validarComposicionEquipo(List<Integer> jugadores) {
-        if (jugadores == null || jugadores.size() < 7)
-            throw new IllegalArgumentException("El equipo debe tener mínimo 7 jugadores.");
+        if (jugadores == null || jugadores.size() < 8)
+            throw new IllegalArgumentException("El equipo debe tener mínimo 8 jugadores.");
         if (jugadores.size() > 12)
             throw new IllegalArgumentException("El equipo no puede tener más de 12 jugadores.");
     }
