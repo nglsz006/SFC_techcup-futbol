@@ -29,7 +29,7 @@ sequenceDiagram
         PagoServiceImpl-->>UsuarioController: IllegalStateException
         UsuarioController-->>Cliente: 409 Conflict
     end
-    PagoServiceImpl->>PagoServiceImpl: new Pago() → estado PENDIENTE
+    PagoServiceImpl->>PagoServiceImpl: new Pago() → estado PENDIENTE, monto=130000, medioPago=NEQUI
     PagoServiceImpl->>PagoRepository: save(pago) → UUID generado
     PagoRepository-->>PagoServiceImpl: Pago guardado
     PagoServiceImpl-->>UsuarioController: Pago

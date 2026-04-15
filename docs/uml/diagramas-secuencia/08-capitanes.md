@@ -67,6 +67,21 @@ sequenceDiagram
     CapitanService-->>UsuarioController: "alineacion lista con N titulares"
     UsuarioController-->>Cliente: 200 OK mensaje
 
+    %% Toggle rol jugador-capitan
+    Cliente->>UsuarioController: PATCH /api/users/players/{id}/profile/toggle-role
+    UsuarioController->>CapitanService: toggleRol(id)
+    alt es jugador
+        CapitanService->>JugadorRepository: deleteById(id)
+        CapitanService->>CapitanRepository: save(capitan)
+        CapitanService-->>UsuarioController: "Rol cambiado a CAPITAN"
+    end
+    alt es capitan
+        CapitanService->>CapitanRepository: deleteById(id)
+        CapitanService->>JugadorRepository: save(jugador)
+        CapitanService-->>UsuarioController: "Rol cambiado a JUGADOR"
+    end
+    UsuarioController-->>Cliente: 200 OK mensaje
+
     %% Buscar jugadores por posicion
     Cliente->>UsuarioController: GET /api/users/captains/{id}/search-players?posicion=X
     UsuarioController->>CapitanService: buscarJugadores(posicion)

@@ -57,7 +57,9 @@ sequenceDiagram
     UsuarioController->>EquipoService: validarComposicion(equipoId)
     EquipoService->>EquipoRepository: findById(equipoId)
     EquipoRepository-->>EquipoService: Equipo
-    EquipoService->>EquipoService: validar 7 <= jugadores <= 12
+    EquipoService->>EquipoService: validar 8 <= jugadores <= 12
+    EquipoService->>EquipoService: validar tipos de usuario permitidos
+    EquipoService->>EquipoService: validar mas de la mitad de carrera prioritaria
     EquipoService-->>UsuarioController: {equipoId, nombre, totalJugadores, valido}
     UsuarioController-->>Cliente: 200 OK resultado
 
@@ -80,6 +82,21 @@ sequenceDiagram
     EquipoService->>EquipoRepository: save(equipo)
     EquipoService-->>EquipoController: Equipo
     EquipoController-->>Cliente: 200 OK Equipo
+
+    %% Toggle rol jugador-capitan
+    Cliente->>UsuarioController: PATCH /api/users/players/{id}/profile/toggle-role
+    UsuarioController->>CapitanService: toggleRol(id)
+    alt es jugador
+        CapitanService->>JugadorRepository: deleteById(id)
+        CapitanService->>CapitanRepository: save(capitan)
+        CapitanService-->>UsuarioController: "Rol cambiado a CAPITAN"
+    end
+    alt es capitan
+        CapitanService->>CapitanRepository: deleteById(id)
+        CapitanService->>JugadorRepository: save(jugador)
+        CapitanService-->>UsuarioController: "Rol cambiado a JUGADOR"
+    end
+    UsuarioController-->>Cliente: 200 OK mensaje
 
     %% Eliminar equipo
     Cliente->>EquipoController: DELETE /api/teams/{id}

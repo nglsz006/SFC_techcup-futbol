@@ -20,6 +20,7 @@ sequenceDiagram
     AccesoValidator->>AccesoValidator: correoValido(email)
     AccesoValidator->>AccesoValidator: contrasenaValida(password)
     AccesoValidator->>AccesoValidator: correoValidoSegunTipo(email, tipoUsuario)
+    AccesoValidator->>AccesoValidator: si ESTUDIANTE, carrera obligatoria
     alt validacion falla
         AccesoValidator-->>AccesoController: IllegalArgumentException
         AccesoController-->>Cliente: 400 Bad Request

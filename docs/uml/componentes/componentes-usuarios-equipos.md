@@ -48,6 +48,7 @@ graph TD
         PAR[PagoRepository]
         ALR[AlineacionRepository]
         PDR[PerfilDeportivoRepository]
+        TR[TorneoRepository]
     end
 
     UC --> JS
@@ -63,10 +64,13 @@ graph TD
     JS --> JR
     JS --> JV
     CS --> CR
+    CS --> JR
     CS --> JV
+    CS --> TR
     ARS --> ARR
     ES --> ER
     ES --> EV
+    ES --> TR
     PAS --> PAR
     PAS --> ER
     PAS --> PAV
@@ -77,5 +81,6 @@ graph TD
     PDS --> PDR
     PDS --> JR
     PDS --> PDV
+    UC --> PDS
     UC --> RV
 ```

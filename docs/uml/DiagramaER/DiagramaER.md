@@ -36,6 +36,7 @@ erDiagram
         string password
         string user_type
         string tipo_rol
+        string carrera
     }
 
     jugador {
@@ -97,12 +98,14 @@ erDiagram
         string canchas
         string horarios
         string sanciones
+        string campeon_id FK
     }
 
     partido {
         string id PK
         datetime fecha
         string cancha
+        string fase
         int marcador_local
         int marcador_visitante
         string estado
@@ -131,6 +134,7 @@ erDiagram
         string tipo_sancion
         string descripcion
         string jugador_id FK
+        string partido_id FK
     }
 
     pago {
@@ -138,6 +142,8 @@ erDiagram
         string comprobante
         date fecha_subida
         string estado
+        string medio_pago
+        double monto
         string equipo_id FK
     }
 
@@ -214,4 +220,6 @@ erDiagram
     perfil_deportivo ||--o{ perfil_posiciones : "1 perfil - 1..* posiciones"
 
     administrador ||--o{ registro_auditoria : "1 administrador - 0..* registros"
+    partido ||--o{ sancion : "1 partido - 0..* sanciones"
+    equipo ||--o| torneo : "1 equipo - 0..1 torneo (campeon)"
 ```

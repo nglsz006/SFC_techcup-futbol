@@ -38,6 +38,8 @@ graph TD
     J -->|Registro / Login| ACC
     J -->|Perfil deportivo| USR
     C -->|Crear equipo / Invitar jugadores| USR
+    C -->|Toggle rol jugador-capitan| USR
+    C -->|Buscar jugadores por filtros| USR
     C -->|Subir comprobante| PAG
     C -->|Definir alineacion| ALI
     O -->|Crear / Gestionar torneo| TOR

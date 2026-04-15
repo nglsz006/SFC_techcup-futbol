@@ -77,6 +77,8 @@ sequenceDiagram
     PartidoServiceImpl->>PartidoRepository: findById(matchId)
     PartidoServiceImpl->>PartidoServiceImpl: partido.finalizar() → FINALIZADO
     PartidoServiceImpl->>PartidoRepository: save(partido)
+    PartidoServiceImpl->>PartidoServiceImpl: avanzarGanador(partido)
+    note right of PartidoServiceImpl: Si fase=CUARTOS crea SEMIFINAL\nSi fase=SEMIFINAL crea FINAL\nSi fase=FINAL registra campeon en torneo
     PartidoServiceImpl-->>UsuarioController: Partido
     UsuarioController-->>Cliente: 200 OK Partido
 ```
