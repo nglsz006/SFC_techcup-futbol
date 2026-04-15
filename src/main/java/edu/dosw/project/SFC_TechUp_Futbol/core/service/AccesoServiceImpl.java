@@ -1,5 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AutenticacionAdminException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.RolFuncional;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
@@ -68,7 +70,7 @@ public class AccesoServiceImpl implements AccesoService {
     @Override
     public UsuarioResponse registrar(RegistroRequest request) {
         if (usuarioRepository.findByEmail(Base64Util.encode(request.getEmail())).isPresent())
-            throw new IllegalStateException("Ya existe un usuario con ese correo.");
+            throw new CorreoYaRegistradoException("Ya existe un usuario con ese correo.");
         UsuarioRegistrado usuario = AccesoMapper.toModelo(request);
         if (usuario.getId() == null) usuario.setId(edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil.generarId());
         usuarioRepository.save(usuarioMapper.toEntity(usuario));
@@ -86,7 +88,7 @@ public class AccesoServiceImpl implements AccesoService {
         if (adminEntity.isPresent()) {
             var admin = administradorMapper.toDomain(adminEntity.get());
             if (!PasswordUtil.verificar(password, admin.getPassword()))
-                throw new IllegalArgumentException("Credenciales incorrectas.");
+                throw new AutenticacionAdminException("Credenciales incorrectas.");
             log.info("Login administrador exitoso");
             return new LoginResponse(jwtService.generarToken(email, RolFuncional.ADMINISTRADOR),
                     admin.getName(), email, admin.getUserType());
@@ -96,7 +98,7 @@ public class AccesoServiceImpl implements AccesoService {
         if (orgEntity.isPresent()) {
             var org = organizadorMapper.toDomain(orgEntity.get());
             if (!PasswordUtil.verificar(password, org.getPassword()))
-                throw new IllegalArgumentException("Credenciales incorrectas.");
+                throw new AutenticacionAdminException("Credenciales incorrectas.");
             log.info("Login organizador exitoso");
             return new LoginResponse(jwtService.generarToken(email, RolFuncional.ORGANIZADOR),
                     org.getName(), email, org.getUserType());
@@ -106,7 +108,7 @@ public class AccesoServiceImpl implements AccesoService {
         if (arbEntity.isPresent()) {
             var arb = arbitroMapper.toDomain(arbEntity.get());
             if (!PasswordUtil.verificar(password, arb.getPassword()))
-                throw new IllegalArgumentException("Credenciales incorrectas.");
+                throw new AutenticacionAdminException("Credenciales incorrectas.");
             log.info("Login arbitro exitoso");
             return new LoginResponse(jwtService.generarToken(email, RolFuncional.ARBITRO),
                     arb.getName(), email, arb.getUserType());
@@ -116,7 +118,7 @@ public class AccesoServiceImpl implements AccesoService {
         if (capEntity.isPresent()) {
             var cap = capitanMapper.toDomain(capEntity.get());
             if (!PasswordUtil.verificar(password, cap.getPassword()))
-                throw new IllegalArgumentException("Credenciales incorrectas.");
+                throw new AutenticacionAdminException("Credenciales incorrectas.");
             log.info("Login capitan exitoso");
             return new LoginResponse(jwtService.generarToken(email, RolFuncional.CAPITAN),
                     cap.getName(), email, cap.getUserType());
@@ -124,9 +126,9 @@ public class AccesoServiceImpl implements AccesoService {
 
         UsuarioRegistrado usuario = usuarioRepository.findByEmail(emailEncoded)
                 .map(usuarioMapper::toDomain)
-                .orElseThrow(() -> new IllegalArgumentException("Credenciales incorrectas."));
+                .orElseThrow(() -> new AutenticacionAdminException("Credenciales incorrectas."));
         if (!PasswordUtil.verificar(password, usuario.getPassword()))
-            throw new IllegalArgumentException("Credenciales incorrectas.");
+            throw new AutenticacionAdminException("Credenciales incorrectas.");
         log.info("Login jugador exitoso");
         return AccesoMapper.toLoginResponse(usuario, jwtService.generarToken(email, RolFuncional.JUGADOR));
     }
