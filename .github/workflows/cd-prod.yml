@@ -1,9 +1,9 @@
-name: CD - Deploy to QA
+name: CD - Deploy to Production
 
 on:
   push:
     branches:
-      - develop
+      - main
   workflow_dispatch:
 
 permissions:
@@ -30,7 +30,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/nglsz006/sfc_techcup-futbol:qa
+          tags: ghcr.io/nglsz006/sfc_techcup-futbol:prod
 
   deploy:
     name: Deploy to Azure App Service
@@ -45,5 +45,5 @@ jobs:
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
-          app-name: techcup-backend-qa
-          images: ghcr.io/nglsz006/sfc_techcup-futbol:qa
+          app-name: techcup-backend-prod
+          images: ghcr.io/nglsz006/sfc_techcup-futbol:prod
