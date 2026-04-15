@@ -4,6 +4,8 @@ import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AutenticacionAdminException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.*;
@@ -108,7 +110,7 @@ class AccesoServiceExtendedTest {
     @Test
     void registrar_correoRepetido_lanzaExcepcion() {
         service.registrar(registroRequest("juan@escuelaing.edu.co"));
-        assertThrows(IllegalStateException.class, () -> service.registrar(registroRequest("juan@escuelaing.edu.co")));
+        assertThrows(CorreoYaRegistradoException.class, () -> service.registrar(registroRequest("juan@escuelaing.edu.co")));
     }
 
     @Test
@@ -127,7 +129,7 @@ class AccesoServiceExtendedTest {
         LoginRequest req = new LoginRequest();
         req.setEmail("juan@escuelaing.edu.co");
         req.setPassword("wrongpass");
-        assertThrows(IllegalArgumentException.class, () -> service.login(req));
+        assertThrows(AutenticacionAdminException.class, () -> service.login(req));
     }
 
     @Test
@@ -135,6 +137,6 @@ class AccesoServiceExtendedTest {
         LoginRequest req = new LoginRequest();
         req.setEmail("noexiste@escuelaing.edu.co");
         req.setPassword("12345678");
-        assertThrows(IllegalArgumentException.class, () -> service.login(req));
+        assertThrows(AutenticacionAdminException.class, () -> service.login(req));
     }
 }
