@@ -13,7 +13,7 @@ public class NotificadorTorneo implements Observer {
 
     @Override
     public void actualizar(String evento, Map<String, Object> datos) {
-        log.info("[notificacion] " + sanitize(evento) + ": " + datos);
+        log.info("[notificacion] " + sanitize(evento) + ": " + sanitize(datos.toString()));
     }
 }
 

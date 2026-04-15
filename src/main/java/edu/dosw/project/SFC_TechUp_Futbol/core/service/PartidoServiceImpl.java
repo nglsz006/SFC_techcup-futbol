@@ -33,6 +33,10 @@ public class PartidoServiceImpl implements PartidoService {
     private final JugadorMapper jugadorMapper;
     private final PartidoValidator partidoValidator;
 
+    private static String sanitize(String input) {
+        return input == null ? "null" : input.replaceAll("[\r\n\t]", "_");
+    }
+
     public PartidoServiceImpl(PartidoJpaRepository partidoRepository, PartidoMapper partidoMapper,
                               TorneoJpaRepository torneoRepository, TorneoMapper torneoMapper,
                               EquipoJpaRepository equipoRepository, EquipoMapper equipoMapper,
@@ -233,7 +237,7 @@ public class PartidoServiceImpl implements PartidoService {
             partido.setFecha(LocalDateTime.now().plusDays(1));
             partidos.add(partidoMapper.toDomain(partidoRepository.save(partidoMapper.toEntity(partido))));
         }
-        log.info("Llaves de cuartos generadas para torneo: " + torneoId);
+        log.info("Llaves de cuartos generadas para torneo: " + sanitize(torneoId));
         return partidos;
     }
 
@@ -324,7 +328,7 @@ public class PartidoServiceImpl implements PartidoService {
             torneoRepository.findById(torneoId).ifPresent(t -> {
                 t.setCampeonId(ganador.getId());
                 torneoRepository.save(t);
-                log.info("Campeon registrado: " + ganador.getId());
+                log.info("Campeon registrado: " + sanitize(ganador.getId()));
             });
         }
     }

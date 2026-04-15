@@ -80,7 +80,8 @@ public class CapitanService {
     public String toggleRol(String usuarioId) {
         // Si es capitán, convertir a jugador
         if (capitanRepository.existsById(usuarioId)) {
-            CapitanEntity capitan = capitanRepository.findById(usuarioId).get();
+            CapitanEntity capitan = capitanRepository.findById(usuarioId)
+                    .orElseThrow(() -> new IllegalArgumentException("Capitan no encontrado"));
             capitanRepository.deleteById(usuarioId);
             JugadorEntity jugador = new JugadorEntity();
             jugador.setId(capitan.getId());
@@ -98,7 +99,8 @@ public class CapitanService {
         }
         // Si es jugador, convertir a capitán
         if (jugadorRepository.existsById(usuarioId)) {
-            JugadorEntity jugador = jugadorRepository.findById(usuarioId).get();
+            JugadorEntity jugador = jugadorRepository.findById(usuarioId)
+                    .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado"));
             jugadorRepository.deleteById(usuarioId);
             CapitanEntity capitan = new CapitanEntity();
             capitan.setId(jugador.getId());

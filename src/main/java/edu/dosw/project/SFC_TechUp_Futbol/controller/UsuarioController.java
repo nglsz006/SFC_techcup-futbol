@@ -329,6 +329,57 @@ public class UsuarioController {
     }
 
     @PreAuthorize("hasRole('ARBITRO')")
+    @Operation(summary = "Get assigned pending matches")
+    @GetMapping("/referees/{id}/matches/pending")
+    public List<Partido> consultarPartidosPendientes(@PathVariable String id) {
+        return arbitroService.consultarPartidosPendientes(id);
+    }
+
+    @PreAuthorize("hasRole('ARBITRO')")
+    @Operation(summary = "Get refereed (finished) matches")
+    @GetMapping("/referees/{id}/matches/history")
+    public List<Partido> consultarPartidosArbitrados(@PathVariable String id) {
+        return arbitroService.consultarPartidosArbitrados(id);
+    }
+
+    @PreAuthorize("hasRole('ARBITRO')")
+    @Operation(summary = "Get match detail with action flags")
+    @GetMapping("/referees/{id}/matches/{matchId}")
+    public Map<String, Object> detallePartido(@PathVariable String id, @PathVariable String matchId) {
+        if (!arbitroService.tienePartido(id, matchId))
+            throw new IllegalArgumentException("El partido no pertenece a este arbitro");
+        Partido partido = partidoService.consultarPartido(matchId);
+        Map<String, Object> resp = new LinkedHashMap<>();
+        resp.put("partido", partido);
+        resp.put("canStart", partido.getEstado() == Partido.PartidoEstado.PROGRAMADO);
+        resp.put("canFinish", partido.getEstado() == Partido.PartidoEstado.EN_CURSO);
+        resp.put("canRegisterEvents", partido.getEstado() == Partido.PartidoEstado.EN_CURSO);
+        return resp;
+    }
+
+    @PreAuthorize("hasRole('ARBITRO')")
+    @Operation(summary = "Get match lineups")
+    @GetMapping("/referees/{id}/matches/{matchId}/lineups")
+    public Map<String, Object> consultarAlineaciones(@PathVariable String id, @PathVariable String matchId) {
+        if (!arbitroService.tienePartido(id, matchId))
+            throw new IllegalArgumentException("El partido no pertenece a este arbitro");
+        return partidoService.consultarEventos(matchId);
+    }
+
+    @PreAuthorize("hasRole('ARBITRO')")
+    @Operation(summary = "Register card")
+    @PostMapping("/referees/{id}/matches/{matchId}/cards")
+    public Partido registrarTarjeta(@PathVariable String id, @PathVariable String matchId,
+                                    @RequestBody Map<String, Object> body) {
+        if (!arbitroService.tienePartido(id, matchId))
+            throw new IllegalArgumentException("El partido no pertenece a este arbitro");
+        String jugadorId = body.get("jugadorId").toString();
+        Partido.Tarjeta.TipoTarjeta tipo = Partido.Tarjeta.TipoTarjeta.valueOf(body.get("tipo").toString());
+        int minuto = Integer.parseInt(body.get("minuto").toString());
+        return partidoService.registrarTarjeta(matchId, jugadorId, tipo, minuto);
+    }
+
+    @PreAuthorize("hasRole('ARBITRO')")
     @Operation(summary = "Get referee matches")
     @GetMapping("/referees/{id}/matches")
     public List<Partido> consultarPartidosAsignados(@PathVariable String id) {

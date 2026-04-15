@@ -138,6 +138,21 @@ Esta forma de manejo genera desorden, retrasos y confusion entre participantes y
 
 [Ver reporte de pruebas](docs/planing/pruebas.md)
 
+### Cobertura de pruebas
+
+Reporte generado con **JaCoCo** y analizado con **SonarCloud**.
+
+| Métrica | Cubierto | Total | Cobertura |
+|---|---|---|---|
+| Líneas | 1964 | 2188 | 90% |
+| Ramas | 509 | 745 | 68% |
+| Métodos | 744 | 794 | 94% |
+
+- Las capas de **servicio**, **validación** y **controlador** concentran la mayor parte de las pruebas unitarias e integración.
+- La cobertura de ramas del 68% refleja principalmente ramas de manejo de errores y flujos alternativos en lógica de negocio compleja (llaves eliminatorias, avance de fases).
+- SonarCloud reporta **0 bugs abiertos** tras los arreglos de `Optional.get()` sin verificar en `AlineacionService` y `CapitanService`.
+- Las capas de persistencia (`persistence/`) están excluidas del análisis de cobertura por configuración de JaCoCo.
+
 ---
 
 ## Sprint 4 — Videos de pruebas técnicas

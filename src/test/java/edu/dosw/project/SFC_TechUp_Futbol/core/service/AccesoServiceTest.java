@@ -2,6 +2,8 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AutenticacionAdminException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoServiceImpl;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
@@ -69,6 +71,9 @@ class AccesoServiceTest {
         CapitanJpaRepository capRepo = mock(CapitanJpaRepository.class);
         when(capRepo.findByEmail(anyString())).thenReturn(Optional.empty());
 
+        edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository adminRepo = mock(edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository.class);
+        when(adminRepo.findByEmail(anyString())).thenReturn(Optional.empty());
+
         TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
         EquipoJpaRepository equipoRepo = mock(EquipoJpaRepository.class);
 
@@ -80,8 +85,9 @@ class AccesoServiceTest {
         OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepo, torneoMapper);
         ArbitroMapper arbMapper = TestMappers.arbitroMapper(partidoMapper);
         CapitanMapper capMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
+        edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper adminMapper = TestMappers.administradorMapper();
 
-        accesoService = new AccesoServiceImpl(repo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, new JwtService());
+        accesoService = new AccesoServiceImpl(repo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, adminRepo, adminMapper, new JwtService());
     }
 
     private RegistroRequest registroValido() {
@@ -103,7 +109,7 @@ class AccesoServiceTest {
     @Test
     void registrar_correoRepetido_lanzaExcepcion() {
         accesoService.registrar(registroValido());
-        assertThrows(IllegalStateException.class, () -> accesoService.registrar(registroValido()));
+        assertThrows(CorreoYaRegistradoException.class, () -> accesoService.registrar(registroValido()));
     }
 
     @Test
@@ -123,7 +129,7 @@ class AccesoServiceTest {
         LoginRequest req = new LoginRequest();
         req.setEmail("juan@escuelaing.edu.co");
         req.setPassword("wrongpassword");
-        assertThrows(IllegalArgumentException.class, () -> accesoService.login(req));
+        assertThrows(AutenticacionAdminException.class, () -> accesoService.login(req));
     }
 
     @Test
@@ -131,6 +137,6 @@ class AccesoServiceTest {
         LoginRequest req = new LoginRequest();
         req.setEmail("noexiste@escuelaing.edu.co");
         req.setPassword("12345678");
-        assertThrows(IllegalArgumentException.class, () -> accesoService.login(req));
+        assertThrows(AutenticacionAdminException.class, () -> accesoService.login(req));
     }
 }

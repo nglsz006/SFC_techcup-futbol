@@ -26,6 +26,10 @@ public class TorneoService extends Subject {
         this.mapper = mapper;
     }
 
+    private static String sanitize(String input) {
+        return input == null ? "null" : input.replaceAll("[\r\n\t]", "_");
+    }
+
     public Torneo crear(Torneo torneo, Map<String, Object> datos) {
         if (torneo.getNombre() == null || torneo.getNombre().isBlank())
             throw new IllegalArgumentException("El nombre del torneo es obligatorio.");
@@ -92,7 +96,7 @@ public class TorneoService extends Subject {
                 throw new IllegalStateException("No se puede eliminar un torneo con partidos en curso.");
         }
         repository.deleteById(id);
-        log.info("Torneo eliminado con id: " + id);
+        log.info("Torneo eliminado con id: " + sanitize(id));
     }
 
     public Torneo configurar(String id, String reglamento, String canchas, String horarios,

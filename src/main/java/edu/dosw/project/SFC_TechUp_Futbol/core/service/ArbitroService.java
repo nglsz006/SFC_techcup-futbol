@@ -31,6 +31,23 @@ public class ArbitroService {
                 .orElse(List.of());
     }
 
+    public List<Partido> consultarPartidosPendientes(String arbitroId) {
+        return consultarPartidosAsignados(arbitroId).stream()
+                .filter(p -> p.getEstado() != Partido.PartidoEstado.FINALIZADO)
+                .toList();
+    }
+
+    public List<Partido> consultarPartidosArbitrados(String arbitroId) {
+        return consultarPartidosAsignados(arbitroId).stream()
+                .filter(p -> p.getEstado() == Partido.PartidoEstado.FINALIZADO)
+                .toList();
+    }
+
+    public boolean tienePartido(String arbitroId, String partidoId) {
+        return consultarPartidosAsignados(arbitroId).stream()
+                .anyMatch(p -> p.getId().equals(partidoId));
+    }
+
     public List<Arbitro> getArbitros() {
         return arbitroRepository.findAll().stream().map(mapper::toDomain).toList();
     }

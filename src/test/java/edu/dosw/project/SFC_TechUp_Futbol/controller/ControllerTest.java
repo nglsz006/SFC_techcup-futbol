@@ -60,7 +60,10 @@ class ControllerTest {
         ArbitroMapper arbMapperAcceso = TestMappers.arbitroMapper(partidoMapper);
         CapitanMapper capMapperAcceso = TestMappers.capitanMapper(equipoRepoAcceso, equipoMapper);
 
-        AccesoServiceImpl accesoService = new AccesoServiceImpl(usuarioRepo, usuarioMapper, orgRepoAcceso, orgMapperAcceso, arbRepoAcceso, arbMapperAcceso, capRepoAcceso, capMapperAcceso, new edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService());
+        AdministradorJpaRepository adminRepoAcceso = mock(AdministradorJpaRepository.class);
+        when(adminRepoAcceso.findByEmail(anyString())).thenReturn(Optional.empty());
+        AdministradorMapper adminMapperAcceso = TestMappers.administradorMapper();
+        AccesoServiceImpl accesoService = new AccesoServiceImpl(usuarioRepo, usuarioMapper, orgRepoAcceso, orgMapperAcceso, arbRepoAcceso, arbMapperAcceso, capRepoAcceso, capMapperAcceso, adminRepoAcceso, adminMapperAcceso, new edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService());
         accesoMvc = MockMvcBuilders
                 .standaloneSetup(new AccesoController(accesoService, new AccesoValidator()))
                 .setControllerAdvice(new ErrorHandler()).build();
@@ -159,7 +162,7 @@ class ControllerTest {
         accesoMvc.perform(post("/api/access/register").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(reg)));
         Map<String, String> login = Map.of("email", "luis@escuelaing.edu.co", "password", "wrongpass");
         accesoMvc.perform(post("/api/access/login").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(login)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     private String crearOrganizadorYTorneo(String emailOrg, String nombreTorneo) throws Exception {
