@@ -59,7 +59,8 @@ public class AlineacionService extends Subject {
         if (reservas != null) datos.put("reservas", reservas);
         validador.validar(datos);
 
-        Equipo equipo = equipoMapper.toDomain(equipoRepository.findById(equipoId).get());
+        Equipo equipo = equipoMapper.toDomain(equipoRepository.findById(equipoId)
+                .orElseThrow(() -> new IllegalArgumentException("Equipo no encontrado.")));
         validarJugadoresDelEquipo(equipo, titulares, reservas);
 
         Alineacion alineacion = new Alineacion();
