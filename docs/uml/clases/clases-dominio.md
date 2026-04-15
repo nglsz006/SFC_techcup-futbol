@@ -26,6 +26,7 @@ classDiagram
         -String canchas
         -String horarios
         -String sanciones
+        -String campeonId
         +iniciar() void
         +finalizar() void
     }
@@ -41,12 +42,20 @@ classDiagram
         -String id
         -LocalDateTime fecha
         -String cancha
+        -Fase fase
         -int marcadorLocal
         -int marcadorVisitante
         -PartidoEstado estado
         +iniciar() void
         +registrarResultado(gl, gv) void
         +finalizar() void
+    }
+
+    class Fase {
+        <<enumeration>>
+        CUARTOS
+        SEMIFINAL
+        FINAL
     }
 
     class PartidoEstado {
@@ -93,9 +102,16 @@ classDiagram
         -String comprobante
         -LocalDate fechaSubida
         -PagoEstado estado
+        -MedioPago medioPago
+        -double monto
         -String equipoNombre
         +avanzar() void
         +rechazar() void
+    }
+
+    class MedioPago {
+        <<enumeration>>
+        NEQUI
     }
 
     class PagoEstado {
@@ -142,6 +158,7 @@ classDiagram
 
     Torneo "1" --> "1" EstadoTorneo : estado
     Partido "1" --> "1" PartidoEstado : estado
+    Partido "1" --> "0..1" Fase : fase
     Partido "1" --> "1" Torneo : pertenece a
     Partido "1" --> "1" Equipo : equipoLocal
     Partido "1" --> "1" Equipo : equipoVisitante
@@ -152,6 +169,7 @@ classDiagram
     Tarjeta "1" --> "1" TipoTarjeta : tipo
     Pago "0..*" --> "1" Equipo : de equipo
     Pago "1" --> "1" PagoEstado : estado
+    Pago "1" --> "1" MedioPago : medioPago
     Alineacion "1" --> "1" Equipo : de equipo
     Alineacion "1" --> "1" Partido : para partido
     Alineacion "1" --> "1" Formacion : formacion

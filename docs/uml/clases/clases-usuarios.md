@@ -18,6 +18,7 @@ classDiagram
         -String email
         -String password
         -TipoUsuario userType
+        -Carrera carrera
         +getId() String
         +getName() String
         +getEmail() String
@@ -30,6 +31,17 @@ classDiagram
         PROFESOR
         PERSONAL_ADMIN
         FAMILIAR
+    }
+
+    class Carrera {
+        <<enumeration>>
+        INGENIERIA_SISTEMAS
+        IA
+        CIBERSEGURIDAD
+        ESTADISTICA
+        MAESTRIA_GESTION_INFORMACION
+        MAESTRIA_INFORMATICA
+        MAESTRIA_CIENCIA_DATOS
     }
 
     class UsuarioRegistrado {
@@ -107,6 +119,7 @@ classDiagram
     }
 
     Usuario "1" --> "1" TipoUsuario : userType
+    Usuario "1" --> "0..1" Carrera : carrera
     Usuario <|-- UsuarioRegistrado : extends
     Usuario <|-- Jugador : extends
     Usuario <|-- Arbitro : extends
@@ -115,7 +128,7 @@ classDiagram
     Jugador <|-- Capitan : extends
     Jugador "1" --> "1" Posicion : position
     Capitan "1" --> "0..1" Equipo : lidera
-    Equipo "1" o-- "7..12" Jugador : contiene
+    Equipo "1" o-- "8..12" Jugador : contiene
     Jugador "1" --> "0..1" PerfilDeportivo : tiene
     PerfilDeportivo "1" --> "1" Genero : genero
 ```

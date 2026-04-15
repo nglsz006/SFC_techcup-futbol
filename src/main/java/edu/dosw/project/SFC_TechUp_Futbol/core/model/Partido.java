@@ -14,10 +14,12 @@ import edu.dosw.project.SFC_TechUp_Futbol.core.model.state.ProgramadoState;
 public class Partido {
 
     public enum PartidoEstado { PROGRAMADO, EN_CURSO, FINALIZADO }
+    public enum Fase { FASE_INICIAL, CUARTOS, SEMIFINAL, FINAL }
 
     private String id;
     private LocalDateTime fecha;
     private String cancha;
+    private Fase fase;
     private int marcadorLocal = 0;
     private int marcadorVisitante = 0;
     private PartidoEstado estado;
@@ -49,6 +51,9 @@ public class Partido {
 
     public String getCancha() { return cancha; }
     public void setCancha(String cancha) { this.cancha = cancha; }
+
+    public Fase getFase() { return fase; }
+    public void setFase(Fase fase) { this.fase = fase; }
 
     public int getMarcadorLocal() { return marcadorLocal; }
     public void setMarcadorLocal(int marcadorLocal) { this.marcadorLocal = marcadorLocal; }

@@ -23,6 +23,7 @@ public class Torneo {
     private String canchas;
     private String horarios;
     private String sanciones;
+    private String campeonId;
 
     public Torneo() {
         this.estado = EstadoTorneo.CREADO;
@@ -87,5 +88,8 @@ public class Torneo {
 
     public String getSanciones() { return sanciones; }
     public void setSanciones(String sanciones) { this.sanciones = sanciones; }
+
+    public String getCampeonId() { return campeonId; }
+    public void setCampeonId(String campeonId) { this.campeonId = campeonId; }
 }
 

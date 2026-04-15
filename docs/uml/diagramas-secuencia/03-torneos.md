@@ -87,6 +87,29 @@ sequenceDiagram
     PartidoService-->>TorneoController: List~Partido~
     TorneoController-->>Cliente: 200 OK List partidos con marcador y estado
 
+    %% Llave eliminatoria
+    Cliente->>TorneoController: GET /api/tournaments/{id}/bracket
+    TorneoController->>PartidoService: consultarPartidosPorTorneo(id)
+    PartidoService-->>TorneoController: List~Partido~
+    TorneoController->>TorneoController: agrupar por fase (CUARTOS, SEMIFINAL, FINAL)
+    TorneoController-->>Cliente: 200 OK Map fase -> List partidos
+
+    %% Generar llaves
+    Cliente->>TorneoController: POST /api/tournaments/{id}/generate-bracket
+    TorneoController->>PartidoService: generarLlaves(id)
+    PartidoService->>PartidoService: calcularTabla(torneoId) -> top 8
+    PartidoService->>PartidoService: shuffle(equipos)
+    PartidoService->>PartidoRepository: save(partidos CUARTOS)
+    PartidoService-->>TorneoController: List~Partido~ cuartos
+    TorneoController-->>Cliente: 200 OK List~Partido~
+
+    %% Maximos goleadores
+    Cliente->>TorneoController: GET /api/tournaments/{id}/top-scorers
+    TorneoController->>PartidoService: maximosGoleadores(id)
+    PartidoService->>PartidoService: contar goles por jugador
+    PartidoService-->>TorneoController: List jugadorId, nombre, goles
+    TorneoController-->>Cliente: 200 OK List goleadores
+
     %% Estadisticas
     Cliente->>TorneoController: GET /api/tournaments/{id}/statistics
     TorneoController->>PartidoService: consultarPartidosPorTorneo(id)

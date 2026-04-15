@@ -48,6 +48,7 @@ graph TD
     O2S --> JS
     O2S -->|OAuth2Response token| CLI
     AC --> AV
+    note right of AV: Valida correo segun tipo usuario\nSi ESTUDIANTE, carrera obligatoria
     AC --> AS
     AS --> UR
     AS --> OR

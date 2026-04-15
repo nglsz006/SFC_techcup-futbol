@@ -208,6 +208,7 @@ public class TestMappers {
                 e.setId(partido.getId()); e.setFecha(partido.getFecha());
                 e.setCancha(partido.getCancha()); e.setMarcadorLocal(partido.getMarcadorLocal());
                 e.setMarcadorVisitante(partido.getMarcadorVisitante()); e.setEstado(partido.getEstado());
+                e.setFase(partido.getFase());
                 if (partido.getTorneo() != null) e.setTorneo(torneoMapper().toEntity(partido.getTorneo()));
                 if (partido.getEquipoLocal() != null) e.setEquipoLocal(equipoMapper().toEntity(partido.getEquipoLocal()));
                 if (partido.getEquipoVisitante() != null) e.setEquipoVisitante(equipoMapper().toEntity(partido.getEquipoVisitante()));
@@ -220,6 +221,7 @@ public class TestMappers {
                 p.setId(e.getId()); p.setFecha(e.getFecha());
                 p.setCancha(e.getCancha()); p.setMarcadorLocal(e.getMarcadorLocal());
                 p.setMarcadorVisitante(e.getMarcadorVisitante()); p.setEstado(e.getEstado());
+                p.setFase(e.getFase());
                 if (e.getTorneo() != null) p.setTorneo(torneoMapper().toDomain(e.getTorneo()));
                 if (e.getEquipoLocal() != null) p.setEquipoLocal(equipoMapper().toDomain(e.getEquipoLocal()));
                 if (e.getEquipoVisitante() != null) p.setEquipoVisitante(equipoMapper().toDomain(e.getEquipoVisitante()));

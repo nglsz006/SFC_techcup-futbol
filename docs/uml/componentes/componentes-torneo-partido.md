@@ -47,7 +47,8 @@ graph TD
     UC -->|crear torneo| OS
     UC -->|crear partido| PS
     TC -->|consultar torneo| TS
-    TC -->|tabla posiciones / bracket / estadisticas| PS
+    TC -->|tabla posiciones / bracket agrupado por fase / estadisticas| PS
+    TC -->|generate-bracket / top-scorers| PS
     PC -->|consultar partido| PS
     OS --> OR
     OS --> TS

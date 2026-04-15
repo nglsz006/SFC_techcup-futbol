@@ -72,4 +72,11 @@ sequenceDiagram
     end
     JugadorService->>JugadorRepository: save(jugador)
     UsuarioController-->>Cliente: 200 OK "Jugador marcado como disponible"
+    %% Busqueda avanzada de jugadores
+    Cliente->>UsuarioController: GET /api/users/captains/{id}/search-players/advanced?posicion=X&semestre=Y&edad=Z&genero=G&nombre=N&identificacion=I
+    UsuarioController->>PerfilDeportivoService: buscarJugadores(posicion, semestre, edad, genero, nombre, identificacion)
+    PerfilDeportivoService->>PerfilDeportivoRepository: findAll()
+    PerfilDeportivoService->>PerfilDeportivoService: filtrar por cada parametro opcional
+    PerfilDeportivoService-->>UsuarioController: List~PerfilDeportivo~
+    UsuarioController-->>Cliente: 200 OK List~PerfilDeportivo~
 ```

@@ -50,6 +50,9 @@ public class TorneoEntity {
     @Column
     private String sanciones;
 
+    @Column(name = "campeon_id")
+    private String campeonId;
+
     public TorneoEntity() {}
 
     public String getId() {
@@ -147,4 +150,7 @@ public class TorneoEntity {
     public void setSanciones(String sanciones) {
         this.sanciones = sanciones;
     }
+
+    public String getCampeonId() { return campeonId; }
+    public void setCampeonId(String campeonId) { this.campeonId = campeonId; }
 }

@@ -31,6 +31,10 @@ public class PartidoEntity {
     @Column(nullable = false)
     private Partido.PartidoEstado estado;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Partido.Fase fase;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "torneo_id")
     private TorneoEntity torneo;
@@ -105,6 +109,9 @@ public class PartidoEntity {
     public void setEstado(Partido.PartidoEstado estado) {
         this.estado = estado;
     }
+
+    public Partido.Fase getFase() { return fase; }
+    public void setFase(Partido.Fase fase) { this.fase = fase; }
 
     public TorneoEntity getTorneo() {
         return torneo;
