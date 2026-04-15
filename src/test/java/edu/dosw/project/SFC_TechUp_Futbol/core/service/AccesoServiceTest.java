@@ -69,6 +69,9 @@ class AccesoServiceTest {
         CapitanJpaRepository capRepo = mock(CapitanJpaRepository.class);
         when(capRepo.findByEmail(anyString())).thenReturn(Optional.empty());
 
+        edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository adminRepo = mock(edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository.class);
+        when(adminRepo.findByEmail(anyString())).thenReturn(Optional.empty());
+
         TorneoJpaRepository torneoRepo = mock(TorneoJpaRepository.class);
         EquipoJpaRepository equipoRepo = mock(EquipoJpaRepository.class);
 
@@ -80,8 +83,9 @@ class AccesoServiceTest {
         OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepo, torneoMapper);
         ArbitroMapper arbMapper = TestMappers.arbitroMapper(partidoMapper);
         CapitanMapper capMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
+        edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper adminMapper = TestMappers.administradorMapper();
 
-        accesoService = new AccesoServiceImpl(repo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, new JwtService());
+        accesoService = new AccesoServiceImpl(repo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, adminRepo, adminMapper, new JwtService());
     }
 
     private RegistroRequest registroValido() {

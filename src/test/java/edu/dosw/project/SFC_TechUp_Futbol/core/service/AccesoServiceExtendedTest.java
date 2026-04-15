@@ -75,7 +75,11 @@ class AccesoServiceExtendedTest {
         ArbitroMapper arbMapper = TestMappers.arbitroMapper(partidoMapper);
         CapitanMapper capMapper = TestMappers.capitanMapper(equipoRepo(), equipoMapper);
 
-        service = new AccesoServiceImpl(usuarioRepo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, new JwtService());
+        AdministradorJpaRepository adminRepo = mock(AdministradorJpaRepository.class);
+        when(adminRepo.findByEmail(anyString())).thenReturn(Optional.empty());
+        AdministradorMapper adminMapper = TestMappers.administradorMapper();
+
+        service = new AccesoServiceImpl(usuarioRepo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, adminRepo, adminMapper, new JwtService());
     }
 
     private EquipoJpaRepository equipoRepo() {

@@ -6,10 +6,12 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioResponse;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.ArbitroMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.CapitanMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.UsuarioRegistradoMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.ArbitroJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.CapitanJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
@@ -35,6 +37,8 @@ public class AccesoServiceImpl implements AccesoService {
     private final ArbitroMapper arbitroMapper;
     private final CapitanJpaRepository capitanRepository;
     private final CapitanMapper capitanMapper;
+    private final AdministradorJpaRepository administradorRepository;
+    private final AdministradorMapper administradorMapper;
     private final JwtService jwtService;
 
     public AccesoServiceImpl(UsuarioRegistradoJpaRepository usuarioRepository,
@@ -45,6 +49,8 @@ public class AccesoServiceImpl implements AccesoService {
                              ArbitroMapper arbitroMapper,
                              CapitanJpaRepository capitanRepository,
                              CapitanMapper capitanMapper,
+                             AdministradorJpaRepository administradorRepository,
+                             AdministradorMapper administradorMapper,
                              JwtService jwtService) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
@@ -54,6 +60,8 @@ public class AccesoServiceImpl implements AccesoService {
         this.arbitroMapper = arbitroMapper;
         this.capitanRepository = capitanRepository;
         this.capitanMapper = capitanMapper;
+        this.administradorRepository = administradorRepository;
+        this.administradorMapper = administradorMapper;
         this.jwtService = jwtService;
     }
 
@@ -73,6 +81,16 @@ public class AccesoServiceImpl implements AccesoService {
         String email = request.getEmail();
         String password = request.getPassword();
         String emailEncoded = Base64Util.encode(email);
+
+        var adminEntity = administradorRepository.findByEmail(emailEncoded);
+        if (adminEntity.isPresent()) {
+            var admin = administradorMapper.toDomain(adminEntity.get());
+            if (!PasswordUtil.verificar(password, admin.getPassword()))
+                throw new IllegalArgumentException("Credenciales incorrectas.");
+            log.info("Login administrador exitoso");
+            return new LoginResponse(jwtService.generarToken(email, RolFuncional.ADMINISTRADOR),
+                    admin.getName(), email, admin.getUserType());
+        }
 
         var orgEntity = organizadorRepository.findByEmail(emailEncoded);
         if (orgEntity.isPresent()) {
