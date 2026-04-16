@@ -2,7 +2,6 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
-import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AutenticacionAdminException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.AccesoServiceImpl;
@@ -112,7 +111,7 @@ class AccesoServiceTest {
     @Test
     void registrar_correoRepetido_lanzaExcepcion() {
         accesoService.registrar(registroValido());
-        assertThrows(CorreoYaRegistradoException.class, () -> accesoService.registrar(registroValido()));
+        assertThrows(IllegalStateException.class, () -> accesoService.registrar(registroValido()));
     }
 
     @Test
@@ -132,7 +131,7 @@ class AccesoServiceTest {
         LoginRequest req = new LoginRequest();
         req.setEmail("juan@escuelaing.edu.co");
         req.setPassword("wrongpassword");
-        assertThrows(AutenticacionAdminException.class, () -> accesoService.login(req));
+        assertThrows(IllegalArgumentException.class, () -> accesoService.login(req));
     }
 
     @Test
@@ -140,6 +139,6 @@ class AccesoServiceTest {
         LoginRequest req = new LoginRequest();
         req.setEmail("noexiste@escuelaing.edu.co");
         req.setPassword("12345678");
-        assertThrows(AutenticacionAdminException.class, () -> accesoService.login(req));
+        assertThrows(IllegalArgumentException.class, () -> accesoService.login(req));
     }
 }

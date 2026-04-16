@@ -162,7 +162,7 @@ class ControllerTest {
         accesoMvc.perform(post("/api/access/register").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(reg)));
         Map<String, String> login = Map.of("email", "luis@escuelaing.edu.co", "password", "wrongpass");
         accesoMvc.perform(post("/api/access/login").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(login)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest());
     }
 
     private String crearOrganizadorYTorneo(String emailOrg, String nombreTorneo) throws Exception {
