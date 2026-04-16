@@ -55,6 +55,27 @@ public class OrganizadorService {
         return organizadorRepository.findAll().stream().map(mapper::toDomain).toList();
     }
 
+    public List<Torneo> getTorneos(String organizadorId) {
+        getOrThrow(organizadorId);
+        return torneoService.listar().stream()
+                .filter(t -> organizadorRepository.findAll().stream()
+                        .map(mapper::toDomain)
+                        .anyMatch(o -> o.getId().equals(organizadorId)
+                                && o.getCurrentTournament() != null
+                                && o.getCurrentTournament().getId().equals(t.getId())))
+                .toList();
+    }
+
+    public Torneo iniciarTorneoPorId(String organizadorId, String torneoId) {
+        getOrThrow(organizadorId);
+        return torneoService.iniciar(torneoId);
+    }
+
+    public Torneo finalizarTorneoPorId(String organizadorId, String torneoId) {
+        getOrThrow(organizadorId);
+        return torneoService.finalizar(torneoId);
+    }
+
     private Organizador getOrThrow(String id) {
         return organizadorRepository.findById(id)
                 .map(mapper::toDomain)
