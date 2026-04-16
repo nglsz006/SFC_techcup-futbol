@@ -30,7 +30,5 @@ public class AccesoValidator {
             throw new IllegalArgumentException("El tipo de usuario es obligatorio.");
         if (!registroValidator.correoValidoSegunTipo(request.getEmail(), request.getTipoUsuario()))
             throw new IllegalArgumentException("El correo no corresponde al tipo de usuario.");
-        if (request.getTipoUsuario() == edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario.TipoUsuario.ESTUDIANTE && request.getCarrera() == null)
-            throw new IllegalArgumentException("La carrera es obligatoria para estudiantes.");
     }
 }
