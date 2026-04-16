@@ -62,6 +62,23 @@ public class UsuarioController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get current logged user")
+    @GetMapping("/me")
+    public Map<String, Object> me(jakarta.servlet.http.HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer "))
+            throw new IllegalArgumentException("Token no encontrado.");
+        String token = authHeader.substring(7);
+        org.springframework.security.core.Authentication auth =
+            org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        Map<String, Object> resp = new java.util.LinkedHashMap<>();
+        resp.put("email", auth.getName());
+        resp.put("rol", auth.getAuthorities().stream().findFirst()
+                .map(a -> a.getAuthority().replace("ROLE_", "")).orElse(""));
+        return resp;
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get actions by actor")
     @GetMapping("/{actor}")
     public Map<String, Object> accionesPorActor(@PathVariable String actor) {
@@ -103,6 +120,24 @@ public class UsuarioController {
         );
         jugadorService.save(jugador);
         return Map.of("mensaje", "Jugador registrado correctamente.");
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get player by ID")
+    @GetMapping("/players/{id}")
+    public JugadorResponse obtenerJugador(@PathVariable String id) {
+        Jugador jugador = jugadorService.buscarJugadorPorId(id);
+        if (jugador == null) throw new IllegalArgumentException("Jugador no encontrado.");
+        return new JugadorResponse(jugador);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get player sanctions")
+    @GetMapping("/players/{id}/sanciones")
+    public java.util.List<edu.dosw.project.SFC_TechUp_Futbol.core.model.Sancion> obtenerSanciones(@PathVariable String id) {
+        Jugador jugador = jugadorService.buscarJugadorPorId(id);
+        if (jugador == null) throw new IllegalArgumentException("Jugador no encontrado.");
+        return jugador.getSanciones();
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -456,7 +491,53 @@ public class UsuarioController {
         return new OrganizadorResponse(guardado);
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "List organizer tournaments")
+    @GetMapping("/organizers/{id}/tournaments")
+    public List<edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo> listarTorneosOrganizador(@PathVariable String id) {
+        return organizadorService.getTorneos(id);
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "Get organizer summary")
+    @GetMapping("/organizers/{id}/summary")
+    public Map<String, Object> resumenOrganizador(@PathVariable String id) {
+        List<edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo> torneos = organizadorService.getTorneos(id);
+        long torneosActivos = torneos.stream().filter(t -> t.getEstado() == edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo.EstadoTorneo.EN_CURSO).count();
+        long pagosPendientes = pagoService.consultarPagosPendientes().size();
+        Map<String, Object> resp = new LinkedHashMap<>();
+        resp.put("torneosActivos", torneosActivos);
+        resp.put("totalTorneos", torneos.size());
+        resp.put("pagosPendientes", pagosPendientes);
+        return resp;
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "Get pending payments filtered by tournament")
+    @GetMapping("/organizers/{id}/payments/pending")
+    public List<edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago> pagosPendientesFiltrados(
+            @PathVariable String id,
+            @RequestParam(required = false) String tournamentId) {
+        return pagoService.consultarPagosPendientes();
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "Start tournament by id")
+    @PatchMapping("/organizers/{id}/tournaments/{tournamentId}/start")
+    public edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo iniciarTorneoPorId(
+            @PathVariable String id, @PathVariable String tournamentId) {
+        return organizadorService.iniciarTorneoPorId(id, tournamentId);
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "End tournament by id")
+    @PatchMapping("/organizers/{id}/tournaments/{tournamentId}/end")
+    public edu.dosw.project.SFC_TechUp_Futbol.core.model.Torneo finalizarTorneoPorId(
+            @PathVariable String id, @PathVariable String tournamentId) {
+        return organizadorService.finalizarTorneoPorId(id, tournamentId);
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "List organizers")
     @GetMapping("/organizers")
     public List<OrganizadorResponse> listarOrganizadores() {
@@ -507,6 +588,36 @@ public class UsuarioController {
     }
 
     @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "Register match result")
+    @PutMapping("/organizers/{id}/matches/{matchId}/result")
+    public Partido registrarResultadoOrganizador(@PathVariable String id, @PathVariable String matchId,
+                                      @RequestBody Map<String, Integer> body) {
+        partidoValidator.validarResultado(body.get("golesLocal"), body.get("golesVisitante"));
+        return partidoService.registrarResultado(matchId, body.get("golesLocal"), body.get("golesVisitante"));
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "Register goal scorer from organizer")
+    @PostMapping("/organizers/{id}/matches/{matchId}/goals")
+    public Partido registrarGoleadorOrganizador(@PathVariable String id, @PathVariable String matchId,
+                                                @RequestBody Map<String, Object> body) {
+        String jugadorId = body.get("jugadorId").toString();
+        int minuto = Integer.parseInt(body.get("minuto").toString());
+        return partidoService.registrarGoleador(matchId, jugadorId, minuto);
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "Register sanction from organizer")
+    @PostMapping("/organizers/{id}/matches/{matchId}/sanctions")
+    public Partido registrarSancionOrganizador(@PathVariable String id, @PathVariable String matchId,
+                                               @RequestBody Map<String, Object> body) {
+        String jugadorId = body.get("jugadorId").toString();
+        Sancion.TipoSancion tipoSancion = Sancion.TipoSancion.valueOf(body.get("tipoSancion").toString());
+        String descripcion = sanitize(body.get("descripcion").toString());
+        return partidoService.registrarSancion(matchId, jugadorId, tipoSancion, descripcion);
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Create match")
     @PostMapping("/organizers/{id}/matches")
     public Partido crearPartido(@PathVariable String id, @RequestBody Map<String, Object> body) {
@@ -516,13 +627,6 @@ public class UsuarioController {
         LocalDateTime fecha = LocalDateTime.parse(body.get("fecha").toString());
         String cancha = body.get("cancha").toString();
         return partidoService.crearPartido(torneoId, equipoLocalId, equipoVisitanteId, fecha, cancha);
-    }
-
-    @PreAuthorize("hasRole('ORGANIZADOR')")
-    @Operation(summary = "View pending payments")
-    @GetMapping("/organizers/{id}/payments/pending")
-    public List<Pago> pagosPendientes(@PathVariable String id) {
-        return pagoService.consultarPagosPendientes();
     }
 
     @PreAuthorize("hasRole('ORGANIZADOR')")

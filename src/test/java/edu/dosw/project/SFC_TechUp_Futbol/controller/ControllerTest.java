@@ -94,10 +94,6 @@ class ControllerTest {
 
         JugadorService jugadorServiceEquipo = new JugadorService(jugadorRepo2, jugadorMapper);
 
-        equipoMvc = MockMvcBuilders
-                .standaloneSetup(new EquipoController(equipoService2, jugadorServiceEquipo))
-                .setControllerAdvice(new ErrorHandler()).build();
-
         JugadorService jugadorService = new JugadorService(jugadorRepo2, jugadorMapper);
 
         Map<String, ArbitroEntity> arbitroStore = new HashMap<>();
@@ -109,6 +105,10 @@ class ControllerTest {
         CapitanJpaRepository capitanRepo = MockRepoHelper.capitanRepo(capitanStore);
         CapitanMapper capitanMapper = TestMappers.capitanMapper(equipoRepo2, equipoMapper);
         CapitanService capitanService = new CapitanService(capitanRepo, capitanMapper, jugadorService, jugadorRepo2, jugadorMapper);
+
+        equipoMvc = MockMvcBuilders
+                .standaloneSetup(new EquipoController(equipoService2, jugadorServiceEquipo, capitanService))
+                .setControllerAdvice(new ErrorHandler()).build();
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         TorneoJpaRepository torneoRepoOrg = MockRepoHelper.torneoRepo(new HashMap<>(torneoStore));

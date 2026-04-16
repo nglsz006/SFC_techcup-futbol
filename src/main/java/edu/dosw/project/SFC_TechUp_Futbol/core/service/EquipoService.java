@@ -49,6 +49,15 @@ public class EquipoService extends Subject {
         return saved;
     }
 
+    public Equipo actualizar(String id, Equipo datos) {
+        Equipo equipo = obtener(id);
+        if (datos.getNombre() != null && !datos.getNombre().isBlank()) equipo.setNombre(datos.getNombre());
+        if (datos.getEscudo() != null) equipo.setEscudo(datos.getEscudo());
+        if (datos.getColorPrincipal() != null) equipo.setColorPrincipal(datos.getColorPrincipal());
+        if (datos.getColorSecundario() != null) equipo.setColorSecundario(datos.getColorSecundario());
+        return mapper.toDomain(repository.save(mapper.toEntity(equipo)));
+    }
+
     public Equipo obtener(String id) {
         return repository.findById(id)
             .map(mapper::toDomain)
