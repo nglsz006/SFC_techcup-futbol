@@ -43,6 +43,8 @@ class AccesoServiceExtendedTest {
         });
         when(usuarioRepo.findByEmail(anyString())).thenAnswer(inv ->
                 usuarioStore.values().stream().filter(e -> inv.<String>getArgument(0).equals(e.getEmail())).findFirst());
+        when(usuarioRepo.existsEmailEnTablaUsuario(anyString())).thenAnswer(inv ->
+                usuarioStore.values().stream().anyMatch(e -> inv.<String>getArgument(0).equals(e.getEmail())));
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         orgRepo = mock(OrganizadorJpaRepository.class);

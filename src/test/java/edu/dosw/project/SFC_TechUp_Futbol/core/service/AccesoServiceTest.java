@@ -60,7 +60,10 @@ class AccesoServiceTest {
             String email = inv.getArgument(0);
             return store.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
-        when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store.values()));
+        when(repo.existsEmailEnTablaUsuario(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return store.values().stream().anyMatch(e -> email.equals(e.getEmail()));
+        });
 
         OrganizadorJpaRepository orgRepo = mock(OrganizadorJpaRepository.class);
         when(orgRepo.findByEmail(anyString())).thenReturn(Optional.empty());

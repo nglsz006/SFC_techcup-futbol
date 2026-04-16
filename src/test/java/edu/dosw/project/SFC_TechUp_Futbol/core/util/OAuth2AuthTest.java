@@ -4,6 +4,7 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.OAuth2Response
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.OAuth2Service;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtFilter;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.UsuarioRegistradoEntity;
@@ -52,6 +53,10 @@ class OAuth2AuthTest {
             String email = inv.getArgument(0);
             return store.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
         });
+        when(repo.existsEmailEnTablaUsuario(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return store.values().stream().anyMatch(e -> email.equals(e.getEmail()));
+        });
         when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store.values()));
         oAuth2Service = new OAuth2Service(repo, mapper, jwtService);
         jwtFilter = new JwtFilter(jwtService);
@@ -81,7 +86,7 @@ class OAuth2AuthTest {
         existente.setEmail("existente@gmail.com");
         existente.setPassword("hash");
         existente.setUserType(Usuario.TipoUsuario.FAMILIAR);
-        when(repo.findByEmail("existente@gmail.com")).thenReturn(Optional.of(existente));
+        when(repo.findByEmail(Base64Util.encode("existente@gmail.com"))).thenReturn(Optional.of(existente));
         OAuth2AuthenticationToken token = crearToken("existente@gmail.com", "Existente");
         OAuth2Response response = oAuth2Service.procesarCallback(token);
         assertNotNull(response.getToken());
