@@ -14,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-
 @Tag(name = "Admin", description = "Administrative registration of organizers and referees.")
 @RestController
 @RequestMapping("/api/admin")
@@ -33,6 +32,13 @@ public class AdministradorController {
         this.administradorValidator = administradorValidator;
         this.autenticacionAdministradorService = autenticacionAdministradorService;
         this.auditoriaService = auditoriaService;
+    }
+
+    @Operation(summary = "Setup first admin (temporary endpoint - remove after use)")
+    @PostMapping("/setup")
+    public Map<String, String> setup(@RequestBody RegistroAdministrativoRequest request) {
+        administradorService.registrarAdministrador(request);
+        return Map.of("mensaje", "Administrador creado correctamente.");
     }
 
     @Operation(summary = "Admin login")
