@@ -38,8 +38,7 @@ class OAuth2SuccessHandlerTest {
 
         handler.onAuthenticationSuccess(request, httpResponse, token);
 
-        verify(httpResponse).setContentType("application/json");
-        verify(httpResponse).setCharacterEncoding("UTF-8");
+        verify(httpResponse).sendRedirect("http://localhost:5173/oauth2/callback?token=jwt-token");
         verify(oAuth2Service).procesarCallback(token);
     }
 }
