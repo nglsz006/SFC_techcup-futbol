@@ -2,6 +2,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.EquipoResponse;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Equipo;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.CapitanService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.EquipoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.JugadorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,10 +20,12 @@ public class EquipoController {
 
     private final EquipoService service;
     private final JugadorService jugadorService;
+    private final CapitanService capitanService;
 
-    public EquipoController(EquipoService service, JugadorService jugadorService) {
+    public EquipoController(EquipoService service, JugadorService jugadorService, CapitanService capitanService) {
         this.service = service;
         this.jugadorService = jugadorService;
+        this.capitanService = capitanService;
     }
 
     @PreAuthorize("hasRole('CAPITAN')")
@@ -34,7 +37,15 @@ public class EquipoController {
         equipo.setEscudo(body.getOrDefault("escudo", "").toString());
         equipo.setColorPrincipal(body.getOrDefault("colorPrincipal", "").toString());
         equipo.setColorSecundario(body.getOrDefault("colorSecundario", "").toString());
-        equipo.setCapitanId(body.getOrDefault("capitanId", "").toString());
+
+        if (body.containsKey("correoCapitan")) {
+            String correoCapitan = body.get("correoCapitan").toString();
+            String emailEncoded = edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util.encode(correoCapitan);
+            String capitanId = capitanService.buscarIdPorEmail(emailEncoded);
+            equipo.setCapitanId(capitanId);
+        } else {
+            equipo.setCapitanId(body.getOrDefault("capitanId", "").toString());
+        }
         return new EquipoResponse(service.crear(equipo, body));
     }
 

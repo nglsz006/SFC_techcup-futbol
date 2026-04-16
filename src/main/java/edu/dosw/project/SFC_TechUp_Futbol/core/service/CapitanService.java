@@ -77,6 +77,12 @@ public class CapitanService {
         return capitanRepository.findAll().stream().map(mapper::toDomain).toList();
     }
 
+    public String buscarIdPorEmail(String emailEncoded) {
+        return capitanRepository.findByEmail(emailEncoded)
+                .map(e -> e.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Capitan no encontrado con ese correo."));
+    }
+
     public String toggleRol(String usuarioId) {
         // Si es capitán, convertir a jugador
         if (capitanRepository.existsById(usuarioId)) {

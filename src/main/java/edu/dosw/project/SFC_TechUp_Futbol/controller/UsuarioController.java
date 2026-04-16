@@ -507,6 +507,36 @@ public class UsuarioController {
     }
 
     @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "Register match result")
+    @PutMapping("/organizers/{id}/matches/{matchId}/result")
+    public Partido registrarResultadoOrganizador(@PathVariable String id, @PathVariable String matchId,
+                                      @RequestBody Map<String, Integer> body) {
+        partidoValidator.validarResultado(body.get("golesLocal"), body.get("golesVisitante"));
+        return partidoService.registrarResultado(matchId, body.get("golesLocal"), body.get("golesVisitante"));
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "Register goal scorer from organizer")
+    @PostMapping("/organizers/{id}/matches/{matchId}/goals")
+    public Partido registrarGoleadorOrganizador(@PathVariable String id, @PathVariable String matchId,
+                                                @RequestBody Map<String, Object> body) {
+        String jugadorId = body.get("jugadorId").toString();
+        int minuto = Integer.parseInt(body.get("minuto").toString());
+        return partidoService.registrarGoleador(matchId, jugadorId, minuto);
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
+    @Operation(summary = "Register sanction from organizer")
+    @PostMapping("/organizers/{id}/matches/{matchId}/sanctions")
+    public Partido registrarSancionOrganizador(@PathVariable String id, @PathVariable String matchId,
+                                               @RequestBody Map<String, Object> body) {
+        String jugadorId = body.get("jugadorId").toString();
+        Sancion.TipoSancion tipoSancion = Sancion.TipoSancion.valueOf(body.get("tipoSancion").toString());
+        String descripcion = sanitize(body.get("descripcion").toString());
+        return partidoService.registrarSancion(matchId, jugadorId, tipoSancion, descripcion);
+    }
+
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Create match")
     @PostMapping("/organizers/{id}/matches")
     public Partido crearPartido(@PathVariable String id, @RequestBody Map<String, Object> body) {

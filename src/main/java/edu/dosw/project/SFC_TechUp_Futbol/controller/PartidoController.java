@@ -38,6 +38,13 @@ public class PartidoController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get match sanctions")
+    @GetMapping("/{id}/sanctions")
+    public java.util.List<edu.dosw.project.SFC_TechUp_Futbol.core.model.Sancion> consultarSanciones(@PathVariable String id) {
+        return partidoService.consultarPartido(id).getSanciones();
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get matches by team")
     @GetMapping("/team/{teamId}")
     public List<Partido> consultarPorEquipo(@PathVariable String teamId) {
