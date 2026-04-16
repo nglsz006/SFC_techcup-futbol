@@ -123,6 +123,24 @@ public class UsuarioController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get player by ID")
+    @GetMapping("/players/{id}")
+    public JugadorResponse obtenerJugador(@PathVariable String id) {
+        Jugador jugador = jugadorService.buscarJugadorPorId(id);
+        if (jugador == null) throw new IllegalArgumentException("Jugador no encontrado.");
+        return new JugadorResponse(jugador);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get player sanctions")
+    @GetMapping("/players/{id}/sanciones")
+    public java.util.List<edu.dosw.project.SFC_TechUp_Futbol.core.model.Sancion> obtenerSanciones(@PathVariable String id) {
+        Jugador jugador = jugadorService.buscarJugadorPorId(id);
+        if (jugador == null) throw new IllegalArgumentException("Jugador no encontrado.");
+        return jugador.getSanciones();
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List players")
     @GetMapping("/players")
     public List<JugadorResponse> listarJugadores() {

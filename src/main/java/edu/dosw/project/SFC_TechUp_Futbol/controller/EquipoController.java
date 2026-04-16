@@ -72,11 +72,20 @@ public class EquipoController {
         return new EquipoResponse(service.agregarJugador(equipoId, jugadorId));
     }
 
+    @PreAuthorize("hasRole('CAPITAN')")
+    @Operation(summary = "Update team", description = "Updates team information.")
+    @PutMapping("/{id}")
+    public EquipoResponse actualizarEquipo(@PathVariable String id, @RequestBody Map<String, Object> body) {
+        Equipo datos = new Equipo();
+        datos.setNombre(body.getOrDefault("nombre", "").toString());
+        datos.setEscudo(body.getOrDefault("escudo", "").toString());
+        datos.setColorPrincipal(body.getOrDefault("colorPrincipal", "").toString());
+        datos.setColorSecundario(body.getOrDefault("colorSecundario", "").toString());
+        return new EquipoResponse(service.actualizar(id, datos));
+    }
+
     @PreAuthorize("hasAnyRole('ORGANIZADOR', 'ADMINISTRADOR')")
-    @Operation(
-        summary = "Delete team",
-        description = "Deletes a team by ID. Only ORGANIZADOR or ADMINISTRADOR can perform this action."
-    )
+    @Operation(summary = "Delete team", description = "Deletes a team by ID. Only ORGANIZADOR or ADMINISTRADOR can perform this action.")
     @DeleteMapping("/{id}")
     public Map<String, String> eliminarEquipo(@PathVariable String id) {
         service.eliminar(id);
