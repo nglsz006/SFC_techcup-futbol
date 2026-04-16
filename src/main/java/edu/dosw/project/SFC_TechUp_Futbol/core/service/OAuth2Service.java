@@ -45,7 +45,9 @@ public class OAuth2Service {
             throw new IllegalArgumentException("El correo de Google debe ser un Gmail válido.");
         }
 
-        UsuarioRegistrado usuario = usuarioRepository.findByEmail(email)
+        String emailEncoded = edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util.encode(email);
+
+        UsuarioRegistrado usuario = usuarioRepository.findByEmail(emailEncoded)
                 .map(mapper::toDomain)
                 .orElseGet(() -> {
                     log.info("Usuario OAuth2 nuevo, registrando: " + sanitize(email));
@@ -58,7 +60,7 @@ public class OAuth2Service {
                     return nuevo;
                 });
 
-        String token = jwtService.generarToken(usuario.getEmail(), RolFuncional.JUGADOR);
+        String token = jwtService.generarToken(email, RolFuncional.FAMILIAR);
         log.info("Login OAuth2 exitoso: " + sanitize(email));
         return new OAuth2Response(token);
         } catch (Exception e) {

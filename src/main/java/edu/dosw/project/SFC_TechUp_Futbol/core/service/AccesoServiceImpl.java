@@ -69,7 +69,7 @@ public class AccesoServiceImpl implements AccesoService {
 
     @Override
     public UsuarioResponse registrar(RegistroRequest request) {
-        if (usuarioRepository.findByEmail(Base64Util.encode(request.getEmail())).isPresent())
+        if (usuarioRepository.existsEmailEnTablaUsuario(Base64Util.encode(request.getEmail())))
             throw new CorreoYaRegistradoException("Ya existe un usuario con ese correo.");
         UsuarioRegistrado usuario = AccesoMapper.toModelo(request);
         if (usuario.getId() == null) usuario.setId(edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil.generarId());
