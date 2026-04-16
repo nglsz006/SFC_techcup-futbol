@@ -28,8 +28,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException {
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
         OAuth2Response loginResponse = oAuth2Service.procesarCallback(token);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(loginResponse));
+        String frontUrl = "http://localhost:5173/oauth2/callback?token=" + loginResponse.getToken();
+        response.sendRedirect(frontUrl);
     }
 }
