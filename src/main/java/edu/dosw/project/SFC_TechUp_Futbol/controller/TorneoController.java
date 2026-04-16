@@ -139,6 +139,28 @@ public class TorneoController {
         fila.put(key, (int) fila.get(key) + valor);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get teams by tournament", description = "Returns all teams participating in a tournament.")
+    @GetMapping("/{id}/teams")
+    public List<Map<String, Object>> equiposPorTorneo(@PathVariable String id) {
+        service.obtener(id);
+        List<Partido> partidos = partidoService.consultarPartidosPorTorneo(id);
+        return partidos.stream()
+                .flatMap(p -> java.util.stream.Stream.of(p.getEquipoLocal(), p.getEquipoVisitante()))
+                .filter(e -> e != null)
+                .collect(java.util.stream.Collectors.toMap(
+                        Equipo::getId, e -> e, (a, b) -> a))
+                .values().stream()
+                .map(e -> {
+                    Map<String, Object> m = new LinkedHashMap<>();
+                    m.put("id", e.getId());
+                    m.put("nombre", e.getNombre());
+                    m.put("colorPrincipal", e.getColorPrincipal());
+                    m.put("colorSecundario", e.getColorSecundario());
+                    return m;
+                }).toList();
+    }
+
     @PreAuthorize("hasRole('ORGANIZADOR')")
     @Operation(summary = "Generate bracket", description = "Automatically generates matches for the tournament bracket in random order.")
     @PostMapping("/{id}/generate-bracket")
