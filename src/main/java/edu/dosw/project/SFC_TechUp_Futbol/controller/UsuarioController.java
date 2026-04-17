@@ -110,7 +110,7 @@ public class UsuarioController {
         Jugador jugador = new Jugador(
                 null,
                 body.get("nombre").toString(),
-                edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util.encode(body.get("email").toString()),
+                body.get("email").toString(),
                 edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil.cifrar(body.get("password").toString()),
                 Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString()),
                 Integer.parseInt(body.get("numeroCamiseta").toString()),
@@ -230,7 +230,7 @@ public class UsuarioController {
         Capitan capitan = new Capitan(
                 null,
                 body.get("nombre").toString(),
-                edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util.encode(body.get("email").toString()),
+                body.get("email").toString(),
                 edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil.cifrar(body.get("password").toString()),
                 Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString()),
                 Integer.parseInt(body.get("numeroCamiseta").toString()),
@@ -334,7 +334,7 @@ public class UsuarioController {
         Arbitro arbitro = new Arbitro(
                 null,
                 body.get("nombre").toString(),
-                edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util.encode(body.get("email").toString()),
+                body.get("email").toString(),
                 edu.dosw.project.SFC_TechUp_Futbol.core.util.PasswordUtil.cifrar(body.get("password").toString()),
                 Usuario.TipoUsuario.valueOf(body.get("tipoUsuario").toString())
         );
