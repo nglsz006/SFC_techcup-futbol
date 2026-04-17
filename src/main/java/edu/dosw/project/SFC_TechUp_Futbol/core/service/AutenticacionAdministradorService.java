@@ -58,4 +58,8 @@ public class AutenticacionAdministradorService {
             throw new AutenticacionAdminException("La sesion del administrador no es valida.");
         }
     }
+
+    public String getAdministradorId(String token) {
+        return sesiones.get(token);
+    }
 }
