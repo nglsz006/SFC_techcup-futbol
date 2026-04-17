@@ -202,7 +202,11 @@ class RoleAuthorizationTest {
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nombre\":\"Test\",\"email\":\"x@test.com\",\"password\":\"pass1234\"}"))
-                .andExpect(status().isForbidden());
+                .andExpect(result -> {
+                    int status = result.getResponse().getStatus();
+                    assertTrue(status != 401 && status != 403,
+                            "POST /api/admin/users is now permitAll, got: " + status);
+                });
     }
 
     @Test
