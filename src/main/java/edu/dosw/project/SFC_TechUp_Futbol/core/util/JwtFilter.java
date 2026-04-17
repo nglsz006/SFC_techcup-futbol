@@ -36,8 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = header.substring(7);
 
         if (!jwtService.esValido(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("{\"codigo\":401,\"detalle\":\"Token invalido o expirado.\"}");
+            chain.doFilter(request, response);
             return;
         }
 
