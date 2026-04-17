@@ -45,7 +45,7 @@ public class SecurityConfig {
                     "/swagger-ui/**",
                     "/v3/api-docs/**"
                 ).permitAll()
-                .requestMatchers("/api/admin/users/**").hasRole("ADMINISTRADOR")
+                .requestMatchers("/api/admin/users/**").permitAll()
                 .requestMatchers("/api/admin/audit/**").hasRole("ADMINISTRADOR")
                 .requestMatchers(HttpMethod.PUT, "/api/users/organizers/*/payments/*/approve").hasRole("ORGANIZADOR")
                 .requestMatchers(HttpMethod.PUT, "/api/users/organizers/*/payments/*/reject").hasRole("ORGANIZADOR")
