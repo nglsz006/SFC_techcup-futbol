@@ -2,8 +2,10 @@ package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.AutenticacionAdminException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.exception.CorreoYaRegistradoException;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.RolFuncional;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.UsuarioRegistrado;
+import edu.dosw.project.SFC_TechUp_Futbol.core.model.Usuario;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.LoginRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.request.RegistroRequest;
 import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.LoginResponse;
@@ -11,11 +13,13 @@ import edu.dosw.project.SFC_TechUp_Futbol.controller.dto.response.UsuarioRespons
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.ArbitroMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.CapitanMapper;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.OrganizadorMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.UsuarioRegistradoMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.AdministradorJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.ArbitroJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.CapitanJpaRepository;
+import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.JugadorJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.OrganizadorJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.UsuarioRegistradoJpaRepository;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.AccesoMapper;
@@ -42,6 +46,8 @@ public class AccesoServiceImpl implements AccesoService {
     private final AdministradorJpaRepository administradorRepository;
     private final AdministradorMapper administradorMapper;
     private final JwtService jwtService;
+    private final JugadorJpaRepository jugadorRepository;
+    private final JugadorMapper jugadorMapper;
 
     public AccesoServiceImpl(UsuarioRegistradoJpaRepository usuarioRepository,
                              UsuarioRegistradoMapper usuarioMapper,
@@ -53,7 +59,9 @@ public class AccesoServiceImpl implements AccesoService {
                              CapitanMapper capitanMapper,
                              AdministradorJpaRepository administradorRepository,
                              AdministradorMapper administradorMapper,
-                             JwtService jwtService) {
+                             JwtService jwtService,
+                             JugadorJpaRepository jugadorRepository,
+                             JugadorMapper jugadorMapper) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
         this.organizadorRepository = organizadorRepository;
@@ -65,16 +73,30 @@ public class AccesoServiceImpl implements AccesoService {
         this.administradorRepository = administradorRepository;
         this.administradorMapper = administradorMapper;
         this.jwtService = jwtService;
+        this.jugadorRepository = jugadorRepository;
+        this.jugadorMapper = jugadorMapper;
     }
 
     @Override
     public UsuarioResponse registrar(RegistroRequest request) {
-        if (usuarioRepository.existsEmailEnTablaUsuario(Base64Util.encode(request.getEmail())))
+        String emailEncoded = Base64Util.encode(request.getEmail());
+        if (usuarioRepository.existsEmailEnTablaUsuario(emailEncoded))
             throw new CorreoYaRegistradoException("Ya existe un usuario con ese correo.");
+        Jugador jugador = new Jugador(
+                edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil.generarId(),
+                request.getNombre(),
+                request.getEmail(),
+                PasswordUtil.cifrar(request.getPassword()),
+                request.getTipoUsuario(),
+                0,
+                null,
+                true,
+                ""
+        );
+        jugadorRepository.save(jugadorMapper.toEntity(jugador));
+        log.info("Usuario registrado como jugador exitosamente");
         UsuarioRegistrado usuario = AccesoMapper.toModelo(request);
-        if (usuario.getId() == null) usuario.setId(edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil.generarId());
-        usuarioRepository.save(usuarioMapper.toEntity(usuario));
-        log.info("Usuario registrado exitosamente");
+        usuario.setId(jugador.getId());
         return AccesoMapper.toUsuarioResponse(usuario);
     }
 

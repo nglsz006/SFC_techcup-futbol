@@ -33,18 +33,23 @@ class AccesoServiceExtendedTest {
         PartidoMapper partidoMapper = TestMappers.partidoMapper(jugadorMapper);
         EquipoMapper equipoMapper = TestMappers.equipoMapper();
 
-        Map<String, UsuarioRegistradoEntity> usuarioStore = new HashMap<>();
+        Map<String, JugadorEntity> jugadorStore = new HashMap<>();
+
         usuarioRepo = mock(UsuarioRegistradoJpaRepository.class);
-        when(usuarioRepo.save(any())).thenAnswer(inv -> {
-            UsuarioRegistradoEntity e = inv.getArgument(0);
-            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
-            usuarioStore.put(e.getId(), e);
-            return e;
-        });
-        when(usuarioRepo.findByEmail(anyString())).thenAnswer(inv ->
-                usuarioStore.values().stream().filter(e -> inv.<String>getArgument(0).equals(e.getEmail())).findFirst());
         when(usuarioRepo.existsEmailEnTablaUsuario(anyString())).thenAnswer(inv ->
-                usuarioStore.values().stream().anyMatch(e -> inv.<String>getArgument(0).equals(e.getEmail())));
+                jugadorStore.values().stream().anyMatch(e -> inv.<String>getArgument(0).equals(e.getEmail())));
+        when(usuarioRepo.findByEmail(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return jugadorStore.values().stream()
+                .filter(e -> email.equals(e.getEmail()))
+                .map(j -> {
+                    UsuarioRegistradoEntity u = new UsuarioRegistradoEntity();
+                    u.setId(j.getId()); u.setName(j.getName());
+                    u.setEmail(j.getEmail()); u.setPassword(j.getPassword());
+                    u.setUserType(j.getUserType());
+                    return u;
+                }).findFirst();
+        });
 
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         orgRepo = mock(OrganizadorJpaRepository.class);
@@ -83,7 +88,11 @@ class AccesoServiceExtendedTest {
         when(adminRepo.findByEmail(anyString())).thenReturn(Optional.empty());
         AdministradorMapper adminMapper = TestMappers.administradorMapper();
 
-        service = new AccesoServiceImpl(usuarioRepo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, adminRepo, adminMapper, new JwtService());
+        edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.JugadorJpaRepository jugadorRepo =
+                edu.dosw.project.SFC_TechUp_Futbol.controller.MockRepoHelper.jugadorRepo(jugadorStore);
+
+        service = new AccesoServiceImpl(usuarioRepo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, adminRepo, adminMapper, new JwtService(),
+                jugadorRepo, jugadorMapper);
     }
 
     private EquipoJpaRepository equipoRepo() {

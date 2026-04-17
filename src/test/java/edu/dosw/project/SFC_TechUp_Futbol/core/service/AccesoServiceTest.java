@@ -48,21 +48,27 @@ class AccesoServiceTest {
 
     @BeforeEach
     void setUp() {
-        Map<String, UsuarioRegistradoEntity> store = new HashMap<>();
+        Map<String, edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.JugadorEntity> jugadorStore = new HashMap<>();
+        
         UsuarioRegistradoJpaRepository repo = mock(UsuarioRegistradoJpaRepository.class);
-        when(repo.save(any())).thenAnswer(inv -> {
-            UsuarioRegistradoEntity e = inv.getArgument(0);
-            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
-            store.put(e.getId(), e);
-            return e;
+        when(repo.existsEmailEnTablaUsuario(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return jugadorStore.values().stream().anyMatch(e -> email.equals(e.getEmail()));
         });
         when(repo.findByEmail(anyString())).thenAnswer(inv -> {
             String email = inv.getArgument(0);
-            return store.values().stream().filter(e -> email.equals(e.getEmail())).findFirst();
-        });
-        when(repo.existsEmailEnTablaUsuario(anyString())).thenAnswer(inv -> {
-            String email = inv.getArgument(0);
-            return store.values().stream().anyMatch(e -> email.equals(e.getEmail()));
+            return jugadorStore.values().stream()
+                .filter(e -> email.equals(e.getEmail()))
+                .map(j -> {
+                    UsuarioRegistradoEntity u = new UsuarioRegistradoEntity();
+                    u.setId(j.getId());
+                    u.setName(j.getName());
+                    u.setEmail(j.getEmail());
+                    u.setPassword(j.getPassword());
+                    u.setUserType(j.getUserType());
+                    return u;
+                })
+                .findFirst();
         });
 
         OrganizadorJpaRepository orgRepo = mock(OrganizadorJpaRepository.class);
@@ -90,7 +96,22 @@ class AccesoServiceTest {
         CapitanMapper capMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
         edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.AdministradorMapper adminMapper = TestMappers.administradorMapper();
 
-        accesoService = new AccesoServiceImpl(repo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, adminRepo, adminMapper, new JwtService());
+        edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.JugadorJpaRepository jugadorRepo =
+                mock(edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.JugadorJpaRepository.class);
+        when(jugadorRepo.save(any())).thenAnswer(inv -> {
+            edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.JugadorEntity e = inv.getArgument(0);
+            if (e.getId() == null) e.setId(UUID.randomUUID().toString());
+            jugadorStore.put(e.getId(), e);
+            return e;
+        });
+        when(jugadorRepo.findByEmail(anyString())).thenAnswer(inv ->
+                jugadorStore.values().stream().filter(e -> inv.<String>getArgument(0).equals(e.getEmail())).findFirst());
+        when(jugadorRepo.findById(anyString())).thenAnswer(inv ->
+                Optional.ofNullable(jugadorStore.get(inv.<String>getArgument(0))));
+        when(jugadorRepo.findAll()).thenAnswer(inv -> new ArrayList<>(jugadorStore.values()));
+
+        accesoService = new AccesoServiceImpl(repo, usuarioMapper, orgRepo, orgMapper, arbRepo, arbMapper, capRepo, capMapper, adminRepo, adminMapper, new JwtService(),
+                jugadorRepo, jugadorMapper);
     }
 
     private RegistroRequest registroValido() {

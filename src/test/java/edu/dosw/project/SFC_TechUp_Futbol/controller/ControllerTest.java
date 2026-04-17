@@ -44,8 +44,9 @@ class ControllerTest {
         AdministradorMapper adminMapper = TestMappers.administradorMapper();
         RegistroAuditoriaMapper auditoriaMapper = TestMappers.registroAuditoriaMapper();
 
-        Map<String, UsuarioRegistradoEntity> usuarioStore = new HashMap<>();
-        UsuarioRegistradoJpaRepository usuarioRepo = MockRepoHelper.usuarioRepo(usuarioStore);
+        Map<String, JugadorEntity> jugadorStoreAcceso = new HashMap<>();
+        JugadorJpaRepository jugadorRepoAcceso = MockRepoHelper.jugadorRepo(jugadorStoreAcceso);
+        UsuarioRegistradoJpaRepository usuarioRepo = MockRepoHelper.usuarioRepoFromJugadorStore(jugadorStoreAcceso);
         UsuarioRegistradoMapper usuarioMapper = TestMappers.usuarioRegistradoMapper();
 
         TorneoJpaRepository torneoRepoAcceso = mock(TorneoJpaRepository.class);
@@ -63,7 +64,7 @@ class ControllerTest {
         AdministradorJpaRepository adminRepoAcceso = mock(AdministradorJpaRepository.class);
         when(adminRepoAcceso.findByEmail(anyString())).thenReturn(Optional.empty());
         AdministradorMapper adminMapperAcceso = TestMappers.administradorMapper();
-        AccesoServiceImpl accesoService = new AccesoServiceImpl(usuarioRepo, usuarioMapper, orgRepoAcceso, orgMapperAcceso, arbRepoAcceso, arbMapperAcceso, capRepoAcceso, capMapperAcceso, adminRepoAcceso, adminMapperAcceso, new edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService());
+        AccesoServiceImpl accesoService = new AccesoServiceImpl(usuarioRepo, usuarioMapper, orgRepoAcceso, orgMapperAcceso, arbRepoAcceso, arbMapperAcceso, capRepoAcceso, capMapperAcceso, adminRepoAcceso, adminMapperAcceso, new edu.dosw.project.SFC_TechUp_Futbol.core.util.JwtService(), jugadorRepoAcceso, jugadorMapper);
         accesoMvc = MockMvcBuilders
                 .standaloneSetup(new AccesoController(accesoService, new AccesoValidator()))
                 .setControllerAdvice(new ErrorHandler()).build();

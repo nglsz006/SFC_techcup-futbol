@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 
-class MockRepoHelper {
+public class MockRepoHelper {
 
-    static AdministradorJpaRepository adminRepo(Map<String, AdministradorEntity> store) {
+    public static AdministradorJpaRepository adminRepo(Map<String, AdministradorEntity> store) {
         AdministradorJpaRepository repo = mock(AdministradorJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { AdministradorEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
@@ -22,7 +22,7 @@ class MockRepoHelper {
         return repo;
     }
 
-    static OrganizadorJpaRepository orgRepo(Map<String, OrganizadorEntity> store) {
+    public static OrganizadorJpaRepository orgRepo(Map<String, OrganizadorEntity> store) {
         OrganizadorJpaRepository repo = mock(OrganizadorJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { OrganizadorEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
@@ -31,7 +31,7 @@ class MockRepoHelper {
         return repo;
     }
 
-    static ArbitroJpaRepository arbitroRepo(Map<String, ArbitroEntity> store) {
+    public static ArbitroJpaRepository arbitroRepo(Map<String, ArbitroEntity> store) {
         ArbitroJpaRepository repo = mock(ArbitroJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { ArbitroEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
@@ -40,7 +40,7 @@ class MockRepoHelper {
         return repo;
     }
 
-    static CapitanJpaRepository capitanRepo(Map<String, CapitanEntity> store) {
+    public static CapitanJpaRepository capitanRepo(Map<String, CapitanEntity> store) {
         CapitanJpaRepository repo = mock(CapitanJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { CapitanEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
@@ -51,7 +51,7 @@ class MockRepoHelper {
         return repo;
     }
 
-    static JugadorJpaRepository jugadorRepo(Map<String, JugadorEntity> store) {
+    public static JugadorJpaRepository jugadorRepo(Map<String, JugadorEntity> store) {
         JugadorJpaRepository repo = mock(JugadorJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { JugadorEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
@@ -62,7 +62,7 @@ class MockRepoHelper {
         return repo;
     }
 
-    static EquipoJpaRepository equipoRepo(Map<String, EquipoEntity> store) {
+    public static EquipoJpaRepository equipoRepo(Map<String, EquipoEntity> store) {
         EquipoJpaRepository repo = mock(EquipoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { EquipoEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
@@ -70,7 +70,7 @@ class MockRepoHelper {
         return repo;
     }
 
-    static TorneoJpaRepository torneoRepo(Map<String, TorneoEntity> store) {
+    public static TorneoJpaRepository torneoRepo(Map<String, TorneoEntity> store) {
         TorneoJpaRepository repo = mock(TorneoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { TorneoEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
@@ -78,7 +78,7 @@ class MockRepoHelper {
         return repo;
     }
 
-    static PartidoJpaRepository partidoRepo(Map<String, PartidoEntity> store) {
+    public static PartidoJpaRepository partidoRepo(Map<String, PartidoEntity> store) {
         PartidoJpaRepository repo = mock(PartidoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { PartidoEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
@@ -95,7 +95,7 @@ class MockRepoHelper {
         return repo;
     }
 
-    static PagoJpaRepository pagoRepo(Map<String, PagoEntity> store) {
+    public static PagoJpaRepository pagoRepo(Map<String, PagoEntity> store) {
         PagoJpaRepository repo = mock(PagoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { PagoEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
@@ -106,7 +106,7 @@ class MockRepoHelper {
         return repo;
     }
 
-    static UsuarioRegistradoJpaRepository usuarioRepo(Map<String, UsuarioRegistradoEntity> store) {
+    public static UsuarioRegistradoJpaRepository usuarioRepo(Map<String, UsuarioRegistradoEntity> store) {
         UsuarioRegistradoJpaRepository repo = mock(UsuarioRegistradoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { UsuarioRegistradoEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findByEmail(anyString())).thenAnswer(inv -> store.values().stream().filter(e -> inv.<String>getArgument(0).equals(e.getEmail())).findFirst());
@@ -115,14 +115,33 @@ class MockRepoHelper {
         return repo;
     }
 
-    static RegistroAuditoriaJpaRepository auditoriaRepo(List<RegistroAuditoriaEntity> store) {
+    public static UsuarioRegistradoJpaRepository usuarioRepoFromJugadorStore(Map<String, JugadorEntity> jugadorStore) {
+        UsuarioRegistradoJpaRepository repo = mock(UsuarioRegistradoJpaRepository.class);
+        when(repo.existsEmailEnTablaUsuario(anyString())).thenAnswer(inv ->
+                jugadorStore.values().stream().anyMatch(e -> inv.<String>getArgument(0).equals(e.getEmail())));
+        when(repo.findByEmail(anyString())).thenAnswer(inv -> {
+            String email = inv.getArgument(0);
+            return jugadorStore.values().stream()
+                .filter(e -> email.equals(e.getEmail()))
+                .map(j -> {
+                    UsuarioRegistradoEntity u = new UsuarioRegistradoEntity();
+                    u.setId(j.getId()); u.setName(j.getName());
+                    u.setEmail(j.getEmail()); u.setPassword(j.getPassword());
+                    u.setUserType(j.getUserType());
+                    return u;
+                }).findFirst();
+        });
+        return repo;
+    }
+
+    public static RegistroAuditoriaJpaRepository auditoriaRepo(List<RegistroAuditoriaEntity> store) {
         RegistroAuditoriaJpaRepository repo = mock(RegistroAuditoriaJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { RegistroAuditoriaEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.add(e); return e; });
         when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store));
         return repo;
     }
 
-    static PerfilDeportivoJpaRepository perfilRepo(Map<String, PerfilDeportivoEntity> store) {
+    public static PerfilDeportivoJpaRepository perfilRepo(Map<String, PerfilDeportivoEntity> store) {
         PerfilDeportivoJpaRepository repo = mock(PerfilDeportivoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { PerfilDeportivoEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
@@ -130,7 +149,7 @@ class MockRepoHelper {
         return repo;
     }
 
-    static AlineacionJpaRepository alineacionRepo(Map<String, AlineacionEntity> store) {
+    public static AlineacionJpaRepository alineacionRepo(Map<String, AlineacionEntity> store) {
         AlineacionJpaRepository repo = mock(AlineacionJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { AlineacionEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
