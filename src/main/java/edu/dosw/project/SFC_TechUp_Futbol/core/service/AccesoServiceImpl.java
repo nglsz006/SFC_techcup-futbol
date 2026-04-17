@@ -146,6 +146,16 @@ public class AccesoServiceImpl implements AccesoService {
                     cap.getName(), email, cap.getUserType());
         }
 
+        var jugEntity = jugadorRepository.findByEmail(emailEncoded);
+        if (jugEntity.isPresent()) {
+            var jug = jugadorMapper.toDomain(jugEntity.get());
+            if (!PasswordUtil.verificar(password, jug.getPassword()))
+                throw new AutenticacionAdminException("Credenciales incorrectas.");
+            log.info("Login jugador exitoso");
+            return new LoginResponse(jwtService.generarToken(email, RolFuncional.JUGADOR),
+                    jug.getName(), email, jug.getUserType());
+        }
+
         UsuarioRegistrado usuario = usuarioRepository.findByEmail(emailEncoded)
                 .map(usuarioMapper::toDomain)
                 .orElseThrow(() -> new AutenticacionAdminException("Credenciales incorrectas."));
