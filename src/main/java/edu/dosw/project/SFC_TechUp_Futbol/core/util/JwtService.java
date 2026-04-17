@@ -14,7 +14,7 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final long TTL_MS = 3600_000; // 1 hora
+    private static final long TTL_MS = 28800_000; // 8 horas
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String generarToken(String email, RolFuncional rol) {
