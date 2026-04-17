@@ -2,13 +2,7 @@
 
 Repositorio dedicado al desarrollo del proyecto **TECHCUP FUTBOL**.
 
----
 
-## 🎬 Demo del Proyecto
-
-[![Ver demo completa del proyecto](https://img.shields.io/badge/▶%20Ver%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/nywiG4Y0fFc)
-
-> Prueba completa del sistema TECHCUP FÚTBOL — flujo end-to-end del proyecto.
 
 ---
 
@@ -170,6 +164,13 @@ Reporte generado con **JaCoCo** y analizado con **SonarCloud**.
 | Demo persistencia | [Ver video](https://youtu.be/eJXH36PVICs) |
 | Demo JWT | [Ver video](https://youtu.be/PX0B0lXNhfQ) |
 | Demo OAuth2 Google | [Ver video](https://youtu.be/ZZAPFg6h4mE) |
+
+
+---
+
+##  Demo del Proyecto
+
+[![Ver demo completa del proyecto](https://img.shields.io/badge/▶%20Ver%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/nywiG4Y0fFc)
 
 ---
 
