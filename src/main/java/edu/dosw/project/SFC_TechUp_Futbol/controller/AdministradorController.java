@@ -40,7 +40,8 @@ public class AdministradorController {
     public Map<String, String> login(@RequestBody LoginRequest request) {
         administradorValidator.validarCredenciales(request);
         String token = autenticacionAdministradorService.login(request.getEmail(), request.getPassword());
-        return Map.of("token", token);
+        String administradorId = autenticacionAdministradorService.getAdministradorId(token);
+        return Map.of("token", token, "administradorId", administradorId);
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
