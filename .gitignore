@@ -1,24 +1,48 @@
-# Compiled class file
-*.class
+HELP.md
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+.mvn/wrapper/maven-wrapper.jar
 
-# Log file
-*.log
+### variables de entorno ###
 
-# BlueJ files
-*.ctxt
+.env
+.env.*
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+### STS ###
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### SSL ###
+src/main/resources/keystore.p12
+
+### Local JVM config ###
+.mvn/jvm.config
+
+### Local temp files ###
+test_output.txt
