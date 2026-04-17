@@ -133,8 +133,9 @@ public class UsuarioController {
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get player sanctions")
-    @GetMapping("/players/{id}/sanciones")
-    public java.util.List<edu.dosw.project.SFC_TechUp_Futbol.core.model.Sancion> obtenerSanciones(@PathVariable String id) {
+    @GetMapping("/players/{correo}/sanciones")
+    public java.util.List<edu.dosw.project.SFC_TechUp_Futbol.core.model.Sancion> obtenerSanciones(@PathVariable String correo) {
+        String id = jugadorService.buscarIdPorEmail(correo);
         Jugador jugador = jugadorService.buscarJugadorPorId(id);
         if (jugador == null) throw new IllegalArgumentException("Jugador no encontrado.");
         return jugador.getSanciones();
@@ -198,9 +199,9 @@ public class UsuarioController {
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Mark availability")
-    @PatchMapping("/players/{id}/availability")
-    public String marcarDisponible(@PathVariable String id) {
-        jugadorService.marcarDisponible(id);
+    @PatchMapping("/players/{correo}/availability")
+    public String marcarDisponible(@PathVariable String correo) {
+        jugadorService.marcarDisponible(jugadorService.buscarIdPorEmail(correo));
         return "Jugador marcado como disponible";
     }
 
@@ -297,9 +298,9 @@ public class UsuarioController {
 
     @PreAuthorize("hasRole('CAPITAN')")
     @Operation(summary = "Search players by filters")
-    @GetMapping("/captains/{id}/search-players/advanced")
+    @GetMapping("/captains/{correo}/search-players/advanced")
     public List<PerfilDeportivo> buscarJugadoresAvanzado(
-            @PathVariable String id,
+            @PathVariable String correo,
             @RequestParam(required = false) String posicion,
             @RequestParam(required = false) Integer semestre,
             @RequestParam(required = false) Integer edad,
@@ -320,8 +321,15 @@ public class UsuarioController {
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Toggle role between player and captain")
-    @PatchMapping("/players/{id}/profile/toggle-role")
-    public Map<String, String> toggleRol(@PathVariable String id) {
+    @PatchMapping("/players/{correo}/profile/toggle-role")
+    public Map<String, String> toggleRol(@PathVariable String correo) {
+        String id;
+        try {
+            id = jugadorService.buscarIdPorEmail(correo);
+        } catch (IllegalArgumentException e) {
+            id = capitanService.buscarIdPorEmail(
+                    edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util.encode(correo));
+        }
         return Map.of("mensaje", capitanService.toggleRol(id));
     }
 
