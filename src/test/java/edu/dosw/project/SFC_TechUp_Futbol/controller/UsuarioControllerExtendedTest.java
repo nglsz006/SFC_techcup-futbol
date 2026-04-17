@@ -131,23 +131,23 @@ class UsuarioControllerExtendedTest {
 
     @Test
     void buscarJugadoresAvanzado_sinFiltros_retorna200() throws Exception {
-        String capId = crearCapitan("capavanzado@test.com");
-        mvc.perform(get("/api/users/captains/" + capId + "/search-players/advanced"))
+        crearCapitan("capavanzado@test.com");
+        mvc.perform(get("/api/users/captains/capavanzado@test.com/search-players/advanced"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void buscarJugadoresAvanzado_conPosicion_retorna200() throws Exception {
-        String capId = crearCapitan("capavanzado2@test.com");
-        mvc.perform(get("/api/users/captains/" + capId + "/search-players/advanced")
+        crearCapitan("capavanzado2@test.com");
+        mvc.perform(get("/api/users/captains/capavanzado2@test.com/search-players/advanced")
                 .param("posicion", "DELANTERO"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void toggleRol_jugadorACapitan_retorna200() throws Exception {
-        String jugId = crearJugadorYObtenerId("toggle@test.com");
-        mvc.perform(patch("/api/users/players/" + jugId + "/profile/toggle-role"))
+        crearJugadorYObtenerId("toggle@test.com");
+        mvc.perform(patch("/api/users/players/toggle@test.com/profile/toggle-role"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mensaje").value("Rol cambiado a CAPITAN"));
     }

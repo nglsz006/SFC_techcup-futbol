@@ -1,6 +1,9 @@
 package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
+import edu.dosw.project.SFC_TechUp_Futbol.core.exception.RecursoNoEncontradoException;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Pago;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.CapitanService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.EquipoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.PagoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PagoValidator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,18 +21,36 @@ public class PagoController {
 
     private final PagoService pagoService;
     private final PagoValidator pagoValidator;
+    private final CapitanService capitanService;
+    private final EquipoService equipoService;
 
-    public PagoController(PagoService pagoService, PagoValidator pagoValidator) {
+    public PagoController(PagoService pagoService, PagoValidator pagoValidator,
+                          CapitanService capitanService, EquipoService equipoService) {
         this.pagoService = pagoService;
         this.pagoValidator = pagoValidator;
+        this.capitanService = capitanService;
+        this.equipoService = equipoService;
     }
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Submit payment receipt")
-    @PostMapping("/team/{teamId}/receipt")
-    public Pago subirComprobante(@PathVariable String teamId, @RequestParam String comprobante) {
-        pagoValidator.validarSubirComprobante(teamId, comprobante);
-        return pagoService.subirComprobante(teamId, comprobante);
+    @PostMapping("/team/{correo}/receipt")
+    public Pago subirComprobante(@PathVariable String correo, @RequestParam String comprobante) {
+        if (comprobante == null || comprobante.isBlank())
+            throw new IllegalArgumentException("El comprobante no puede estar vacío.");
+        String capitanId;
+        try {
+            capitanId = capitanService.buscarIdPorEmail(correo);
+        } catch (IllegalArgumentException e) {
+            throw new RecursoNoEncontradoException("Capitán no encontrado con ese correo.");
+        }
+        String equipoId = equipoService.listar().stream()
+                .filter(e -> capitanId.equals(e.getCapitanId()))
+                .findFirst()
+                .orElseThrow(() -> new RecursoNoEncontradoException("El capitán no tiene equipo registrado."))
+                .getId();
+        pagoValidator.validarSubirComprobante(equipoId, comprobante);
+        return pagoService.subirComprobante(equipoId, comprobante);
     }
 
     @PreAuthorize("isAuthenticated()")

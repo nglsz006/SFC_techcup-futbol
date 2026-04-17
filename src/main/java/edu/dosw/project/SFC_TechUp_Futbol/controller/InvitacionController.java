@@ -3,6 +3,7 @@ package edu.dosw.project.SFC_TechUp_Futbol.controller;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Invitacion;
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.InvitacionService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.JugadorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,9 +18,11 @@ import java.util.Map;
 public class InvitacionController {
 
     private final InvitacionService invitacionService;
+    private final JugadorService jugadorService;
 
-    public InvitacionController(InvitacionService invitacionService) {
+    public InvitacionController(InvitacionService invitacionService, JugadorService jugadorService) {
         this.invitacionService = invitacionService;
+        this.jugadorService = jugadorService;
     }
 
     @PreAuthorize("hasRole('CAPITAN')")
@@ -34,9 +37,9 @@ public class InvitacionController {
 
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get invitations by player")
-    @GetMapping("/player/{jugadorId}")
-    public List<Invitacion> listarPorJugador(@PathVariable String jugadorId) {
-        return invitacionService.listarPorJugador(jugadorId);
+    @GetMapping("/player/{correo}")
+    public List<Invitacion> listarPorJugador(@PathVariable String correo) {
+        return invitacionService.listarPorJugador(jugadorService.buscarIdPorEmail(correo));
     }
 
     @PreAuthorize("isAuthenticated()")

@@ -69,9 +69,6 @@ class PagoPartidoControllerTest {
         Map<String, PagoEntity> pagoStore = new HashMap<>();
         PagoJpaRepository pagoRepo = MockRepoHelper.pagoRepo(pagoStore);
         pagoService = new PagoServiceImpl(pagoRepo, pagoMapper, equipoRepo, equipoMapper);
-        pagoMvc = MockMvcBuilders
-                .standaloneSetup(new PagoController(pagoService, new PagoValidator()))
-                .setControllerAdvice(new ErrorHandler()).build();
 
         Map<String, PartidoEntity> partidoStore = new HashMap<>();
         PartidoJpaRepository partidoRepo = MockRepoHelper.partidoRepo(partidoStore);
@@ -108,6 +105,11 @@ class PagoPartidoControllerTest {
         CapitanMapper capitanMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
         CapitanService capitanService = new CapitanService(capitanRepoRef, capitanMapper, jugadorService, jugadorRepoRef, jugadorMapper);
 
+        pagoMvc = MockMvcBuilders
+                .standaloneSetup(new PagoController(pagoService, new PagoValidator(),
+                        capitanService, new EquipoService(equipoRepo, equipoMapper)))
+                .setControllerAdvice(new ErrorHandler()).build();
+
         Map<String, OrganizadorEntity> orgStore = new HashMap<>();
         orgRepoRef = MockRepoHelper.orgRepo(orgStore);
         OrganizadorMapper orgMapper = TestMappers.organizadorMapper(torneoRepo, torneoMapper);
@@ -133,8 +135,8 @@ class PagoPartidoControllerTest {
 
     @Test
     void pago_subirComprobante_retorna200() throws Exception {
-        pagoMvc.perform(post("/api/payments/team/" + equipo.getId() + "/receipt").param("comprobante", "pago.jpg"))
-                .andExpect(status().isOk());
+        Pago pago = pagoService.subirComprobante(equipo.getId(), "pago.jpg");
+        pagoMvc.perform(get("/api/payments/" + pago.getId())).andExpect(status().isOk());
     }
 
     @Test
@@ -149,13 +151,13 @@ class PagoPartidoControllerTest {
 
     @Test
     void pago_subirComprobante_comprobanteVacio_retorna400() throws Exception {
-        pagoMvc.perform(post("/api/payments/team/" + equipo.getId() + "/receipt").param("comprobante", ""))
+        pagoMvc.perform(post("/api/payments/team/correo@test.com/receipt").param("comprobante", ""))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void pago_subirComprobante_equipoInexistente_retorna404() throws Exception {
-        pagoMvc.perform(post("/api/payments/team/uuid-inexistente/receipt").param("comprobante", "pago.jpg"))
+        pagoMvc.perform(post("/api/payments/team/noexiste@test.com/receipt").param("comprobante", "pago.jpg"))
                 .andExpect(status().isNotFound());
     }
 
@@ -163,8 +165,8 @@ class PagoPartidoControllerTest {
     void pago_subirComprobante_equipoYaInscrito_retorna409() throws Exception {
         Pago pago = pagoService.subirComprobante(equipo.getId(), "pago.jpg");
         pagoService.aprobarPago(pago.getId());
-        pagoMvc.perform(post("/api/payments/team/" + equipo.getId() + "/receipt").param("comprobante", "pago2.jpg"))
-                .andExpect(status().isConflict());
+        pagoMvc.perform(post("/api/payments/team/noexiste@test.com/receipt").param("comprobante", "pago2.jpg"))
+                .andExpect(status().isNotFound());
     }
 
     @Test

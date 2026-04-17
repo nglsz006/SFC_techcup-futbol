@@ -55,6 +55,7 @@ class MockRepoHelper {
         JugadorJpaRepository repo = mock(JugadorJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { JugadorEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findById(anyString())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.<String>getArgument(0))));
+        when(repo.findByEmail(anyString())).thenAnswer(inv -> store.values().stream().filter(e -> inv.<String>getArgument(0).equals(e.getEmail())).findFirst());
         when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store.values()));
         when(repo.existsById(anyString())).thenAnswer(inv -> store.containsKey(inv.<String>getArgument(0)));
         doAnswer(inv -> { store.remove(inv.<String>getArgument(0)); return null; }).when(repo).deleteById(anyString());
@@ -109,6 +110,7 @@ class MockRepoHelper {
         UsuarioRegistradoJpaRepository repo = mock(UsuarioRegistradoJpaRepository.class);
         when(repo.save(any())).thenAnswer(inv -> { UsuarioRegistradoEntity e = inv.getArgument(0); if (e.getId() == null) e.setId(UUID.randomUUID().toString()); store.put(e.getId(), e); return e; });
         when(repo.findByEmail(anyString())).thenAnswer(inv -> store.values().stream().filter(e -> inv.<String>getArgument(0).equals(e.getEmail())).findFirst());
+        when(repo.existsEmailEnTablaUsuario(anyString())).thenAnswer(inv -> store.values().stream().anyMatch(e -> inv.<String>getArgument(0).equals(e.getEmail())));
         when(repo.findAll()).thenAnswer(inv -> new ArrayList<>(store.values()));
         return repo;
     }

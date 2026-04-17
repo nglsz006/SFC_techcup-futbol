@@ -1,6 +1,7 @@
 package edu.dosw.project.SFC_TechUp_Futbol.core.service;
 
 import edu.dosw.project.SFC_TechUp_Futbol.core.model.Jugador;
+import edu.dosw.project.SFC_TechUp_Futbol.core.util.Base64Util;
 import edu.dosw.project.SFC_TechUp_Futbol.core.util.IdGeneratorUtil;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.JugadorValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper;
@@ -63,6 +64,12 @@ public class JugadorService {
 
     public Jugador buscarJugadorPorId(String id) {
         return jugadorRepository.findById(id).map(mapper::toDomain).orElse(null);
+    }
+
+    public String buscarIdPorEmail(String email) {
+        return jugadorRepository.findByEmail(Base64Util.encode(email))
+                .map(e -> e.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado con ese correo."));
     }
 
     public void eliminar(String id) {

@@ -200,23 +200,23 @@ class UsuarioControllerTest {
 
     @Test
     void marcarDisponible_retorna200() throws Exception {
-        String jugId = crearJugadorYObtenerId("jugdisp@test.com", 8, "PORTERO");
-        mvc.perform(patch("/api/users/players/" + jugId + "/availability"))
+        crearJugadorYObtenerId("jugdisp@test.com", 8, "PORTERO");
+        mvc.perform(patch("/api/users/players/jugdisp@test.com/availability"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void toggleRol_jugadorACapitan_retorna200() throws Exception {
-        String jugId = crearJugadorYObtenerId("jugtoggle@test.com", 11, "DELANTERO");
-        mvc.perform(patch("/api/users/players/" + jugId + "/profile/toggle-role"))
+        crearJugadorYObtenerId("jugtoggle@test.com", 11, "DELANTERO");
+        mvc.perform(patch("/api/users/players/jugtoggle@test.com/profile/toggle-role"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mensaje").value("Rol cambiado a CAPITAN"));
     }
 
     @Test
     void toggleRol_capitanAJugador_retorna200() throws Exception {
-        String capId = crearCapitan("captoggle@test.com");
-        mvc.perform(patch("/api/users/players/" + capId + "/profile/toggle-role"))
+        crearCapitan("captoggle@test.com");
+        mvc.perform(patch("/api/users/players/captoggle@test.com/profile/toggle-role"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mensaje").value("Rol cambiado a JUGADOR"));
     }

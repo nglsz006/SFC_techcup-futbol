@@ -2,6 +2,8 @@ package edu.dosw.project.SFC_TechUp_Futbol.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.dosw.project.SFC_TechUp_Futbol.core.service.PagoService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.CapitanService;
+import edu.dosw.project.SFC_TechUp_Futbol.core.service.EquipoService;
 import edu.dosw.project.SFC_TechUp_Futbol.core.validator.PagoValidator;
 import edu.dosw.project.SFC_TechUp_Futbol.TestMappers;
 import edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.*;
@@ -33,10 +35,20 @@ class PagoControllerTest {
         Map<String, PagoEntity> pagoStore = new HashMap<>();
         PagoJpaRepository pagoRepo = MockRepoHelper.pagoRepo(pagoStore);
 
+        Map<String, edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.CapitanEntity> capitanStore = new HashMap<>();
+        edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.CapitanJpaRepository capitanRepo = MockRepoHelper.capitanRepo(capitanStore);
+        edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.CapitanMapper capitanMapper = TestMappers.capitanMapper(equipoRepo, equipoMapper);
+        edu.dosw.project.SFC_TechUp_Futbol.persistence.mapper.JugadorMapper jugadorMapper = TestMappers.jugadorMapper();
+        Map<String, edu.dosw.project.SFC_TechUp_Futbol.persistence.entity.JugadorEntity> jugadorStore = new HashMap<>();
+        edu.dosw.project.SFC_TechUp_Futbol.persistence.repository.JugadorJpaRepository jugadorRepo = MockRepoHelper.jugadorRepo(jugadorStore);
+        edu.dosw.project.SFC_TechUp_Futbol.core.service.JugadorService jugadorService = new edu.dosw.project.SFC_TechUp_Futbol.core.service.JugadorService(jugadorRepo, jugadorMapper);
+        CapitanService capitanService = new CapitanService(capitanRepo, capitanMapper, jugadorService, jugadorRepo, jugadorMapper);
+        EquipoService equipoService = new EquipoService(equipoRepo, equipoMapper);
+
         PagoService pagoService = new edu.dosw.project.SFC_TechUp_Futbol.core.service.PagoServiceImpl(pagoRepo, pagoMapper, equipoRepo, equipoMapper);
 
         mvc = MockMvcBuilders
-                .standaloneSetup(new PagoController(pagoService, new PagoValidator()))
+                .standaloneSetup(new PagoController(pagoService, new PagoValidator(), capitanService, equipoService))
                 .setControllerAdvice(new ErrorHandler()).build();
     }
 
