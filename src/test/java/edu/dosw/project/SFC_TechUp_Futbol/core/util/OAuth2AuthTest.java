@@ -130,22 +130,18 @@ class OAuth2AuthTest {
     }
 
     @Test
-    void jwtFilter_tokenInvalido_retorna401() throws Exception {
+    void jwtFilter_tokenInvalido_continuaSinAutenticar() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer token.invalido.xyz");
         MockHttpServletResponse response = new MockHttpServletResponse();
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        when(mockResponse.getWriter()).thenReturn(pw);
         FilterChain chain = mock(FilterChain.class);
-        jwtFilter.doFilterInternal(request, mockResponse, chain);
-        verify(mockResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        verify(chain, never()).doFilter(any(), any());
+        jwtFilter.doFilterInternal(request, response, chain);
+        verify(chain, times(1)).doFilter(request, response);
+        assertEquals(200, response.getStatus());
     }
 
     @Test
-    void jwtFilter_tokenExpirado_retorna401() throws Exception {
+    void jwtFilter_tokenExpirado_continuaSinAutenticar() throws Exception {
         String tokenExpirado = io.jsonwebtoken.Jwts.builder()
                 .setSubject("expirado@escuelaing.edu.co")
                 .claim("rol", "ESTUDIANTE")
@@ -157,13 +153,9 @@ class OAuth2AuthTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer " + tokenExpirado);
         MockHttpServletResponse response = new MockHttpServletResponse();
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        when(mockResponse.getWriter()).thenReturn(pw);
         FilterChain chain = mock(FilterChain.class);
-        jwtFilter.doFilterInternal(request, mockResponse, chain);
-        verify(mockResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        verify(chain, never()).doFilter(any(), any());
+        jwtFilter.doFilterInternal(request, response, chain);
+        verify(chain, times(1)).doFilter(request, response);
+        assertEquals(200, response.getStatus());
     }
 }
